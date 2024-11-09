@@ -1,0 +1,54 @@
+{
+	"schemaVersion": 1,
+	"id": "robandpeace",
+	"version": "${version}",
+	"name": "Rob&Peace",
+	"description": "Dont attack. Just steal",
+	"authors": [
+		"turtton"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/robandpeace/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "net.yukulab.RobPeace",
+				"adapter": "kotlin"
+			}
+		],
+		"client": [
+			{
+				"value": "net.yukulab.RobPeaceClient",
+				"adapter": "kotlin"
+			}
+		],
+		"fabric-datagen": [
+			{
+				"value": "net.yukulab.RobPeaceDataGenerator",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"robandpeace.mixins.json",
+		{
+			"config": "robandpeace.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
