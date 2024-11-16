@@ -15,6 +15,19 @@ base {
     archivesName = archives_base_name
 }
 
+val gameTest = "gametest"
+
+sourceSets {
+    val main by this
+    create(gameTest) {
+        compileClasspath += main.compileClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.runtimeClasspath
+        runtimeClasspath += main.output
+    }
+}
+val gameTestSourceSet = sourceSets.getByName(gameTest)
+
 repositories {
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
@@ -47,6 +60,26 @@ loom {
         create("robandpeace") {
             sourceSet(sourceSets.main.get())
             sourceSet(sourceSets.getByName("client"))
+        }
+    }
+
+    runs {
+        create("gametest") {
+            server()
+            configName = name
+            vmArgs += "-Dfabric-api.gametest"
+            vmArgs += "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory}/$name/junit.xml"
+            runDir = "build/$name"
+            setSource(gameTestSourceSet)
+            isIdeConfigGenerated = true
+        }
+        create("manualGameTest") {
+            server()
+            configName = "Manual Game Test"
+            vmArgs += "-Dfabric-api.gametest.command=true"
+            runDir = "build/$name"
+            setSource(gameTestSourceSet)
+            isIdeConfigGenerated = true
         }
     }
 }
