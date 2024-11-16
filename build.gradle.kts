@@ -23,6 +23,21 @@ repositories {
     // for more information about repositories.
     maven { url = uri("https://maven.shedaniel.me/") }
     maven { url = uri("https://maven.terraformersmc.com/releases/") }
+    maven {
+        name = "Terraformers"
+        url = uri("https://maven.terraformersmc.com/")
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
 }
 
 loom {
@@ -48,6 +63,8 @@ dependencies {
     modApi(libs.cloth.config) {
         exclude(group = "net.fabricmc.fabric-api")
     }
+    modImplementation(libs.modmenu)
+    modRuntimeOnly(libs.sodium)
 }
 
 tasks.getByName<ProcessResources>("processResources") {
