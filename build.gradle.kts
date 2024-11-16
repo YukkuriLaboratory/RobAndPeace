@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.fabric.loom)
     alias(libs.plugins.kotlin)
@@ -13,6 +15,24 @@ group = maven_group
 val archives_base_name: String by project
 base {
     archivesName = archives_base_name
+}
+
+val gameTest = "gametest"
+
+sourceSets {
+    val main by this
+    create(gameTest) {
+        compileClasspath += main.compileClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.runtimeClasspath
+        runtimeClasspath += main.output
+    }
+}
+val gameTestSourceSet = sourceSets.getByName(gameTest)
+
+configurations {
+    val testImplementation by this
+    getByName("${gameTest}Implementation").extendsFrom(testImplementation)
 }
 
 repositories {
@@ -49,6 +69,26 @@ loom {
             sourceSet(sourceSets.getByName("client"))
         }
     }
+
+    runs {
+        create("gametest") {
+            server()
+            configName = name
+            vmArgs += "-Dfabric-api.gametest"
+            vmArgs += "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.get()}/$name/junit.xml"
+            runDir = "build/$name"
+            setSource(gameTestSourceSet)
+            isIdeConfigGenerated = true
+        }
+        create("manualGameTest") {
+            server()
+            configName = "Manual Game Test"
+            vmArgs += "-Dfabric-api.gametest.command=true"
+            runDir = "build/$name"
+            setSource(gameTestSourceSet)
+            isIdeConfigGenerated = true
+        }
+    }
 }
 
 fabricApi {
@@ -65,6 +105,9 @@ dependencies {
     }
     modImplementation(libs.modmenu)
     modRuntimeOnly(libs.sodium)
+
+    testImplementation(kotlin("test"))
+    testImplementation(libs.bundles.kotest)
 }
 
 tasks.getByName<ProcessResources>("processResources") {
@@ -97,6 +140,16 @@ tasks.jar {
 
 ktlint {
     version.set(libs.versions.ktlint.asProvider())
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
 
 // configure the maven publication

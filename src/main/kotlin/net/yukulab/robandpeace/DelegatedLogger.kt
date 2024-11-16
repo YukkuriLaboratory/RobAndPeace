@@ -15,6 +15,6 @@ class DelegatedLogger {
     operator fun getValue(thisRef: Any, property: KProperty<*>): Logger =
         logger ?: run {
             val className = thisRef::class.java.name.removeSuffix("\$Companion")
-            LoggerFactory.getLogger(className).also { logger = it }
+            LoggerFactory.getLogger("$NAMESPACE:$className").also { logger = it }
         }
 }

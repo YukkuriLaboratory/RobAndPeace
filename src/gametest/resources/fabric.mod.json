@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "gametset",
+  "version": "1",
+  "entrypoints": {
+    "main": [
+    ],
+    "fabric-gametest": [
+      "test.player.TestPlayerAttack"
+    ]
+  }
+}
