@@ -1,4 +1,4 @@
-package net.yukulab.mixin;
+package net.yukulab.robandpeace.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;

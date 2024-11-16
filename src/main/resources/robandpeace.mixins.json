@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "net.yukulab.mixin",
+	"package": "net.yukulab.robandpeace.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+      "ExampleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

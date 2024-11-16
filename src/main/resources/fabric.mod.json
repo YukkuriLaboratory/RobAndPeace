@@ -17,19 +17,19 @@
 	"entrypoints": {
 		"main": [
 			{
-				"value": "net.yukulab.RobPeace",
+				"value": "net.yukulab.robandpeace.RobAndPeace",
 				"adapter": "kotlin"
 			}
 		],
 		"client": [
 			{
-				"value": "net.yukulab.RobPeaceClient",
+				"value": "net.yukulab.robandpeace.RobPeaceClient",
 				"adapter": "kotlin"
 			}
 		],
 		"fabric-datagen": [
 			{
-				"value": "net.yukulab.RobPeaceDataGenerator",
+				"value": "net.yukulab.robandpeace.RobAndPeaceDataGenerator",
 				"adapter": "kotlin"
 			}
 		]

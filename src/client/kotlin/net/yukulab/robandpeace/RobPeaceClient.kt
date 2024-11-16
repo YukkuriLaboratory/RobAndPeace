@@ -1,4 +1,4 @@
-package net.yukulab
+package net.yukulab.robandpeace
 
 import net.fabricmc.api.ClientModInitializer
 
