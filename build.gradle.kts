@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.fabric.loom)
     alias(libs.plugins.kotlin)
@@ -98,6 +100,9 @@ dependencies {
     }
     modImplementation(libs.modmenu)
     modRuntimeOnly(libs.sodium)
+
+    testImplementation(kotlin("test"))
+    testImplementation(libs.bundles.kotest)
 }
 
 tasks.getByName<ProcessResources>("processResources") {
@@ -130,6 +135,16 @@ tasks.jar {
 
 ktlint {
     version.set(libs.versions.ktlint.asProvider())
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
 
 // configure the maven publication

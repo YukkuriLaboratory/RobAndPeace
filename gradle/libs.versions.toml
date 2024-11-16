@@ -11,6 +11,8 @@ ktlint-gradle = "12.1.1"
 cloth-config = "15.0.140"
 modmenu = "11.0.3"
 sodium = "mc1.21-0.5.11"
+# for testing
+kotest = "5.9.1"
 
 [plugins]
 fabric-loom = { id = "fabric-loom", version.ref = "fabric-loom"  }
@@ -25,10 +27,16 @@ fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = 
 cloth-config = { module = "me.shedaniel.cloth:cloth-config-fabric", version.ref = "cloth-config" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 
 [bundles]
 fabric = [
     "fabric-loader",
     "fabric-api",
     "fabric-kotlin"
+]
+kotest = [
+    "kotest-assertions-core",
+    "kotest-runner-junit5"
 ]
