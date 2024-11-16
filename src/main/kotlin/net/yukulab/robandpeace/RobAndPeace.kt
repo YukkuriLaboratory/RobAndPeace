@@ -1,6 +1,7 @@
 package net.yukulab.robandpeace
 
 import net.fabricmc.api.ModInitializer
+import net.yukulab.robandpeace.config.RapConfigs
 import net.yukulab.robandpeace.item.RapItems
 
 object RobAndPeace : ModInitializer {
@@ -8,6 +9,7 @@ object RobAndPeace : ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
+        RapConfigs.init()
         RapItems.init()
     }
 }

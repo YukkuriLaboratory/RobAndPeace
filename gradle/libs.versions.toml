@@ -8,6 +8,7 @@ fabric-loom = "1.8-SNAPSHOT"
 kotlin = "2.0.21"
 ktlint = "1.3.1"
 ktlint-gradle = "12.1.1"
+cloth-config = "15.0.140"
 
 [plugins]
 fabric-loom = { id = "fabric-loom", version.ref = "fabric-loom"  }
@@ -19,6 +20,7 @@ minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
+cloth-config = { module = "me.shedaniel.cloth:cloth-config-fabric", version.ref = "cloth-config" }
 
 [bundles]
 fabric = [
