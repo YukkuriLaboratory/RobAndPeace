@@ -30,6 +30,11 @@ sourceSets {
 }
 val gameTestSourceSet = sourceSets.getByName(gameTest)
 
+configurations {
+    val testImplementation by this
+    getByName("${gameTest}Implementation").extendsFrom(testImplementation)
+}
+
 repositories {
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
