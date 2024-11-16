@@ -68,7 +68,7 @@ loom {
             server()
             configName = name
             vmArgs += "-Dfabric-api.gametest"
-            vmArgs += "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory}/$name/junit.xml"
+            vmArgs += "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.get()}/$name/junit.xml"
             runDir = "build/$name"
             setSource(gameTestSourceSet)
             isIdeConfigGenerated = true
