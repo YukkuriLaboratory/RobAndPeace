@@ -34,5 +34,8 @@ class RapServerConfig : ConfigData {
 
         @JvmField
         var boss: Int = 1
+
+        @JvmField
+        var criticalBonus: Int = 10
     }
 }

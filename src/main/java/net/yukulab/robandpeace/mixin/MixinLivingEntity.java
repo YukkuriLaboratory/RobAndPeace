@@ -12,7 +12,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.config.RapConfigs;
+import net.yukulab.robandpeace.extension.CriticalHolder;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,6 +37,10 @@ public abstract class MixinLivingEntity {
 
     @Shadow
     protected int playerHitTimer;
+
+    @Shadow
+    @Final
+    private static Logger LOGGER;
 
     /**
      * disableAttackingInCoolTimeがtrueの場合、クールダウン中は攻撃時のノックバックや耐久消費が発生しないようにする
@@ -111,6 +118,9 @@ public abstract class MixinLivingEntity {
                 case HostileEntity ignored -> RapConfigs.getServerConfig().stealChances.hostile;
                 default -> RapConfigs.getServerConfig().stealChances.friendly;
             };
+            if (source instanceof CriticalHolder criticalHolder && criticalHolder.robandpeace$isCritical()) {
+                chance += RapConfigs.getServerConfig().stealChances.criticalBonus;
+            }
             var rand = entity.getRandom().nextInt(100);
             if (rand >= chance) {
                 robandpeace$stealCooldown = RapConfigs.getServerConfig().stealCoolTime.onFailure;
