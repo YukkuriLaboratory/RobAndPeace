@@ -6,5 +6,30 @@ import me.shedaniel.autoconfig.annotation.Config
 @Config(name = "robandpeace")
 class RapServerConfig : ConfigData {
     @JvmField
-    var stealCoolTimeTick: Int = 100
+    var disableAttackingInCoolTime: Boolean = false
+
+    @JvmField
+    var stealCoolTime: StealCoolTime = StealCoolTime()
+
+    @JvmField
+    var stealChances: StealChances = StealChances()
+
+    @JvmField
+    var anglyGolemLiveTime: Int = 1200
+
+    class StealCoolTime {
+        @JvmField
+        var onSuccess: Int = 1200
+        @JvmField
+        var onFailure: Int = 100
+    }
+
+    class StealChances {
+        @JvmField
+        var friendly: Int = 70
+        @JvmField
+        var hostile: Int = 20
+        @JvmField
+        var boss: Int = 1
+    }
 }
