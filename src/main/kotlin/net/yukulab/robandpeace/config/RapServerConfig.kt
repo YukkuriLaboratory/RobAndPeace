@@ -36,6 +36,9 @@ class RapServerConfig : ConfigData {
         var boss: Int = 1
 
         @JvmField
+        var merchantTradeWeight: Int = 30
+
+        @JvmField
         var criticalBonus: Int = 10
     }
 }

@@ -2,20 +2,22 @@ package net.yukulab.robandpeace.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.*;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.config.RapConfigs;
 import net.yukulab.robandpeace.extension.CriticalHolder;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,10 +39,6 @@ public abstract class MixinLivingEntity {
 
     @Shadow
     protected int playerHitTimer;
-
-    @Shadow
-    @Final
-    private static Logger LOGGER;
 
     /**
      * disableAttackingInCoolTimeがtrueの場合、クールダウン中は攻撃時のノックバックや耐久消費が発生しないようにする
@@ -114,7 +112,7 @@ public abstract class MixinLivingEntity {
                 case WitherEntity ignored -> RapConfigs.getServerConfig().stealChances.boss;
                 case EnderDragonEntity ignored -> RapConfigs.getServerConfig().stealChances.boss;
                 // normal mobs
-                case VillagerEntity ignored -> 100;
+                case MerchantEntity ignored -> 100;
                 case HostileEntity ignored -> RapConfigs.getServerConfig().stealChances.hostile;
                 default -> RapConfigs.getServerConfig().stealChances.friendly;
             };
@@ -127,7 +125,24 @@ public abstract class MixinLivingEntity {
                 ci.cancel();
                 return;
             }
-            dropLoot(source, true);
+            if (entity instanceof MerchantEntity merchant) {
+                var weight = RapConfigs.getServerConfig().stealChances.merchantTradeWeight;
+                var offers = merchant.getOffers();
+                ItemEntity itemEntity;
+                if (!offers.isEmpty() && rand < weight) {
+                    var randomOffer = offers.get(entity.getRandom().nextInt(offers.size()));
+                    var sellItem = randomOffer.copySellItem();
+                    itemEntity = merchant.dropStack(sellItem);
+                } else {
+                    var dropCount = entity.getRandom().nextInt(3);
+                    itemEntity = merchant.dropStack(new ItemStack(Items.EMERALD, dropCount + 1));
+                }
+                if (itemEntity != null) {
+                    itemEntity.setOwner(player.getUuid());
+                }
+            } else {
+                dropLoot(source, true);
+            }
             // playerHitTimerを0以上にしないとxpが落ちない
             playerHitTimer = 100;
             dropXp(player);
