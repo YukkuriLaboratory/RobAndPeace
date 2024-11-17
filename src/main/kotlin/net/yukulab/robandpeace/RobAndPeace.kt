@@ -2,6 +2,7 @@ package net.yukulab.robandpeace
 
 import net.fabricmc.api.ModInitializer
 import net.yukulab.robandpeace.config.RapConfigs
+import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.item.RapItems
 
 object RobAndPeace : ModInitializer {
@@ -11,5 +12,6 @@ object RobAndPeace : ModInitializer {
         // Proceed with mild caution.
         RapConfigs.init()
         RapItems.init()
+        RapEntityType.init()
     }
 }
