@@ -58,17 +58,6 @@ public abstract class MixinLivingEntity {
             method = "damage",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/LivingEntity;takeKnockback(DDD)V"
-            )
-    )
-    private boolean disableKnockbackIfPlayerAttacked(LivingEntity instance, double strength, double x, double z, DamageSource damageSource) {
-        return !(damageSource.getAttacker() instanceof PlayerEntity);
-    }
-
-    @WrapWithCondition(
-            method = "damage",
-            at = @At(
-                    value = "INVOKE",
                     target = "Lnet/minecraft/entity/LivingEntity;playHurtSound(Lnet/minecraft/entity/damage/DamageSource;)V"
             )
     )
