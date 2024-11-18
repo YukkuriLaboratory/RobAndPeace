@@ -1,7 +1,11 @@
 package net.yukulab.robandpeace.extension;
 
 public interface CriticalHolder {
-    void robandpeace$markCritical();
+    default void robandpeace$markCritical() {
+        throw new AssertionError();
+    }
 
-    boolean robandpeace$isCritical();
+    default boolean robandpeace$isCritical() {
+        throw new AssertionError();
+    }
 }

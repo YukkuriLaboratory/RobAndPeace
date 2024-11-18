@@ -5,7 +5,6 @@ import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.yukulab.robandpeace.extension.CriticalHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,8 +31,8 @@ public abstract class MixinPlayerEntity {
             )
     )
     private void appendCriticalInformation(Entity target, CallbackInfo ci, @Local DamageSource damageSource, @Local(ordinal = 2) boolean bl3) {
-        if (damageSource instanceof CriticalHolder criticalHolder && bl3) {
-            criticalHolder.robandpeace$markCritical();
+        if (bl3) {
+            damageSource.robandpeace$markCritical();
         }
     }
 }

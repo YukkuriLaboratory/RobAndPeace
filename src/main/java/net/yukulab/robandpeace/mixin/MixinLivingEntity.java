@@ -16,7 +16,6 @@ import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.config.RapConfigs;
-import net.yukulab.robandpeace.extension.CriticalHolder;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -116,7 +115,7 @@ public abstract class MixinLivingEntity {
                 case HostileEntity ignored -> RapConfigs.getServerConfig().stealChances.hostile;
                 default -> RapConfigs.getServerConfig().stealChances.friendly;
             };
-            if (source instanceof CriticalHolder criticalHolder && criticalHolder.robandpeace$isCritical()) {
+            if (source.robandpeace$isCritical()) {
                 chance += RapConfigs.getServerConfig().stealChances.criticalBonus;
             }
             var rand = entity.getRandom().nextInt(100);

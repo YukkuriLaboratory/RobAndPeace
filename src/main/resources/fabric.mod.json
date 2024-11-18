@@ -41,6 +41,13 @@
 			"environment": "client"
 		}
 	],
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1282": [
+        "net/yukulab/robandpeace/extension/CriticalHolder"
+      ]
+    }
+  },
 	"depends": {
 		"fabricloader": ">=0.16.9",
 		"minecraft": "~1.21.1",
