@@ -1,4 +1,4 @@
-package net.yukulab.robandpeace.mixin;
+package net.yukulab.robandpeace.mixin.steal;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.entity.Entity;

@@ -1,4 +1,4 @@
-package net.yukulab.robandpeace.mixin;
+package net.yukulab.robandpeace.mixin.steal;
 
 import net.minecraft.entity.damage.DamageSource;
 import net.yukulab.robandpeace.extension.CriticalHolder;

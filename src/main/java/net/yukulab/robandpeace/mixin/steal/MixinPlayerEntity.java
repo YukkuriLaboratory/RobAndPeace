@@ -1,4 +1,4 @@
-package net.yukulab.robandpeace.mixin;
+package net.yukulab.robandpeace.mixin.steal;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
