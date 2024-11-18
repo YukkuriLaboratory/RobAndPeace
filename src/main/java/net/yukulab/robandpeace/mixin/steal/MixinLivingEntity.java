@@ -214,6 +214,7 @@ public abstract class MixinLivingEntity implements StealCooldownHolder {
         return entity.getDataTracker().get(ROBANDPEACE_STEAL_COOLDOWN);
     }
 
+    @Unique
     private void robandpeace$setStealCooldown(long value) {
         var entity = (LivingEntity) (Object) this;
         entity.getDataTracker().set(ROBANDPEACE_STEAL_COOLDOWN, value);
