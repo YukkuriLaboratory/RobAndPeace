@@ -8,6 +8,9 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -19,9 +22,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.config.RapConfigs;
 import net.yukulab.robandpeace.entity.RapEntityType;
+import net.yukulab.robandpeace.extension.StealCooldownHolder;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,9 +33,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity {
+public abstract class MixinLivingEntity implements StealCooldownHolder {
     @Unique
-    long robandpeace$stealCooldown = 0;
+    private static TrackedData<Long> ROBANDPEACE_STEAL_COOLDOWN;
 
     @Shadow
     protected abstract void dropLoot(DamageSource damageSource, boolean causedByPlayer);
@@ -44,9 +46,21 @@ public abstract class MixinLivingEntity {
     @Shadow
     protected int playerHitTimer;
 
-    @Shadow
-    @Final
-    private static Logger LOGGER;
+    @Inject(
+            method = "<clinit>",
+            at = @At("RETURN")
+    )
+    private static void registerDataTracker(CallbackInfo ci) {
+        ROBANDPEACE_STEAL_COOLDOWN = DataTracker.registerData(LivingEntity.class, TrackedDataHandlerRegistry.LONG);
+    }
+
+    @Inject(
+            method = "initDataTracker",
+            at = @At("RETURN")
+    )
+    private void initDataTracker(DataTracker.Builder builder, CallbackInfo ci) {
+        builder.add(ROBANDPEACE_STEAL_COOLDOWN, 0L);
+    }
 
     /**
      * disableAttackingInCoolTimeがtrueの場合、クールダウン中は攻撃時のノックバックや耐久消費が発生しないようにする
@@ -58,7 +72,7 @@ public abstract class MixinLivingEntity {
     )
     private void checkStealCooldownIfAttackingDisabled(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (source.getAttacker() instanceof PlayerEntity) {
-            if (robandpeace$stealCooldown > 0 && RapConfigs.getServerConfig().disableAttackingInCoolTime) {
+            if (robandpeace$getStealCooldown() > 0 && RapConfigs.getServerConfig().disableAttackingInCoolTime) {
                 cir.setReturnValue(false);
             }
         }
@@ -75,7 +89,7 @@ public abstract class MixinLivingEntity {
             )
     )
     private boolean checkStealCooldown(LivingEntity instance, DamageSource source, float amount) {
-        return !(source.getAttacker() instanceof PlayerEntity) || robandpeace$stealCooldown <= 0;
+        return !(source.getAttacker() instanceof PlayerEntity) || robandpeace$getStealCooldown() <= 0;
     }
 
     @WrapWithCondition(
@@ -129,7 +143,7 @@ public abstract class MixinLivingEntity {
             }
             var rand = entity.getRandom().nextInt(100);
             if (rand >= chance) {
-                robandpeace$stealCooldown = RapConfigs.getServerConfig().stealCoolTime.onFailure;
+                robandpeace$setStealCooldown(RapConfigs.getServerConfig().stealCoolTime.onFailure);
                 ci.cancel();
                 return;
             }
@@ -154,7 +168,7 @@ public abstract class MixinLivingEntity {
             // playerHitTimerを0以上にしないとxpが落ちない
             playerHitTimer = 100;
             dropXp(player);
-            robandpeace$stealCooldown = RapConfigs.getServerConfig().stealCoolTime.onSuccess;
+            robandpeace$setStealCooldown(RapConfigs.getServerConfig().stealCoolTime.onSuccess);
             entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENTITY_CHICKEN_EGG, entity.getSoundCategory(), 1.0F, 1.1F);
             if (entity instanceof VillagerEntity villager && entity.getWorld() instanceof ServerWorld serverWorld) {
                 var playerReputation = villager.getGossip().getReputationFor(player.getUuid(), (type) -> true);
@@ -188,8 +202,20 @@ public abstract class MixinLivingEntity {
             at = @At("HEAD")
     )
     private void decreaseCooldown(CallbackInfo ci) {
-        if (robandpeace$stealCooldown > 0) {
-            robandpeace$stealCooldown--;
+        var stealCooldown = robandpeace$getStealCooldown();
+        if (stealCooldown > 0) {
+            robandpeace$setStealCooldown(stealCooldown - 1);
         }
+    }
+
+    @Override
+    public long robandpeace$getStealCooldown() {
+        var entity = (LivingEntity) (Object) this;
+        return entity.getDataTracker().get(ROBANDPEACE_STEAL_COOLDOWN);
+    }
+
+    private void robandpeace$setStealCooldown(long value) {
+        var entity = (LivingEntity) (Object) this;
+        entity.getDataTracker().set(ROBANDPEACE_STEAL_COOLDOWN, value);
     }
 }

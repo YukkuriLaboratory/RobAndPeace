@@ -45,6 +45,9 @@
     "loom:injected_interfaces": {
       "net/minecraft/class_1282": [
         "net/yukulab/robandpeace/extension/CriticalHolder"
+      ],
+      "net/minecraft/class_1309": [
+        "net/yukulab/robandpeace/extension/StealCooldownHolder"
       ]
     }
   },
