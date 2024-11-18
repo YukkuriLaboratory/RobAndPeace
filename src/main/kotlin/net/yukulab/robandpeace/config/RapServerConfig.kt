@@ -15,7 +15,7 @@ class RapServerConfig : ConfigData {
     var stealChances: StealChances = StealChances()
 
     @JvmField
-    var angryGolemLiveTime: Int = 1200
+    var angryGolem: AngryGolem = AngryGolem()
 
     class StealCoolTime {
         @JvmField
@@ -40,5 +40,13 @@ class RapServerConfig : ConfigData {
 
         @JvmField
         var criticalBonus: Int = 10
+    }
+
+    class AngryGolem {
+        @JvmField
+        var liveTime: Int = 1200
+
+        @JvmField
+        var maxSpawnCount = 5
     }
 }

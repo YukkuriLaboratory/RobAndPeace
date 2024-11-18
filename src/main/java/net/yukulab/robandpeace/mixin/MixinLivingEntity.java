@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -13,10 +14,14 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.config.RapConfigs;
+import net.yukulab.robandpeace.entity.RapEntityType;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,6 +43,10 @@ public abstract class MixinLivingEntity {
 
     @Shadow
     protected int playerHitTimer;
+
+    @Shadow
+    @Final
+    private static Logger LOGGER;
 
     /**
      * disableAttackingInCoolTimeがtrueの場合、クールダウン中は攻撃時のノックバックや耐久消費が発生しないようにする
@@ -147,11 +156,31 @@ public abstract class MixinLivingEntity {
             dropXp(player);
             robandpeace$stealCooldown = RapConfigs.getServerConfig().stealCoolTime.onSuccess;
             entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENTITY_CHICKEN_EGG, entity.getSoundCategory(), 1.0F, 1.1F);
-            if (entity instanceof VillagerEntity) {
-                // TODO Spawn angry iron golem
+            if (entity instanceof VillagerEntity villager && entity.getWorld() instanceof ServerWorld serverWorld) {
+                var playerReputation = villager.getGossip().getReputationFor(player.getUuid(), (type) -> true);
+                float golemCount = robandpeace$getGolemCount(playerReputation);
+                for (int i = 0; i < golemCount; i++) {
+                    var spawnPos = villager.getBlockPos().add(entity.getRandom().nextInt(16) - 8, 10, entity.getRandom().nextInt(16) - 8);
+                    RapEntityType.ANGRY_GOLEM.spawn(serverWorld, (g) -> g.setTarget(player), spawnPos, SpawnReason.MOB_SUMMONED, true, false);
+                }
             }
             ci.cancel();
         }
+    }
+
+    @Unique
+    private static float robandpeace$getGolemCount(int playerReputation) {
+        float golemCount = RapConfigs.getServerConfig().angryGolem.maxSpawnCount;
+        if (playerReputation > 0) {
+            golemCount = golemCount / 5f;
+        } else if (playerReputation > -25) {
+            golemCount = golemCount * (2 / 5f);
+        } else if (playerReputation > -50) {
+            golemCount = golemCount * (3 / 5f);
+        } else if (playerReputation > -75) {
+            golemCount = golemCount * (4 / 5f);
+        }
+        return golemCount;
     }
 
     @Inject(
