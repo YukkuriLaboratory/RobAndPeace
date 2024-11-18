@@ -2,18 +2,22 @@ package net.yukulab.robandpeace.config
 
 import me.shedaniel.autoconfig.ConfigData
 import me.shedaniel.autoconfig.annotation.Config
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject
 
 @Config(name = "robandpeace")
 class RapServerConfig : ConfigData {
     @JvmField
     var disableAttackingInCoolTime: Boolean = false
 
+    @CollapsibleObject
     @JvmField
     var stealCoolTime: StealCoolTime = StealCoolTime()
 
+    @CollapsibleObject
     @JvmField
     var stealChances: StealChances = StealChances()
 
+    @CollapsibleObject
     @JvmField
     var angryGolem: AngryGolem = AngryGolem()
 

@@ -1,46 +1,52 @@
 {
-	"schemaVersion": 1,
-	"id": "robandpeace",
-	"version": "${version}",
-	"name": "Rob&Peace",
-	"description": "Dont attack. Just steal",
-	"authors": [
-		"turtton"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "MIT",
-	"icon": "assets/robandpeace/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			{
-				"value": "net.yukulab.robandpeace.RobAndPeace",
-				"adapter": "kotlin"
-			}
-		],
-		"client": [
-			{
-				"value": "net.yukulab.robandpeace.RobPeaceClient",
-				"adapter": "kotlin"
-			}
-		],
-		"fabric-datagen": [
-			{
-				"value": "net.yukulab.robandpeace.RobAndPeaceDataGenerator",
-				"adapter": "kotlin"
-			}
-		]
-	},
-	"mixins": [
-		"robandpeace.mixins.json",
-		{
-			"config": "robandpeace.client.mixins.json",
-			"environment": "client"
-		}
-	],
+  "schemaVersion": 1,
+  "id": "robandpeace",
+  "version": "${version}",
+  "name": "Rob&Peace",
+  "description": "Dont attack. Just steal",
+  "authors": [
+    "turtton"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/robandpeace/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "net.yukulab.robandpeace.RobAndPeace",
+        "adapter": "kotlin"
+      }
+    ],
+    "client": [
+      {
+        "value": "net.yukulab.robandpeace.RobPeaceClient",
+        "adapter": "kotlin"
+      }
+    ],
+    "fabric-datagen": [
+      {
+        "value": "net.yukulab.robandpeace.RobAndPeaceDataGenerator",
+        "adapter": "kotlin"
+      }
+    ],
+    "modmenu": [
+      {
+        "value": "net.yukulab.robandpeace.RobPeaceModMenu",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "robandpeace.mixins.json",
+    {
+      "config": "robandpeace.client.mixins.json",
+      "environment": "client"
+    }
+  ],
   "custom": {
     "loom:injected_interfaces": {
       "net/minecraft/class_1282": [
@@ -51,14 +57,14 @@
       ]
     }
   },
-	"depends": {
-		"fabricloader": ">=0.16.9",
-		"minecraft": "~1.21.1",
-		"java": ">=21",
-		"fabric-api": "*",
-		"fabric-language-kotlin": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
-	}
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
 }
