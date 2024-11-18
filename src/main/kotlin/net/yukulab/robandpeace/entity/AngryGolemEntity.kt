@@ -18,6 +18,6 @@ class AngryGolemEntity(type: EntityType<AngryGolemEntity>, world: World) : IronG
     }
 
     override fun chooseRandomAngerTime() {
-        angerTime = RapConfigs.serverConfig.anglyGolemLiveTime
+        angerTime = RapConfigs.serverConfig.angryGolemLiveTime
     }
 }

@@ -15,7 +15,7 @@ class RapServerConfig : ConfigData {
     var stealChances: StealChances = StealChances()
 
     @JvmField
-    var anglyGolemLiveTime: Int = 1200
+    var angryGolemLiveTime: Int = 1200
 
     class StealCoolTime {
         @JvmField
