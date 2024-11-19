@@ -175,7 +175,10 @@ public abstract class MixinLivingEntity implements StealCooldownHolder {
                 float golemCount = robandpeace$getGolemCount(playerReputation);
                 for (int i = 0; i < golemCount; i++) {
                     var spawnPos = villager.getBlockPos().add(entity.getRandom().nextInt(16) - 8, 10, entity.getRandom().nextInt(16) - 8);
-                    RapEntityType.ANGRY_GOLEM.spawn(serverWorld, (g) -> g.setTarget(player), spawnPos, SpawnReason.MOB_SUMMONED, true, false);
+                    RapEntityType.ANGRY_GOLEM.spawn(serverWorld, (g) -> {
+                        g.setTarget(player);
+                        g.getDataTracker().set(ROBANDPEACE_STEAL_COOLDOWN, 100000000L);
+                    }, spawnPos, SpawnReason.MOB_SUMMONED, true, false);
                 }
             }
             ci.cancel();
