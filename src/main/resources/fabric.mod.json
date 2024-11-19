@@ -53,7 +53,8 @@
         "net/yukulab/robandpeace/extension/CriticalHolder"
       ],
       "net/minecraft/class_1309": [
-        "net/yukulab/robandpeace/extension/StealCooldownHolder"
+        "net/yukulab/robandpeace/extension/StealCooldownHolder",
+        "net/yukulab/robandpeace/extension/RapConfigInjector"
       ]
     }
   },

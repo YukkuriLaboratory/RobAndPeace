@@ -21,7 +21,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.config.RapConfigs;
+import net.yukulab.robandpeace.config.RapServerConfig;
 import net.yukulab.robandpeace.entity.RapEntityType;
+import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.extension.StealCooldownHolder;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,10 +34,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.function.Supplier;
+
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity implements StealCooldownHolder {
+public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfigInjector {
     @Unique
     private static TrackedData<Long> ROBANDPEACE_STEAL_COOLDOWN;
+
+    @Unique
+    private Supplier<RapServerConfig> robandpeace$serverConfigSupplier = RapConfigs::getServerConfig;
 
     @Shadow
     protected abstract void dropLoot(DamageSource damageSource, boolean causedByPlayer);
@@ -72,7 +79,7 @@ public abstract class MixinLivingEntity implements StealCooldownHolder {
     )
     private void checkStealCooldownIfAttackingDisabled(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (source.getAttacker() instanceof PlayerEntity) {
-            if (robandpeace$getStealCooldown() > 0 && RapConfigs.getServerConfig().disableAttackingInCoolTime) {
+            if (robandpeace$getStealCooldown() > 0 && robandpeace$getServerConfigSupplier().get().disableAttackingInCoolTime) {
                 cir.setReturnValue(false);
             }
         }
@@ -127,28 +134,28 @@ public abstract class MixinLivingEntity implements StealCooldownHolder {
             var entity = (LivingEntity) (Object) this;
             var chance = switch (entity) {
                 // bosses
-                case ElderGuardianEntity ignored -> RapConfigs.getServerConfig().stealChances.boss;
-                case PiglinBruteEntity ignored -> RapConfigs.getServerConfig().stealChances.boss;
-                case EvokerEntity ignored -> RapConfigs.getServerConfig().stealChances.boss;
-                case WardenEntity ignored -> RapConfigs.getServerConfig().stealChances.boss;
-                case WitherEntity ignored -> RapConfigs.getServerConfig().stealChances.boss;
-                case EnderDragonEntity ignored -> RapConfigs.getServerConfig().stealChances.boss;
+                case ElderGuardianEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
+                case PiglinBruteEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
+                case EvokerEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
+                case WardenEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
+                case WitherEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
+                case EnderDragonEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
                 // normal mobs
                 case MerchantEntity ignored -> 100;
-                case HostileEntity ignored -> RapConfigs.getServerConfig().stealChances.hostile;
-                default -> RapConfigs.getServerConfig().stealChances.friendly;
+                case HostileEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.hostile;
+                default -> robandpeace$getServerConfigSupplier().get().stealChances.friendly;
             };
             if (source.robandpeace$isCritical()) {
-                chance += RapConfigs.getServerConfig().stealChances.criticalBonus;
+                chance += robandpeace$getServerConfigSupplier().get().stealChances.criticalBonus;
             }
             var rand = entity.getRandom().nextInt(100);
             if (rand >= chance) {
-                robandpeace$setStealCooldown(RapConfigs.getServerConfig().stealCoolTime.onFailure);
+                robandpeace$setStealCooldown(robandpeace$getServerConfigSupplier().get().stealCoolTime.onFailure);
                 ci.cancel();
                 return;
             }
             if (entity instanceof MerchantEntity merchant) {
-                var weight = RapConfigs.getServerConfig().stealChances.merchantTradeWeight;
+                var weight = robandpeace$getServerConfigSupplier().get().stealChances.merchantTradeWeight;
                 var offers = merchant.getOffers();
                 ItemEntity itemEntity;
                 if (!offers.isEmpty() && rand < weight) {
@@ -168,7 +175,7 @@ public abstract class MixinLivingEntity implements StealCooldownHolder {
             // playerHitTimerを0以上にしないとxpが落ちない
             playerHitTimer = 100;
             dropXp(player);
-            robandpeace$setStealCooldown(RapConfigs.getServerConfig().stealCoolTime.onSuccess);
+            robandpeace$setStealCooldown(robandpeace$getServerConfigSupplier().get().stealCoolTime.onSuccess);
             entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENTITY_CHICKEN_EGG, entity.getSoundCategory(), 1.0F, 1.1F);
             if (entity instanceof VillagerEntity villager && entity.getWorld() instanceof ServerWorld serverWorld) {
                 var playerReputation = villager.getGossip().getReputationFor(player.getUuid(), (type) -> true);
@@ -186,8 +193,8 @@ public abstract class MixinLivingEntity implements StealCooldownHolder {
     }
 
     @Unique
-    private static float robandpeace$getGolemCount(int playerReputation) {
-        float golemCount = RapConfigs.getServerConfig().angryGolem.maxSpawnCount;
+    private float robandpeace$getGolemCount(int playerReputation) {
+        float golemCount = robandpeace$getServerConfigSupplier().get().angryGolem.maxSpawnCount;
         if (playerReputation > 0) {
             golemCount = golemCount / 5f;
         } else if (playerReputation > -25) {
@@ -221,5 +228,15 @@ public abstract class MixinLivingEntity implements StealCooldownHolder {
     private void robandpeace$setStealCooldown(long value) {
         var entity = (LivingEntity) (Object) this;
         entity.getDataTracker().set(ROBANDPEACE_STEAL_COOLDOWN, value);
+    }
+
+    @Override
+    public Supplier<RapServerConfig> robandpeace$getServerConfigSupplier() {
+        return robandpeace$serverConfigSupplier;
+    }
+
+    @Override
+    public void robandpeace$setServerConfigSupplier(Supplier<RapServerConfig> supplier) {
+        robandpeace$serverConfigSupplier = supplier;
     }
 }
