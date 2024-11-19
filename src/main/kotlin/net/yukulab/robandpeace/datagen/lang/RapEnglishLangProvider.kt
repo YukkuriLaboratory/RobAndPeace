@@ -5,8 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
 
-class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) :
-    RapLangProvider(dataGenerator, "en_us", registryLookup) {
+class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : RapLangProvider(dataGenerator, "en_us", registryLookup) {
     override fun TranslationBuilder.generateTranslations(registryLookup: RegistryWrapper.WrapperLookup) {
         add(RapServerConfig.KEY_DISABLE_ATTACKING_IN_COOL_TIME, "Disable attacking in cool time")
         add(RapServerConfig.KEY_STEAL_COOL_TIME, "Steal cool time(Tick)")
