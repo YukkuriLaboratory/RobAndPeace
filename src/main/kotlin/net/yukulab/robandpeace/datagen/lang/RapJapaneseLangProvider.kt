@@ -24,5 +24,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_ANGRY_GOLEM, "怒ったゴーレム")
         add(RapServerConfig.KEY_ANGRY_GOLEM_LIVE_TIME, "生存時間(Tick)")
         add(RapServerConfig.KEY_ANGRY_GOLEM_MAX_SPAWN_COUNT, "最大スポーン数")
+        add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_RADIUS, "スポーン半径")
+        add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_HEIGHT, "初期位置(y)")
     }
 }

@@ -180,8 +180,13 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
             if (entity instanceof VillagerEntity villager && entity.getWorld() instanceof ServerWorld serverWorld) {
                 var playerReputation = villager.getGossip().getReputationFor(player.getUuid(), (type) -> true);
                 float golemCount = robandpeace$getGolemCount(playerReputation);
+                var spawnRadius = robandpeace$getServerConfigSupplier().get().angryGolem.spawnRadius;
+                var spawnDiameter = spawnRadius * 2;
+                var spawnHeight = robandpeace$getServerConfigSupplier().get().angryGolem.spawnHeight;
                 for (int i = 0; i < golemCount; i++) {
-                    var spawnPos = villager.getBlockPos().add(entity.getRandom().nextInt(16) - 8, 10, entity.getRandom().nextInt(16) - 8);
+                    var dx = entity.getRandom().nextInt(spawnDiameter) - spawnRadius;
+                    var dz = entity.getRandom().nextInt(spawnDiameter) - spawnRadius;
+                    var spawnPos = villager.getBlockPos().add(dx, spawnHeight, dz);
                     RapEntityType.ANGRY_GOLEM.spawn(serverWorld, (g) -> {
                         g.setTarget(player);
                         g.getDataTracker().set(ROBANDPEACE_STEAL_COOLDOWN, 100000000L);

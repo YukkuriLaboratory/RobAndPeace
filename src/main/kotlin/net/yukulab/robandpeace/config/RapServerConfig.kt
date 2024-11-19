@@ -60,6 +60,12 @@ class RapServerConfig : ConfigData {
 
         @JvmField
         var maxSpawnCount = 5
+
+        @JvmField
+        var spawnRadius = 8
+
+        @JvmField
+        var spawnHeight = 10
     }
 
     companion object {
@@ -102,5 +108,11 @@ class RapServerConfig : ConfigData {
 
         @Excluded
         const val KEY_ANGRY_GOLEM_MAX_SPAWN_COUNT = "text.autoconfig.robandpeace.option.angryGolem.maxSpawnCount"
+
+        @Excluded
+        const val KEY_ANGRY_GOLEM_SPAWN_RADIUS = "text.autoconfig.robandpeace.option.angryGolem.spawnRadius"
+
+        @Excluded
+        const val KEY_ANGRY_GOLEM_SPAWN_HEIGHT = "text.autoconfig.robandpeace.option.angryGolem.spawnHeight"
     }
 }

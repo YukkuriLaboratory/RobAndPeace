@@ -24,5 +24,7 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapServerConfig.KEY_ANGRY_GOLEM, "Angry golem")
         add(RapServerConfig.KEY_ANGRY_GOLEM_LIVE_TIME, "Live time(Tick)")
         add(RapServerConfig.KEY_ANGRY_GOLEM_MAX_SPAWN_COUNT, "Max spawn count")
+        add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_RADIUS, "Spawn radius")
+        add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_HEIGHT, "Spawn height")
     }
 }

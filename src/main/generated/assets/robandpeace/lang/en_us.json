@@ -2,6 +2,8 @@
   "text.autoconfig.robandpeace.option.angryGolem": "Angry golem",
   "text.autoconfig.robandpeace.option.angryGolem.liveTime": "Live time(Tick)",
   "text.autoconfig.robandpeace.option.angryGolem.maxSpawnCount": "Max spawn count",
+  "text.autoconfig.robandpeace.option.angryGolem.spawnHeight": "Spawn height",
+  "text.autoconfig.robandpeace.option.angryGolem.spawnRadius": "Spawn radius",
   "text.autoconfig.robandpeace.option.disableAttackingInCoolTime": "Disable attacking in cool time",
   "text.autoconfig.robandpeace.option.stealChances": "Steal chances",
   "text.autoconfig.robandpeace.option.stealChances.boss": "Boss",
