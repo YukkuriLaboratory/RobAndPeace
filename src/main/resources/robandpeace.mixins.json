@@ -3,8 +3,9 @@
   "package": "net.yukulab.robandpeace.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MixinLivingEntity",
-    "MixinPlayerEntity"
+    "steal.MixinDamageSource",
+    "steal.MixinLivingEntity",
+    "steal.MixinPlayerEntity"
   ],
   "injectors": {
     "defaultRequire": 1

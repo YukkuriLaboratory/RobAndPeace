@@ -6,6 +6,7 @@
     "main": [
     ],
     "fabric-gametest": [
+      "test.entity.TestVillager",
       "test.player.TestPlayerAttack"
     ]
   }
