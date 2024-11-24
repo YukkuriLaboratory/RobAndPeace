@@ -2,7 +2,7 @@ package net.yukulab.robandpeace.item
 
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
-import net.minecraft.entity.mob.HostileEntity
+import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -42,8 +42,8 @@ class SmokeItem : Item(Settings()) {
             )
         }
         if (world is ServerWorld) {
-            user.addStatusEffect(StatusEffectInstance(StatusEffects.INVISIBILITY, 60))
-            world.getEntitiesByClass(HostileEntity::class.java, user.boundingBox.expand(10.0)) {
+            user.addStatusEffect(StatusEffectInstance(StatusEffects.INVISIBILITY, 60, 0, false, false))
+            world.getEntitiesByClass(MobEntity::class.java, user.boundingBox.expand(10.0)) {
                 it.isAlive && it.target == user
             }.forEach {
                 it.target = null

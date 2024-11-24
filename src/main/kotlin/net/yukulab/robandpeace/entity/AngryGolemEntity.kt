@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
+import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.passive.IronGolemEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.world.World
@@ -18,8 +19,9 @@ class AngryGolemEntity(type: EntityType<AngryGolemEntity>, world: World) : IronG
 
     override fun tick() {
         super.tick()
-        if (target == null && lastTargetPlayer != null && canTarget(lastTargetPlayer)) {
-            target = lastTargetPlayer
+        val targetPlayer = lastTargetPlayer
+        if (target == null && targetPlayer != null && canTarget(targetPlayer) && canSee(targetPlayer) && !targetPlayer.hasStatusEffect(StatusEffects.INVISIBILITY)) {
+            target = targetPlayer
         }
         if (!hasAngerTime()) {
             discard()
