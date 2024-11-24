@@ -24,10 +24,10 @@ class SmokeItem : Item(Settings()) {
             user.x,
             user.y,
             user.z,
-            SoundEvents.ENTITY_SNOWBALL_THROW,
+            SoundEvents.BLOCK_FIRE_EXTINGUISH,
             SoundCategory.NEUTRAL,
             0.5f,
-            1.5f,
+            2f,
         )
         repeat(70) {
             fun nextSign() = if (random.nextBoolean()) 1 else -1
