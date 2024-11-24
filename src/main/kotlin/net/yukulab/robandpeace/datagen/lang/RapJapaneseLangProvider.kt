@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
+import net.yukulab.robandpeace.item.RapItems
 
 class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : RapLangProvider(dataGenerator, "ja_jp", registryLookup) {
     override fun TranslationBuilder.generateTranslations(registryLookup: RegistryWrapper.WrapperLookup) {
@@ -26,5 +27,8 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_ANGRY_GOLEM_MAX_SPAWN_COUNT, "最大スポーン数")
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_RADIUS, "スポーン半径")
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_HEIGHT, "初期位置(y)")
+
+        add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
+        add(RapItems.SMOKE, "煙幕")
     }
 }
