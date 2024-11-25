@@ -1,17 +1,33 @@
 package net.yukulab.robandpeace.item
 
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.minecraft.item.Item
+import net.minecraft.item.ItemGroup
+import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
+import net.minecraft.registry.RegistryKey
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.yukulab.robandpeace.MOD_ID
 
 object RapItems {
 
-    // val EXAMPLE_ITEM = register("example_item", Item(Item.Settings()))
+    val SMOKE: SmokeItem = register("smoke", SmokeItem())
 
     private fun <T : Item> register(id: String, item: T): T = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, id), item)
 
-    // Dummy init function to make sure the object is loaded
-    fun init() = Unit
+    val ITEM_GROUP_KEY: RegistryKey<ItemGroup> = RegistryKey.of(Registries.ITEM_GROUP.key, Identifier.of(MOD_ID, "rap_item_group"))
+    private val ITEM_GROUP: ItemGroup = FabricItemGroup.builder()
+        .icon { ItemStack(SMOKE) }
+        .displayName(Text.translatable("itemGroup.robandpeace"))
+        .build()
+
+    fun init() {
+        Registry.register(Registries.ITEM_GROUP, ITEM_GROUP_KEY, ITEM_GROUP)
+        ItemGroupEvents.modifyEntriesEvent(ITEM_GROUP_KEY).register {
+            it.add(SMOKE)
+        }
+    }
 }

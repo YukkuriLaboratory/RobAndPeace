@@ -1,4 +1,6 @@
 {
+  "item.robandpeace.smoke": "Smoke",
+  "itemGroup.robandpeace": "RobAndPeace",
   "text.autoconfig.robandpeace.option.angryGolem": "Angry golem",
   "text.autoconfig.robandpeace.option.angryGolem.liveTime": "Live time(Tick)",
   "text.autoconfig.robandpeace.option.angryGolem.maxSpawnCount": "Max spawn count",

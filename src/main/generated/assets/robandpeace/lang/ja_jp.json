@@ -1,4 +1,6 @@
 {
+  "item.robandpeace.smoke": "煙幕",
+  "itemGroup.robandpeace": "RobAndPeace",
   "text.autoconfig.robandpeace.option.angryGolem": "怒ったゴーレム",
   "text.autoconfig.robandpeace.option.angryGolem.liveTime": "生存時間(Tick)",
   "text.autoconfig.robandpeace.option.angryGolem.maxSpawnCount": "最大スポーン数",

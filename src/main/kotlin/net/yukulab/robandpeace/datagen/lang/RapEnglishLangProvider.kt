@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
+import net.yukulab.robandpeace.item.RapItems
 
 class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : RapLangProvider(dataGenerator, "en_us", registryLookup) {
     override fun TranslationBuilder.generateTranslations(registryLookup: RegistryWrapper.WrapperLookup) {
@@ -26,5 +27,8 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapServerConfig.KEY_ANGRY_GOLEM_MAX_SPAWN_COUNT, "Max spawn count")
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_RADIUS, "Spawn radius")
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_HEIGHT, "Spawn height")
+
+        add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
+        add(RapItems.SMOKE, "Smoke")
     }
 }
