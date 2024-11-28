@@ -24,6 +24,10 @@ class RapServerConfig : ConfigData {
     @JvmField
     var angryGolem: AngryGolem = AngryGolem()
 
+    @CollapsibleObject
+    @JvmField
+    var items: Items = Items()
+
     class StealCoolTime {
         @JvmField
         var onSuccess: Int = 1200
@@ -66,6 +70,11 @@ class RapServerConfig : ConfigData {
 
         @JvmField
         var spawnHeight = 10
+    }
+
+    class Items {
+        @JvmField
+        var smokeInvisibleDuration: Int = 60
     }
 
     companion object {
@@ -114,5 +123,11 @@ class RapServerConfig : ConfigData {
 
         @Excluded
         const val KEY_ANGRY_GOLEM_SPAWN_HEIGHT = "text.autoconfig.robandpeace.option.angryGolem.spawnHeight"
+
+        @Excluded
+        const val KEY_ITEMS = "text.autoconfig.robandpeace.option.items"
+
+        @Excluded
+        const val KEY_ITEMS_SMOKE_INVISIBLE_DURATION = "text.autoconfig.robandpeace.option.items.smokeInvisibleDuration"
     }
 }

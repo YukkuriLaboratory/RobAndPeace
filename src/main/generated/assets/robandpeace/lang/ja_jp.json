@@ -7,6 +7,8 @@
   "text.autoconfig.robandpeace.option.angryGolem.spawnHeight": "初期位置(y)",
   "text.autoconfig.robandpeace.option.angryGolem.spawnRadius": "スポーン半径",
   "text.autoconfig.robandpeace.option.disableAttackingInCoolTime": "クールタイム中の攻撃を無効化",
+  "text.autoconfig.robandpeace.option.items": "アイテム",
+  "text.autoconfig.robandpeace.option.items.smokeInvisibleDuration": "煙幕のデフォルト効果時間(Tick)",
   "text.autoconfig.robandpeace.option.stealChances": "スリ取り確率",
   "text.autoconfig.robandpeace.option.stealChances.boss": "ボス",
   "text.autoconfig.robandpeace.option.stealChances.criticalBonus": "クリティカルボーナス",

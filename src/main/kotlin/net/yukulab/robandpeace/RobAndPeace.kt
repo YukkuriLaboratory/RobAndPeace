@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer
 import net.yukulab.robandpeace.config.RapConfigs
 import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.item.RapItems
+import net.yukulab.robandpeace.item.component.RapComponents
 
 object RobAndPeace : ModInitializer {
     override fun onInitialize() {
@@ -11,6 +12,7 @@ object RobAndPeace : ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
         RapConfigs.init()
+        RapComponents.init()
         RapItems.init()
         RapEntityType.init()
     }
