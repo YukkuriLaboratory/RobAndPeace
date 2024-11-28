@@ -51,3 +51,4 @@ jobs:
       - name: check diff
         run: |
           git diff --exit-code src/main/generated/assets/
+          git diff --exit-code src/main/generated/data/
