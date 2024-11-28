@@ -7,7 +7,7 @@ import net.minecraft.data.client.ItemModelGenerator
 import net.minecraft.data.client.Models
 import net.yukulab.robandpeace.item.RapItems
 
-class ModelGenerator(generator: FabricDataOutput) : FabricModelProvider(generator) {
+class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(generator) {
     override fun generateBlockStateModels(blockStateModelGenerator: BlockStateModelGenerator) {
     }
 
