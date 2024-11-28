@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "minecraft:bone_meal"
+    },
+    "F": {
+      "item": "minecraft:firework_star"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "BSB",
+    "SFS",
+    "BSB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "robandpeace:smoke"
+  }
+}

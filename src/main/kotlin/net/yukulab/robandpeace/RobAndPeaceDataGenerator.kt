@@ -3,6 +3,7 @@ package net.yukulab.robandpeace
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 import net.yukulab.robandpeace.datagen.RapModelProvider
+import net.yukulab.robandpeace.datagen.RapRecipeProvider
 import net.yukulab.robandpeace.datagen.lang.RapEnglishLangProvider
 import net.yukulab.robandpeace.datagen.lang.RapJapaneseLangProvider
 
@@ -12,5 +13,6 @@ object RobAndPeaceDataGenerator : DataGeneratorEntrypoint {
         pack.addProvider(::RapEnglishLangProvider)
         pack.addProvider(::RapJapaneseLangProvider)
         pack.addProvider(::RapModelProvider)
+        pack.addProvider(::RapRecipeProvider)
     }
 }
