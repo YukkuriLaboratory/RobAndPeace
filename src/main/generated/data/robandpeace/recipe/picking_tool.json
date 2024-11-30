@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_nugget"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "I I",
+    " S ",
+    "S S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "robandpeace:picking_tool"
+  }
+}

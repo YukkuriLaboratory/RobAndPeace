@@ -17,6 +17,7 @@ object RapItems {
     val SMOKE: SmokeItem = register("smoke", SmokeItem())
     val SPIDER_WALKER: SpiderWalkerItem = register("spider_walker", SpiderWalkerItem())
     val MAGIC_HAND: MagicHandItem = register("magic_hand", MagicHandItem(5.0))
+    val PICKING_TOOL: PickingToolItem = register("picking_tool", PickingToolItem(10))
 
     private fun <T : Item> register(id: String, item: T): T = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, id), item)
 
@@ -32,6 +33,7 @@ object RapItems {
             it.add(SMOKE)
             it.add(SPIDER_WALKER)
             it.add(MAGIC_HAND)
+            it.add(PICKING_TOOL)
         }
     }
 }

@@ -8,7 +8,8 @@ import net.minecraft.util.Identifier
 import net.yukulab.robandpeace.MOD_ID
 
 object RapComponents {
-    val SMOKE_INVISIBLE_DURATION = register("smoke_invisible_duration", ComponentType.builder<Int>().codec(Codec.INT))
+    val SMOKE_INVISIBLE_DURATION: ComponentType<Int> = register("smoke_invisible_duration", ComponentType.builder<Int>().codec(Codec.INT))
+    val PICKING_CHANCE: ComponentType<Int> = register("picking_chance", ComponentType.builder<Int>().codec(Codec.INT))
 
     private fun <T, C : ComponentType.Builder<T>> register(name: String, componentType: C): ComponentType<T> = register(name, componentType.build())
 

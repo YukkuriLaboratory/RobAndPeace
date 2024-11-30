@@ -31,6 +31,14 @@ class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFut
             .input('B', Items.BONE)
             .criterionHaveItem(Items.REDSTONE, Items.GOLD_INGOT, Items.BONE)
             .offerTo(exporter)
+        ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, RapItems.PICKING_TOOL)
+            .pattern("I I")
+            .pattern(" S ")
+            .pattern("S S")
+            .input('I', Items.IRON_NUGGET)
+            .input('S', Items.STICK)
+            .criterionHaveItem(Items.IRON_NUGGET, Items.STICK)
+            .offerTo(exporter)
     }
 
     companion object {
