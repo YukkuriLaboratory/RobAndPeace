@@ -11,6 +11,8 @@ ktlint-gradle = "12.1.1"
 cloth-config = "15.0.140"
 modmenu = "11.0.3"
 sodium = "mc1.21-0.5.11"
+cardinal-components = "6.1.1"
+cardinal-components-api = "6.1.1"
 # for testing
 kotest = "5.9.1"
 
@@ -27,6 +29,12 @@ fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = 
 cloth-config = { module = "me.shedaniel.cloth:cloth-config-fabric", version.ref = "cloth-config" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+# For development
+cardinal-components-base = { module = "org.ladysnake.cardinal-components-api:cardinal-components-base", version.ref = "cardinal-components" }
+cardinal-components-world = { module = "org.ladysnake.cardinal-components-api:cardinal-components-world", version.ref = "cardinal-components" }
+cardinal-components-entity = { module = "org.ladysnake.cardinal-components-api:cardinal-components-entity", version.ref = "cardinal-components" }
+# For runtime
+cardinal-components-api = { module = "maven.modrinth:cardinal-components-api", version.ref = "cardinal-components-api" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 
