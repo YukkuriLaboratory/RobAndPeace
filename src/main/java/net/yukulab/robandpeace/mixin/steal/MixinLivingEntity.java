@@ -17,6 +17,8 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolMaterials;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
@@ -26,6 +28,8 @@ import net.yukulab.robandpeace.entity.RapEntityType;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.extension.StealCooldownHolder;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -52,6 +56,10 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
 
     @Shadow
     protected int playerHitTimer;
+
+    @Shadow
+    @Final
+    private static Logger LOGGER;
 
     @Inject(
             method = "<clinit>",
@@ -147,6 +155,19 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
             };
             if (source.robandpeace$isCritical()) {
                 chance += robandpeace$getServerConfigSupplier().get().stealChances.criticalBonus;
+            }
+            var stack = source.getWeaponStack();
+            if (stack != null && stack.getItem() instanceof SwordItem swordItem) {
+                var toolBonus = switch (swordItem.getMaterial()) {
+                    case ToolMaterials.WOOD -> robandpeace$getServerConfigSupplier().get().items.woodenGlove;
+                    case ToolMaterials.STONE -> robandpeace$getServerConfigSupplier().get().items.stoneGlove;
+                    case ToolMaterials.IRON -> robandpeace$getServerConfigSupplier().get().items.ironGlove;
+                    case ToolMaterials.GOLD -> robandpeace$getServerConfigSupplier().get().items.goldenGlove;
+                    case ToolMaterials.DIAMOND -> robandpeace$getServerConfigSupplier().get().items.diamondGlove;
+                    case ToolMaterials.NETHERITE -> robandpeace$getServerConfigSupplier().get().items.netheriteGlove;
+                    default -> 0;
+                };
+                chance += toolBonus;
             }
             var rand = entity.getRandom().nextInt(100);
             if (rand >= chance) {

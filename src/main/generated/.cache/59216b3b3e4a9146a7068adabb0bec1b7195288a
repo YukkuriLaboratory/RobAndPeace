@@ -1,7 +1,7 @@
-// 1.21.1	2024-11-30T17:25:56.408416963	Rob&Peace/Recipes
+// 1.21.1	2024-11-30T22:22:18.006651133	Rob&Peace/Recipes
 c9711402be82b2c9ebbcfde3929aa2f9f03e3829 data/robandpeace/recipe/magic_hand.json
 d6bbf94d34e22494cb93362ef2cb23dc93628799 data/robandpeace/recipe/smoke.json
 2943710825efabd5686638607a8ddb57ed04cf66 data/robandpeace/advancement/recipes/combat/smoke.json
-7ba68b4aaee734e5d746627f12899b56239b6a4d data/robandpeace/advancement/recipes/tools/magic_hand.json
 6f433db4dee0f544fec1bc4779d6732f3959a6b5 data/robandpeace/recipe/picking_tool.json
+7ba68b4aaee734e5d746627f12899b56239b6a4d data/robandpeace/advancement/recipes/tools/magic_hand.json
 e3d746fca8cfea6c862d69a1f5b61c28fe4cf1d7 data/robandpeace/advancement/recipes/tools/picking_tool.json
