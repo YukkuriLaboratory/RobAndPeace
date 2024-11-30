@@ -110,6 +110,8 @@ dependencies {
     }
     modRuntimeOnly(libs.sodium)
 
+    testImplementation("org.slf4j:slf4j-api:2.0.16")
+    testImplementation("org.slf4j:slf4j-simple:2.0.16")
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.kotest)
 }
