@@ -22,6 +22,15 @@ class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFut
             .input('F', Items.FIREWORK_STAR)
             .criterionHaveItem(Items.BONE_MEAL, Items.STRING, Items.FIREWORK_STAR)
             .offerTo(exporter)
+        ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, RapItems.MAGIC_HAND)
+            .pattern("GRG")
+            .pattern(" B ")
+            .pattern(" B ")
+            .input('R', Items.REDSTONE)
+            .input('G', Items.GOLD_INGOT)
+            .input('B', Items.BONE)
+            .criterionHaveItem(Items.REDSTONE, Items.GOLD_INGOT, Items.BONE)
+            .offerTo(exporter)
     }
 
     companion object {
