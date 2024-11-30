@@ -104,6 +104,7 @@ dependencies {
         exclude(group = "net.fabricmc.fabric-api")
     }
     modImplementation(libs.modmenu)
+    modImplementation("mortimer-kerman:gravity-changer")
     modRuntimeOnly(libs.sodium)
 
     testImplementation(kotlin("test"))
