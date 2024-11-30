@@ -15,6 +15,7 @@ import net.yukulab.robandpeace.MOD_ID
 object RapItems {
 
     val SMOKE: SmokeItem = register("smoke", SmokeItem())
+    val SPIDER_WALKER: SpiderWalkerItem = register("spider_walker", SpiderWalkerItem())
 
     private fun <T : Item> register(id: String, item: T): T = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, id), item)
 
@@ -28,6 +29,7 @@ object RapItems {
         Registry.register(Registries.ITEM_GROUP, ITEM_GROUP_KEY, ITEM_GROUP)
         ItemGroupEvents.modifyEntriesEvent(ITEM_GROUP_KEY).register {
             it.add(SMOKE)
+            it.add(SPIDER_WALKER)
         }
     }
 }
