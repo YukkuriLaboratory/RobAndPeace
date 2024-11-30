@@ -80,7 +80,6 @@ class RapServerConfig : ConfigData {
         @JvmField
         var woodenGlove: Int = 5
 
-
         @BoundedDiscrete(min = 0, max = 100)
         @JvmField
         var stoneGlove: Int = 10
