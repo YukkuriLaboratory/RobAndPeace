@@ -158,6 +158,12 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
+tasks {
+    create("runIntegration") {
+        dependsOn(":runClient")
+    }
+}
+
 // configure the maven publication
 // publishing {
 // 	publications {
