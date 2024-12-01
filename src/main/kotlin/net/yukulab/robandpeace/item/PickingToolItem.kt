@@ -6,6 +6,8 @@ import net.minecraft.block.vault.VaultConfig
 import net.minecraft.block.vault.VaultServerData
 import net.minecraft.block.vault.VaultSharedData
 import net.minecraft.entity.EntityStatuses
+import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -14,7 +16,10 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
 import net.minecraft.util.ActionResult
+import net.minecraft.util.UseAction
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 import net.yukulab.robandpeace.item.component.RapComponents
 import net.yukulab.robandpeace.mixin.accessor.`AccessorVaultBlockEntity$Server`
 import net.yukulab.robandpeace.mixin.accessor.AccessorVaultServerData
@@ -25,25 +30,53 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
         val world = context.world
         val player = context.player
         val stack = context.stack
+        if (player?.activeItem == stack) {
+            return ActionResult.PASS
+        }
         val blockPos = context.blockPos
-        val blockState = world.getBlockState(blockPos)
         val blockEntity = world.getBlockEntity(blockPos)
         if (blockEntity is VaultBlockEntity && world is ServerWorld && player != null) {
-            val serverData = blockEntity.serverData
-            if (serverData != null) {
-                forceUnlockVault(
-                    world,
-                    blockPos,
-                    blockState,
-                    blockEntity.config,
-                    serverData,
-                    blockEntity.sharedData,
-                    player,
-                    stack,
-                )
+            player.setCurrentHand(context.hand)
+        }
+        return ActionResult.PASS
+    }
+
+    override fun getMaxUseTime(stack: ItemStack?, user: LivingEntity?): Int {
+        val chance = stack?.get(RapComponents.PICKING_CHANCE) ?: 1
+        return (1.6 * chance).toInt()
+    }
+
+    override fun getUseAction(stack: ItemStack?): UseAction = UseAction.BOW
+
+    override fun usageTick(world: World?, user: LivingEntity?, stack: ItemStack?, remainingUseTicks: Int) {
+        if (world is ServerWorld && user is PlayerEntity) {
+            val result = user.raycast(user.getAttributeValue(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE), 0.0f, false)
+            if (result is BlockHitResult) {
+                val blockEntity = world.getBlockEntity(result.blockPos)
+                if (blockEntity !is VaultBlockEntity) {
+                    user.stopUsingItem()
+                } else if (remainingUseTicks % 4 == 0 && world.random.nextInt(4) < 2) {
+                    world.playSound(null, user.blockPos, SoundEvents.BLOCK_CHAIN_BREAK, user.soundCategory, 1.0f, 2f)
+                }
             }
         }
-        return super.useOnBlock(context)
+    }
+
+    override fun finishUsing(stack: ItemStack, world: World?, user: LivingEntity?): ItemStack {
+        if (world is ServerWorld && user is PlayerEntity) {
+            val result = user.raycast(user.getAttributeValue(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE), 0.0f, false)
+            if (result is BlockHitResult) {
+                val state = world.getBlockState(result.blockPos)
+                val blockEntity = world.getBlockEntity(result.blockPos)
+                if (blockEntity is VaultBlockEntity) {
+                    val serverData = blockEntity.serverData
+                    if (serverData != null) {
+                        forceUnlockVault(world, result.blockPos, state, blockEntity.config, serverData, blockEntity.sharedData, user, stack)
+                    }
+                }
+            }
+        }
+        return stack
     }
 
     /**
