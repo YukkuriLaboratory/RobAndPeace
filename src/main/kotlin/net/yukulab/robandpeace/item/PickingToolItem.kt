@@ -108,8 +108,9 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
                     config.deactivationRange,
                 )
             }
+        } else {
+            stack.decrementUnlessCreative(1, player)
+            world.sendEntityStatus(player, EntityStatuses.BREAK_MAINHAND)
         }
-        stack.decrementUnlessCreative(1, player)
-        world.sendEntityStatus(player, EntityStatuses.BREAK_MAINHAND)
     }
 }
