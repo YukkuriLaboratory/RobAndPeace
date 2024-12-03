@@ -1,5 +1,13 @@
 {
   "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "robandpeace:item/picking_tool_tooting",
+      "predicate": {
+        "tooting": 1
+      }
+    }
+  ],
   "textures": {
     "layer0": "robandpeace:item/picking_tool"
   }

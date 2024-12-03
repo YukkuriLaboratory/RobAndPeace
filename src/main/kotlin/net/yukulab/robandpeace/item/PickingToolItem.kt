@@ -46,7 +46,7 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
         return (1.6 * chance).toInt()
     }
 
-    override fun getUseAction(stack: ItemStack?): UseAction = UseAction.BOW
+    override fun getUseAction(stack: ItemStack?): UseAction = UseAction.TOOT_HORN
 
     override fun usageTick(world: World?, user: LivingEntity?, stack: ItemStack?, remainingUseTicks: Int) {
         if (world is ServerWorld && user is PlayerEntity) {

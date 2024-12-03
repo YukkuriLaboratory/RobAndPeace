@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:item/generated",
+  "display": {
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        115,
+        5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        -2.5,
+        -7.5
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -55,
+        -5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        -1.0,
+        -2.5,
+        -7.5
+      ]
+    }
+  },
+  "textures": {
+    "layer0": "robandpeace:item/picking_tool"
+  }
+}
