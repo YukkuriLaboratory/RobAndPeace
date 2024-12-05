@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
@@ -35,7 +36,7 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
         }
         val blockPos = context.blockPos
         val blockEntity = world.getBlockEntity(blockPos)
-        if (blockEntity is VaultBlockEntity && world is ServerWorld && player != null) {
+        if (blockEntity is VaultBlockEntity && world is ServerWorld && player != null && !(blockEntity.serverData as AccessorVaultServerData).invokeHasRewardedPlayer(player)) {
             player.setCurrentHand(context.hand)
         }
         return ActionResult.PASS
@@ -53,7 +54,7 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
             val result = user.raycast(user.getAttributeValue(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE), 0.0f, false)
             if (result is BlockHitResult) {
                 val blockEntity = world.getBlockEntity(result.blockPos)
-                if (blockEntity !is VaultBlockEntity) {
+                if (blockEntity !is VaultBlockEntity || user is ServerPlayerEntity && (blockEntity.serverData as AccessorVaultServerData).invokeHasRewardedPlayer(user)) {
                     user.stopUsingItem()
                 } else if (remainingUseTicks % 4 == 0 && world.random.nextInt(4) < 2) {
                     world.playSound(null, user.blockPos, SoundEvents.BLOCK_CHAIN_BREAK, user.soundCategory, 1.0f, 2f)
