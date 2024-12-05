@@ -106,13 +106,15 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
         operator fun ModelTransformationMode.invoke(
             rotation: Vec3i = Vec3i(0, 0, 0),
             translation: Vec3d = Vec3d(0.0, 0.0, 0.0),
-            scale: Vec3d = Vec3d(1.0, 1.0, 1.0),
+            scale: Vec3d? = null,
         ) {
             val name = asString()
             name {
                 "rotation"(rotation)
                 "translation"(translation)
-                "scale"(scale)
+                if (scale != null) {
+                    "scale"(scale)
+                }
             }
         }
     }
