@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
 import net.minecraft.util.ActionResult
@@ -47,7 +48,9 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
         return (1.6 * chance).toInt()
     }
 
-    override fun getUseAction(stack: ItemStack?): UseAction = UseAction.TOOT_HORN
+    override fun getUseAction(stack: ItemStack?): UseAction = UseAction.EAT
+
+    override fun getEatSound(): SoundEvent = SoundEvents.INTENTIONALLY_EMPTY
 
     override fun usageTick(world: World?, user: LivingEntity?, stack: ItemStack?, remainingUseTicks: Int) {
         if (world is ServerWorld && user is PlayerEntity) {
