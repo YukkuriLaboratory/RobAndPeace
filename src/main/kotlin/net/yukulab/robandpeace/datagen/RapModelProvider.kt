@@ -15,6 +15,7 @@ import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
+import net.yukulab.robandpeace.item.PickingToolItem
 import net.yukulab.robandpeace.item.RapItems
 
 class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(generator) {
@@ -44,6 +45,15 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
                 )
             }
         }
+        itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, Models.GENERATED) {
+            "overrides" array listOf {
+                "predicate" {
+                    PickingToolItem.KEY_OMINOUS(1)
+                }
+                "model"(ModelIds.getItemSubModelId(RapItems.TRIAL_PICKING_TOOL, "_ominous"))
+            }
+        }
+        itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, "_ominous", Models.GENERATED)
     }
 
     companion object {
@@ -101,6 +111,10 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
                 array.add(JsonObjectWrapper(JsonObject()).apply(it).jsonObject)
             }
             jsonObject.add(this, array)
+        }
+
+        operator fun Identifier.invoke(value: Int) {
+            this.toString()(value)
         }
 
         operator fun ModelTransformationMode.invoke(

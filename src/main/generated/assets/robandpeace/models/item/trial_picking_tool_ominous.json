@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "robandpeace:item/trial_picking_tool_ominous"
+  }
+}

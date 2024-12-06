@@ -2,6 +2,8 @@
   "item.robandpeace.magic_hand": "Magic Hand",
   "item.robandpeace.picking_tool": "Picking Tool",
   "item.robandpeace.smoke": "Smoke",
+  "item.robandpeace.trial_picking_tool": "Trial Picking Tool",
+  "item.robandpeace.trial_picking_tool_ominous": "Ominous Picking Tool",
   "itemGroup.robandpeace": "RobAndPeace",
   "text.autoconfig.robandpeace.option.angryGolem": "Angry golem",
   "text.autoconfig.robandpeace.option.angryGolem.liveTime": "Live time(Tick)",

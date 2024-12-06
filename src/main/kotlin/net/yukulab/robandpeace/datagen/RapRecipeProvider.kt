@@ -39,6 +39,16 @@ class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFut
             .input('S', Items.STICK)
             .criterionHaveItem(Items.IRON_NUGGET, Items.STICK)
             .offerTo(exporter)
+        ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, RapItems.TRIAL_PICKING_TOOL)
+            .pattern("DGD")
+            .pattern(" P ")
+            .pattern(" K ")
+            .input('D', Items.DIAMOND)
+            .input('G', Items.GHAST_TEAR)
+            .input('P', RapItems.PICKING_TOOL)
+            .input('K', Items.TRIAL_KEY)
+            .criterionHaveItem(Items.DIAMOND, RapItems.PICKING_TOOL, Items.TRIAL_KEY)
+            .offerTo(exporter)
     }
 
     companion object {

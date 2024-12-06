@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
+import net.yukulab.robandpeace.item.PickingToolItem
 import net.yukulab.robandpeace.item.RapItems
 
 class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : RapLangProvider(dataGenerator, "ja_jp", registryLookup) {
@@ -40,5 +41,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapItems.SMOKE, "煙幕")
         add(RapItems.MAGIC_HAND, "マジックハンド")
         add(RapItems.PICKING_TOOL, "ピッキングツール")
+        add(RapItems.TRIAL_PICKING_TOOL, "試練のピッキングツール")
+        add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "不吉なピッキングツール")
     }
 }

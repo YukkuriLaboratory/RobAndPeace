@@ -1,33 +1,38 @@
 package net.yukulab.robandpeace.item
 
 import net.minecraft.block.BlockState
+import net.minecraft.block.VaultBlock
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.VaultBlockEntity
 import net.minecraft.block.vault.VaultConfig
 import net.minecraft.block.vault.VaultServerData
 import net.minecraft.block.vault.VaultSharedData
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityStatuses
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.EntityAttributes
+import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
 import net.minecraft.util.ActionResult
+import net.minecraft.util.Identifier
 import net.minecraft.util.UseAction
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.yukulab.robandpeace.MOD_ID
 import net.yukulab.robandpeace.item.component.RapComponents
 import net.yukulab.robandpeace.mixin.accessor.`AccessorVaultBlockEntity$Server`
 import net.yukulab.robandpeace.mixin.accessor.AccessorVaultServerData
 import net.yukulab.robandpeace.mixin.accessor.AccessorVaultSharedData
 
-class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapComponents.PICKING_CHANCE, pickingChange)) {
+class PickingToolItem(pickingChance: Int, private val isOminous: Boolean = false) : Item(Settings().component(RapComponents.PICKING_CHANCE, pickingChance)) {
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         val world = context.world
         val player = context.player
@@ -36,9 +41,10 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
             return ActionResult.PASS
         }
         val blockPos = context.blockPos
+        val blockState = world.getBlockState(blockPos)
         val blockEntity = world.getBlockEntity(blockPos)
-        if (blockEntity is VaultBlockEntity && world is ServerWorld && player != null && !(blockEntity.serverData as AccessorVaultServerData).invokeHasRewardedPlayer(player)) {
-            player.setCurrentHand(context.hand)
+        if (!isNotUnlockable(world, blockEntity, blockState, player)) {
+            player?.setCurrentHand(context.hand)
         }
         return ActionResult.PASS
     }
@@ -52,12 +58,27 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
 
     override fun getEatSound(): SoundEvent = SoundEvents.INTENTIONALLY_EMPTY
 
+    override fun getTranslationKey(stack: ItemStack?): String = if (isOminous && stack?.get(RapComponents.IS_OMEN) == true) {
+        "${translationKey}${SUFFIX_OMINOUS}"
+    } else {
+        super.getTranslationKey(stack)
+    }
+
+    override fun inventoryTick(stack: ItemStack?, world: World?, entity: Entity?, slot: Int, selected: Boolean) {
+        if (isOminous && entity is LivingEntity && entity.hasStatusEffect(StatusEffects.BAD_OMEN)) {
+            stack?.set(RapComponents.IS_OMEN, true)
+        } else {
+            stack?.set(RapComponents.IS_OMEN, false)
+        }
+    }
+
     override fun usageTick(world: World?, user: LivingEntity?, stack: ItemStack?, remainingUseTicks: Int) {
         if (world is ServerWorld && user is PlayerEntity) {
             val result = user.raycast(user.getAttributeValue(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE), 0.0f, false)
             if (result is BlockHitResult) {
                 val blockEntity = world.getBlockEntity(result.blockPos)
-                if (blockEntity !is VaultBlockEntity || user is ServerPlayerEntity && (blockEntity.serverData as AccessorVaultServerData).invokeHasRewardedPlayer(user)) {
+                val blockState = world.getBlockState(result.blockPos)
+                if (isNotUnlockable(world, blockEntity, blockState, user)) {
                     user.stopUsingItem()
                 } else if (remainingUseTicks % 4 == 0 && world.random.nextInt(4) < 2) {
                     world.playSound(null, user.blockPos, SoundEvents.BLOCK_CHAIN_BREAK, user.soundCategory, 1.0f, 2f)
@@ -116,5 +137,16 @@ class PickingToolItem(pickingChange: Int) : Item(Settings().component(RapCompone
             stack.decrementUnlessCreative(1, player)
             world.sendEntityStatus(player, EntityStatuses.BREAK_MAINHAND)
         }
+    }
+
+    private fun isNotUnlockable(world: World?, blockEntity: BlockEntity?, blockState: BlockState, entity: LivingEntity?): Boolean = world !is ServerWorld ||
+        blockEntity !is VaultBlockEntity ||
+        entity !is PlayerEntity ||
+        (blockState[VaultBlock.OMINOUS] && (!isOminous || !entity.hasStatusEffect(StatusEffects.BAD_OMEN))) ||
+        (blockEntity.serverData as AccessorVaultServerData).invokeHasRewardedPlayer(entity)
+
+    companion object {
+        const val SUFFIX_OMINOUS: String = "_ominous"
+        val KEY_OMINOUS: Identifier = Identifier.of(MOD_ID, "ominous")
     }
 }
