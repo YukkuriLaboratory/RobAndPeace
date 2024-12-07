@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "minecraft:ghast_tear"
+    }
+  },
+  "pattern": [
+    "DGD",
+    " B ",
+    " B "
+  ],
+  "result": {
+    "count": 1,
+    "id": "robandpeace:advanced_magic_hand"
+  }
+}

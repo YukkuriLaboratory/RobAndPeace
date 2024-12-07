@@ -13,7 +13,7 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Identifier
 import net.yukulab.robandpeace.MOD_ID
 
-class MagicHandItem(range: Double) :
+class MagicHandItem(range: Double, maxDamage: Int) :
     Item(
         Settings().attributeModifiers(
             AttributeModifiersComponent.builder()
@@ -23,8 +23,7 @@ class MagicHandItem(range: Double) :
                     AttributeModifierSlot.HAND,
                 )
                 .build(),
-        ).maxCount(1)
-            .maxDamage(131),
+        ).maxCount(1).maxDamage(maxDamage),
     ) {
     companion object {
         init {
