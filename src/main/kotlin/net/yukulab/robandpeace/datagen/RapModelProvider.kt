@@ -19,41 +19,77 @@ import net.yukulab.robandpeace.item.PickingToolItem
 import net.yukulab.robandpeace.item.RapItems
 
 class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(generator) {
-    override fun generateBlockStateModels(blockStateModelGenerator: BlockStateModelGenerator) {
-    }
+    override fun generateBlockStateModels(blockStateModelGenerator: BlockStateModelGenerator) = Unit
 
     override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
         itemModelGenerator.register(RapItems.SMOKE, Models.GENERATED)
         itemModelGenerator.register(RapItems.MAGIC_HAND, Models.GENERATED)
         itemModelGenerator.register(RapItems.PICKING_TOOL, Models.GENERATED) {
-            "overrides" array listOf {
-                "predicate" {
-                    "tooting"(1)
-                }
-                "model"(ModelIds.getItemSubModelId(RapItems.PICKING_TOOL, "_tooting"))
-            }
+            overrides(
+                Override(
+                    ModelIds.getItemSubModelId(RapItems.PICKING_TOOL, PickingToolItem.SUFFIX_PICKING),
+                    listOf(PickingToolItem.KEY_PICKING to 1.0),
+                ),
+            )
         }
-        itemModelGenerator.register(RapItems.PICKING_TOOL, "_tooting", Models.GENERATED) {
-            "display" {
-                ModelTransformationMode.FIRST_PERSON_RIGHT_HAND(
-                    rotation = Vec3i(0, -55, -5),
-                    translation = Vec3d(-1.0, -2.5, -7.5),
-                )
-                ModelTransformationMode.FIRST_PERSON_LEFT_HAND(
-                    rotation = Vec3i(0, 115, 5),
-                    translation = Vec3d(0.0, -2.5, -7.5),
-                )
-            }
+        itemModelGenerator.register(RapItems.PICKING_TOOL, PickingToolItem.SUFFIX_PICKING, null, Models.GENERATED) {
+            display(
+                Display(
+                    ModelTransformationMode.FIRST_PERSON_RIGHT_HAND,
+                    rotation = Vec3i(-90, 0, -90),
+                ),
+                Display(
+                    ModelTransformationMode.FIRST_PERSON_LEFT_HAND,
+                    rotation = Vec3i(-90, 0, -90),
+                ),
+            )
         }
         itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, Models.GENERATED) {
-            "overrides" array listOf {
-                "predicate" {
-                    PickingToolItem.KEY_OMINOUS(1)
-                }
-                "model"(ModelIds.getItemSubModelId(RapItems.TRIAL_PICKING_TOOL, "_ominous"))
-            }
+            overrides(
+                Override(
+                    ModelIds.getItemSubModelId(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS),
+                    listOf(PickingToolItem.KEY_OMINOUS to 1.0),
+                ),
+                Override(
+                    ModelIds.getItemSubModelId(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_PICKING),
+                    listOf(PickingToolItem.KEY_PICKING to 1.0),
+                ),
+                Override(
+                    ModelIds.getItemSubModelId(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS + PickingToolItem.SUFFIX_PICKING),
+                    listOf(PickingToolItem.KEY_OMINOUS to 1.0, PickingToolItem.KEY_PICKING to 1.0),
+                ),
+            )
         }
-        itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, "_ominous", Models.GENERATED)
+        itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, Models.GENERATED)
+        itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_PICKING, null, Models.GENERATED) {
+            display(
+                Display(
+                    ModelTransformationMode.FIRST_PERSON_RIGHT_HAND,
+                    rotation = Vec3i(-90, 0, -90),
+                ),
+                Display(
+                    ModelTransformationMode.FIRST_PERSON_LEFT_HAND,
+                    rotation = Vec3i(-90, 0, -90),
+                ),
+            )
+        }
+        itemModelGenerator.register(
+            RapItems.TRIAL_PICKING_TOOL,
+            PickingToolItem.SUFFIX_OMINOUS + PickingToolItem.SUFFIX_PICKING,
+            PickingToolItem.SUFFIX_OMINOUS,
+            Models.GENERATED,
+        ) {
+            display(
+                Display(
+                    ModelTransformationMode.FIRST_PERSON_RIGHT_HAND,
+                    rotation = Vec3i(-90, 0, -90),
+                ),
+                Display(
+                    ModelTransformationMode.FIRST_PERSON_LEFT_HAND,
+                    rotation = Vec3i(-90, 0, -90),
+                ),
+            )
+        }
     }
 
     companion object {
@@ -64,11 +100,18 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
             ).let(::JsonObjectWrapper).apply(jsonFactory).jsonObject
         }
 
-        private fun ItemModelGenerator.register(item: Item, suffix: String, model: Model, jsonFactory: JsonObjectWrapper.() -> Unit): Identifier = model.upload(ModelIds.getItemSubModelId(item, suffix), TextureMap.layer0(item), writer) { id, textures ->
-            model.createJson(
-                id,
-                textures,
-            ).let(::JsonObjectWrapper).apply(jsonFactory).jsonObject
+        private fun ItemModelGenerator.register(item: Item, suffix: String, textureSuffix: String? = suffix, model: Model, jsonFactory: JsonObjectWrapper.() -> Unit): Identifier {
+            val texture = if (textureSuffix != null) {
+                TextureMap.layer0(TextureMap.getSubId(item, textureSuffix))
+            } else {
+                TextureMap.layer0(item)
+            }
+            return model.upload(ModelIds.getItemSubModelId(item, suffix), texture, writer) { id, textures ->
+                model.createJson(
+                    id,
+                    textures,
+                ).let(::JsonObjectWrapper).apply(jsonFactory).jsonObject
+            }
         }
     }
 
@@ -78,6 +121,10 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
         }
 
         operator fun String.invoke(value: Int) {
+            jsonObject.addProperty(this, value)
+        }
+
+        operator fun String.invoke(value: Double) {
             jsonObject.addProperty(this, value)
         }
 
@@ -117,19 +164,51 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
             this.toString()(value)
         }
 
-        operator fun ModelTransformationMode.invoke(
-            rotation: Vec3i = Vec3i(0, 0, 0),
-            translation: Vec3d = Vec3d(0.0, 0.0, 0.0),
-            scale: Vec3d? = null,
-        ) {
-            val name = asString()
-            name {
-                "rotation"(rotation)
-                "translation"(translation)
-                if (scale != null) {
-                    "scale"(scale)
+        operator fun Identifier.invoke(value: Double) {
+            this.toString()(value)
+        }
+
+        fun overrides(vararg values: Override) {
+            "overrides" array values.map { override ->
+                (
+                    {
+                        "predicate" {
+                            override.predicate.forEach { (key, value) ->
+                                key(value)
+                            }
+                        }
+                        "model"(override.model)
+                    }
+                    )
+            }
+        }
+
+        fun display(vararg displays: Display) {
+            "display" {
+                displays.forEach { display ->
+                    val name = display.transformation.asString()
+                    name {
+                        if (display.rotation != null) {
+                            "rotation"(display.rotation)
+                        }
+                        if (display.translation != null) {
+                            "translation"(display.translation)
+                        }
+                        if (display.scale != null) {
+                            "scale"(display.scale)
+                        }
+                    }
                 }
             }
         }
     }
+
+    data class Display(
+        val transformation: ModelTransformationMode,
+        val rotation: Vec3i? = null,
+        val translation: Vec3d? = null,
+        val scale: Vec3d? = null,
+    )
+
+    data class Override(val model: Identifier, val predicate: List<Pair<Identifier, Double>>)
 }

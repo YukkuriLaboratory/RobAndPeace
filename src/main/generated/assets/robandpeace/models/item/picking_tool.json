@@ -2,9 +2,9 @@
   "parent": "minecraft:item/generated",
   "overrides": [
     {
-      "model": "robandpeace:item/picking_tool_tooting",
+      "model": "robandpeace:item/picking_tool_picking",
       "predicate": {
-        "tooting": 1
+        "robandpeace:picking": 1.0
       }
     }
   ],

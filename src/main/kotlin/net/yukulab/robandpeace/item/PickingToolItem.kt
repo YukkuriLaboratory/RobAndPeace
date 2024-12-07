@@ -147,6 +147,8 @@ class PickingToolItem(pickingChance: Int, private val isOminous: Boolean = false
 
     companion object {
         const val SUFFIX_OMINOUS: String = "_ominous"
+        const val SUFFIX_PICKING: String = "_picking"
         val KEY_OMINOUS: Identifier = Identifier.of(MOD_ID, "ominous")
+        val KEY_PICKING: Identifier = Identifier.of(MOD_ID, "picking")
     }
 }

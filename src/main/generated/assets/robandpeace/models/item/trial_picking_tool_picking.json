@@ -1,0 +1,22 @@
+{
+  "parent": "minecraft:item/generated",
+  "display": {
+    "firstperson_lefthand": {
+      "rotation": [
+        -90,
+        0,
+        -90
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        -90,
+        0,
+        -90
+      ]
+    }
+  },
+  "textures": {
+    "layer0": "robandpeace:item/trial_picking_tool"
+  }
+}
