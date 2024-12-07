@@ -8,7 +8,7 @@ import net.minecraft.util.ActionResult
 class SpiderWalkerItem : Item(Settings()) {
     override fun useOnBlock(context: ItemUsageContext?): ActionResult {
         if (context != null) {
-            GravityChangerAPI.setBaseGravityDirection(context.player, context.side)
+            GravityChangerAPI.setBaseGravityDirection(context.player, context.side.opposite)
             return ActionResult.SUCCESS
         }
         return ActionResult.PASS

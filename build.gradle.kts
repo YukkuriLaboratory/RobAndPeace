@@ -108,11 +108,11 @@ dependencies {
         exclude(group = "net.fabricmc.fabric-api")
     }
     modImplementation(libs.modmenu)
-    modImplementation(project(":gravity-api")) {
-        exclude(group = "net.fabricmc.fabric-api")
-        exclude(group = "dev.onyxstudios.cardinal-components-api")
-    }
+    modImplementation(files("libs/gravity-changer-1.3.0+mc1.21.jar"))
     modRuntimeOnly(libs.sodium)
+    modRuntimeOnly(libs.cardinal.components.base)
+    modRuntimeOnly(libs.cardinal.components.world)
+    modRuntimeOnly(libs.cardinal.components.entity)
 
     testImplementation("org.slf4j:slf4j-api:2.0.16")
     testImplementation("org.slf4j:slf4j-simple:2.0.16")

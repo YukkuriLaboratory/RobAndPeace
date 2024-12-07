@@ -9,5 +9,5 @@ pluginManagement {
     }
 }
 
-include(":gravity-api")
-project(":gravity-api").projectDir = File("./gravity-api")
+// include(":gravity-api")
+// project(":gravity-api").projectDir = File("./gravity-api")
