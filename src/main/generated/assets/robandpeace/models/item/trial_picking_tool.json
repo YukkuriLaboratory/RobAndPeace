@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "robandpeace:item/trial_picking_tool_ominous",
+      "predicate": {
+        "robandpeace:ominous": 1.0
+      }
+    },
+    {
+      "model": "robandpeace:item/trial_picking_tool_picking",
+      "predicate": {
+        "robandpeace:picking": 1.0
+      }
+    },
+    {
+      "model": "robandpeace:item/trial_picking_tool_ominous_picking",
+      "predicate": {
+        "robandpeace:ominous": 1.0,
+        "robandpeace:picking": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "robandpeace:item/trial_picking_tool"
+  }
+}

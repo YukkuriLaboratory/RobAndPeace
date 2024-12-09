@@ -14,6 +14,8 @@ import net.minecraft.stat.Stats
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
+import net.yukulab.robandpeace.config.RapConfigs
+import net.yukulab.robandpeace.item.component.RapComponents
 
 class SmokeItem : Item(Settings()) {
     override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
@@ -42,7 +44,8 @@ class SmokeItem : Item(Settings()) {
             )
         }
         if (world is ServerWorld) {
-            user.addStatusEffect(StatusEffectInstance(StatusEffects.INVISIBILITY, 60, 0, false, false))
+            val duration = stack.getOrDefault(RapComponents.SMOKE_INVISIBLE_DURATION, RapConfigs.serverConfig.items.smokeInvisibleDuration)
+            user.addStatusEffect(StatusEffectInstance(StatusEffects.INVISIBILITY, duration, 0, false, false))
             world.getEntitiesByClass(MobEntity::class.java, user.boundingBox.expand(10.0)) {
                 it.isAlive && it.target == user
             }.forEach {

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "minecraft:ghast_tear"
+    },
+    "K": {
+      "item": "minecraft:trial_key"
+    },
+    "P": {
+      "item": "robandpeace:picking_tool"
+    }
+  },
+  "pattern": [
+    "DGD",
+    " P ",
+    " K "
+  ],
+  "result": {
+    "count": 1,
+    "id": "robandpeace:trial_picking_tool"
+  }
+}

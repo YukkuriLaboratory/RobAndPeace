@@ -24,6 +24,10 @@ class RapServerConfig : ConfigData {
     @JvmField
     var angryGolem: AngryGolem = AngryGolem()
 
+    @CollapsibleObject
+    @JvmField
+    var items: Items = Items()
+
     class StealCoolTime {
         @JvmField
         var onSuccess: Int = 1200
@@ -66,6 +70,35 @@ class RapServerConfig : ConfigData {
 
         @JvmField
         var spawnHeight = 10
+    }
+
+    class Items {
+        @JvmField
+        var smokeInvisibleDuration: Int = 60
+
+        @BoundedDiscrete(min = 0, max = 100)
+        @JvmField
+        var woodenGlove: Int = 5
+
+        @BoundedDiscrete(min = 0, max = 100)
+        @JvmField
+        var stoneGlove: Int = 10
+
+        @BoundedDiscrete(min = 0, max = 100)
+        @JvmField
+        var ironGlove: Int = 15
+
+        @BoundedDiscrete(min = 0, max = 100)
+        @JvmField
+        var goldenGlove: Int = 25
+
+        @BoundedDiscrete(min = 0, max = 100)
+        @JvmField
+        var diamondGlove: Int = 20
+
+        @BoundedDiscrete(min = 0, max = 100)
+        @JvmField
+        var netheriteGlove: Int = 30
     }
 
     companion object {
@@ -114,5 +147,29 @@ class RapServerConfig : ConfigData {
 
         @Excluded
         const val KEY_ANGRY_GOLEM_SPAWN_HEIGHT = "text.autoconfig.robandpeace.option.angryGolem.spawnHeight"
+
+        @Excluded
+        const val KEY_ITEMS = "text.autoconfig.robandpeace.option.items"
+
+        @Excluded
+        const val KEY_ITEMS_SMOKE_INVISIBLE_DURATION = "text.autoconfig.robandpeace.option.items.smokeInvisibleDuration"
+
+        @Excluded
+        const val KEY_ITEMS_WOODEN_GLOVE = "text.autoconfig.robandpeace.option.items.woodenGlove"
+
+        @Excluded
+        const val KEY_ITEMS_STONE_GLOVE = "text.autoconfig.robandpeace.option.items.stoneGlove"
+
+        @Excluded
+        const val KEY_ITEMS_IRON_GLOVE = "text.autoconfig.robandpeace.option.items.ironGlove"
+
+        @Excluded
+        const val KEY_ITEMS_GOLDEN_GLOVE = "text.autoconfig.robandpeace.option.items.goldenGlove"
+
+        @Excluded
+        const val KEY_ITEMS_DIAMOND_GLOVE = "text.autoconfig.robandpeace.option.items.diamondGlove"
+
+        @Excluded
+        const val KEY_ITEMS_NETHERITE_GLOVE = "text.autoconfig.robandpeace.option.items.netheriteGlove"
     }
 }

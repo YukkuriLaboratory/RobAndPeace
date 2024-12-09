@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_diamond": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:diamond"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_picking_tool": {
+      "conditions": {
+        "items": [
+          {
+            "items": "robandpeace:picking_tool"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "robandpeace:trial_picking_tool"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_trial_key": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:trial_key"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_diamond",
+      "has_picking_tool",
+      "has_trial_key"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "robandpeace:trial_picking_tool"
+    ]
+  }
+}

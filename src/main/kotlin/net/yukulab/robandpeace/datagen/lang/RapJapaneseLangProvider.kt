@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
+import net.yukulab.robandpeace.item.PickingToolItem
 import net.yukulab.robandpeace.item.RapItems
 
 class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : RapLangProvider(dataGenerator, "ja_jp", registryLookup) {
@@ -27,8 +28,21 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_ANGRY_GOLEM_MAX_SPAWN_COUNT, "最大スポーン数")
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_RADIUS, "スポーン半径")
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_HEIGHT, "初期位置(y)")
+        add(RapServerConfig.KEY_ITEMS, "アイテム")
+        add(RapServerConfig.KEY_ITEMS_SMOKE_INVISIBLE_DURATION, "煙幕のデフォルト効果時間(Tick)")
+        add(RapServerConfig.KEY_ITEMS_WOODEN_GLOVE, "木の手袋")
+        add(RapServerConfig.KEY_ITEMS_STONE_GLOVE, "石の手袋")
+        add(RapServerConfig.KEY_ITEMS_IRON_GLOVE, "鉄の手袋")
+        add(RapServerConfig.KEY_ITEMS_GOLDEN_GLOVE, "金の手袋")
+        add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "ダイヤの手袋")
+        add(RapServerConfig.KEY_ITEMS_NETHERITE_GLOVE, "ネザライトの手袋")
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
         add(RapItems.SMOKE, "煙幕")
+        add(RapItems.MAGIC_HAND, "マジックハンド")
+        add(RapItems.ADVANCED_MAGIC_HAND, "上級マジックハンド")
+        add(RapItems.PICKING_TOOL, "ピッキングツール")
+        add(RapItems.TRIAL_PICKING_TOOL, "試練のピッキングツール")
+        add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "不吉なピッキングツール")
     }
 }

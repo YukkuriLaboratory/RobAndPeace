@@ -50,4 +50,6 @@ jobs:
         run: ./gradlew ${{ matrix.task }}
       - name: check diff
         run: |
-          git diff --exit-code src/main/generated/assets/
+          git add .
+          git diff --exit-code --cached src/main/generated/assets/
+          git diff --exit-code --cached src/main/generated/data/

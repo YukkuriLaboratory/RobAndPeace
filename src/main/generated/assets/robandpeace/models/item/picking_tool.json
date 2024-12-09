@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "robandpeace:item/picking_tool_picking",
+      "predicate": {
+        "robandpeace:picking": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "robandpeace:item/picking_tool"
+  }
+}

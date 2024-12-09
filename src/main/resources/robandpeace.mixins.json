@@ -3,6 +3,10 @@
   "package": "net.yukulab.robandpeace.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MixinVaultBlock",
+    "accessor.AccessorVaultBlockEntity$Server",
+    "accessor.AccessorVaultServerData",
+    "accessor.AccessorVaultSharedData",
     "steal.MixinDamageSource",
     "steal.MixinLivingEntity",
     "steal.MixinPlayerEntity"
