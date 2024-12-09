@@ -32,7 +32,10 @@ val gameTestSourceSet = sourceSets.getByName(gameTest)
 
 configurations {
     val testImplementation by this
-    getByName("${gameTest}Implementation").extendsFrom(testImplementation)
+    getByName("${gameTest}Implementation") {
+        extendsFrom(testImplementation)
+        exclude("org.slf4j", "slf4j-simple")
+    }
 }
 
 repositories {
@@ -46,6 +49,10 @@ repositories {
     maven {
         name = "Terraformers"
         url = uri("https://maven.terraformersmc.com/")
+    }
+    maven {
+        name = "Ladysnake Mods"
+        url = uri("https://maven.ladysnake.org/releases")
     }
     exclusiveContent {
         forRepository {
@@ -104,8 +111,14 @@ dependencies {
         exclude(group = "net.fabricmc.fabric-api")
     }
     modImplementation(libs.modmenu)
+    modImplementation(files("libs/gravity-changer-1.3.0+mc1.21.jar"))
     modRuntimeOnly(libs.sodium)
+    modRuntimeOnly(libs.cardinal.components.base)
+    modRuntimeOnly(libs.cardinal.components.world)
+    modRuntimeOnly(libs.cardinal.components.entity)
 
+    testImplementation("org.slf4j:slf4j-api:2.0.16")
+    testImplementation("org.slf4j:slf4j-simple:2.0.16")
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.kotest)
 }
@@ -150,6 +163,12 @@ kotlin {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+}
+
+tasks {
+    create("runIntegration") {
+        dependsOn(":runClient")
+    }
 }
 
 // configure the maven publication
