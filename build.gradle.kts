@@ -32,7 +32,10 @@ val gameTestSourceSet = sourceSets.getByName(gameTest)
 
 configurations {
     val testImplementation by this
-    getByName("${gameTest}Implementation").extendsFrom(testImplementation.exclude("org.slf4j", "slf4j-simple"))
+    getByName("${gameTest}Implementation") {
+        extendsFrom(testImplementation)
+        exclude("org.slf4j", "slf4j-simple")
+    }
 }
 
 repositories {
