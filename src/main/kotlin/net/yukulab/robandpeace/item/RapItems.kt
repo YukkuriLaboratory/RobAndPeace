@@ -20,6 +20,7 @@ object RapItems {
     val ADVANCED_MAGIC_HAND: MagicHandItem = register("advanced_magic_hand", MagicHandItem(8.0, 1561))
     val PICKING_TOOL: PickingToolItem = register("picking_tool", PickingToolItem(50))
     val TRIAL_PICKING_TOOL: PickingToolItem = register("trial_picking_tool", PickingToolItem(70, true))
+    val PORTAL_HOOP: PortalHoopItem = register("portal_hoop", PortalHoopItem())
 
     private fun <T : Item> register(id: String, item: T): T = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, id), item)
 
@@ -38,6 +39,7 @@ object RapItems {
             it.add(ADVANCED_MAGIC_HAND)
             it.add(PICKING_TOOL)
             it.add(TRIAL_PICKING_TOOL)
+            it.add(PORTAL_HOOP)
         }
     }
 }
