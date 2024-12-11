@@ -98,6 +98,6 @@ class PortalHoopItem : Item(Settings()) {
         context.world.spawnEntity(portal)
         context.world.spawnEntity(PortalAPI.createReversePortal(portal))
 
-        return ActionResult.PASS
+        return ActionResult.SUCCESS
     }
 }
