@@ -8,7 +8,6 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3i
 import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
 import qouteall.imm_ptl.core.api.PortalAPI
@@ -95,20 +94,10 @@ class PortalHoopItem : Item(Settings()) {
             1.0,
             2.0,
         )
-        // portal.rotation = DQuaternion.fromMcQuaternion(context.horizontalPlayerFacing.rotationQuaternion)
         portal.destination = searchPos.toBottomCenterPos()
         context.world.spawnEntity(portal)
         context.world.spawnEntity(PortalAPI.createReversePortal(portal))
 
         return ActionResult.PASS
-    }
-
-    private fun BlockPos.toVec3d(): Vec3d = Vec3d(this.x.toDouble(), this.y.toDouble(), this.z.toDouble())
-    private fun Vec3i.toVec3d(): Vec3d = Vec3d(x.toDouble(), y.toDouble(), z.toDouble())
-}
-
-fun main() {
-    for (i in 1..6) {
-        println(-(-1) * i)
     }
 }
