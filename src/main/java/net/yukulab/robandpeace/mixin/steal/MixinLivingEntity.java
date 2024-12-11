@@ -15,10 +15,7 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.ToolMaterials;
+import net.minecraft.item.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
@@ -157,17 +154,26 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
                 chance += robandpeace$getServerConfigSupplier().get().stealChances.criticalBonus;
             }
             var stack = source.getWeaponStack();
-            if (stack != null && stack.getItem() instanceof SwordItem swordItem) {
-                var toolBonus = switch (swordItem.getMaterial()) {
-                    case ToolMaterials.WOOD -> robandpeace$getServerConfigSupplier().get().items.woodenGlove;
-                    case ToolMaterials.STONE -> robandpeace$getServerConfigSupplier().get().items.stoneGlove;
-                    case ToolMaterials.IRON -> robandpeace$getServerConfigSupplier().get().items.ironGlove;
-                    case ToolMaterials.GOLD -> robandpeace$getServerConfigSupplier().get().items.goldenGlove;
-                    case ToolMaterials.DIAMOND -> robandpeace$getServerConfigSupplier().get().items.diamondGlove;
-                    case ToolMaterials.NETHERITE -> robandpeace$getServerConfigSupplier().get().items.netheriteGlove;
-                    default -> 0;
-                };
-                chance += toolBonus;
+            if (stack != null) {
+                switch (stack.getItem()) {
+                    case SwordItem swordItem -> {
+                        var toolBonus = switch (swordItem.getMaterial()) {
+                            case ToolMaterials.WOOD -> robandpeace$getServerConfigSupplier().get().items.woodenGlove;
+                            case ToolMaterials.STONE -> robandpeace$getServerConfigSupplier().get().items.stoneGlove;
+                            case ToolMaterials.IRON -> robandpeace$getServerConfigSupplier().get().items.ironGlove;
+                            case ToolMaterials.GOLD -> robandpeace$getServerConfigSupplier().get().items.goldenGlove;
+                            case ToolMaterials.DIAMOND ->
+                                    robandpeace$getServerConfigSupplier().get().items.diamondGlove;
+                            case ToolMaterials.NETHERITE ->
+                                    robandpeace$getServerConfigSupplier().get().items.netheriteGlove;
+                            default -> 0;
+                        };
+                        chance += toolBonus;
+                    }
+                    case RangedWeaponItem ignored -> chance = 0;
+                    default -> {
+                    }
+                }
             }
             var rand = entity.getRandom().nextInt(100);
             if (rand >= chance) {
