@@ -7,8 +7,12 @@ import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3i
 import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
+import qouteall.imm_ptl.core.api.PortalAPI
+import qouteall.imm_ptl.core.portal.Portal
 
 class PortalHoopItem : Item(Settings()) {
     companion object {
@@ -43,17 +47,6 @@ class PortalHoopItem : Item(Settings()) {
         // n:z-,s:z+ / w:x-,e:x+
         val portalBasePos = context.blockPos.add(side.offsetX, side.offsetY, side.offsetZ)
         val portalExtendPos: BlockPos = getExtendPos(side, context.horizontalPlayerFacing, portalBasePos)
-
-        // val portal: Portal = Portal.ENTITY_TYPE.create(context.world) ?: error("Failed to create portal")
-        // portal.originPos = portalBasePos.toVec3d()
-        // portal.destDim = World.OVERWORLD // TODO make dynamic
-        // portal.setOrientationAndSize(
-        //     Vec3d(0.0, 0.0, 0.0),
-        //     Vec3d(0.0, 0.0, 0.0),
-        //     1.0,
-        //     2.0,
-        // )
-        // portal.rotation = DQuaternion.fromMcQuaternion(context.horizontalPlayerFacing.rotationQuaternion)
 
         context.world.setBlockState(portalBasePos, Blocks.STONE.defaultState)
         context.world.setBlockState(portalExtendPos, Blocks.HAY_BLOCK.defaultState)
@@ -93,11 +86,25 @@ class PortalHoopItem : Item(Settings()) {
         context.world.setBlockState(searchPos, Blocks.STONE.defaultState)
         context.world.setBlockState(searchPos.add(0, 1, 0), Blocks.HAY_BLOCK.defaultState)
 
-        // portal.destination = searchPos.toVec3d()
-        // context.world.spawnEntity(portal)
+        val portal: Portal = Portal.ENTITY_TYPE.create(context.world) ?: error("Failed to create portal")
+        portal.originPos = portalBasePos.toBottomCenterPos()
+        portal.destDim = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
+        portal.setOrientationAndSize(
+            Vec3d(1.0, 0.0, 0.0),
+            Vec3d(0.0, 1.0, 0.0),
+            1.0,
+            2.0,
+        )
+        // portal.rotation = DQuaternion.fromMcQuaternion(context.horizontalPlayerFacing.rotationQuaternion)
+        portal.destination = searchPos.toBottomCenterPos()
+        context.world.spawnEntity(portal)
+        context.world.spawnEntity(PortalAPI.createReversePortal(portal))
 
         return ActionResult.PASS
     }
+
+    private fun BlockPos.toVec3d(): Vec3d = Vec3d(this.x.toDouble(), this.y.toDouble(), this.z.toDouble())
+    private fun Vec3i.toVec3d(): Vec3d = Vec3d(x.toDouble(), y.toDouble(), z.toDouble())
 }
 
 fun main() {
