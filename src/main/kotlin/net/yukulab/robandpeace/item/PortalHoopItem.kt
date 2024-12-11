@@ -72,7 +72,7 @@ class PortalHoopItem : Item(Settings()) {
         val searchPos = context.blockPos.mutableCopy()
         var flag = false
         for (i in 1..maxRange) {
-            searchPos.move(-(side.offsetX * i), -(side.offsetY * i), -(side.offsetZ * i))
+            searchPos.move(-side.offsetX, -side.offsetY, -side.offsetZ)
             val state = worldCache.getBlockState(searchPos)
             logger.info("Pos: {}, IsAir: {}", searchPos, state.isAir)
             if (state.isAir) {
