@@ -78,12 +78,16 @@ class PortalHoopItem : Item(Settings()) {
         // === Let's place portal ===
         val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
 
+        val playerDir = context.horizontalPlayerFacing
+        val offsetX = 0.4 * playerDir.offsetX
+        val offsetY = 0.4 * playerDir.offsetY
+        val offsetZ = 0.4 * playerDir.offsetZ
         createPortal(
             context.world,
-            portalBasePos.add(0, 1, 0),
+            portalBasePos.toCenterPos().add(offsetX, 0.5 + offsetY, offsetZ),
             context.side, // TODO: check this
             destDimKey,
-            destinationPos.add(0, 1, 0),
+            destinationPos.toCenterPos().add(-offsetX, 0.5 - offsetY, -offsetZ),
         )
 
         return ActionResult.SUCCESS
@@ -168,10 +172,10 @@ class PortalHoopItem : Item(Settings()) {
 
     private fun createPortal(
         world: World,
-        originPos: BlockPos,
+        originPos: Vec3d,
         wallFacing: Direction,
         destinationDim: RegistryKey<World>,
-        destinationPos: BlockPos,
+        destinationPos: Vec3d,
     ): ThroughHoopPortal {
         val aaRot: AARotation = AARotation.getAARotationFromYZ(Direction.UP, wallFacing)
 
@@ -179,9 +183,9 @@ class PortalHoopItem : Item(Settings()) {
         val portal: ThroughHoopPortal = RapEntityType.THROUGH_HOOP_PORTAL.create(world) ?: error("Failed to create portal")
 
         // Link the portal origin & destination
-        portal.originPos = originPos.toBottomCenterPos()
+        portal.originPos = originPos
         portal.destDim = destinationDim
-        portal.destination = destinationPos.toBottomCenterPos()
+        portal.destination = destinationPos
 
         val rightDir: Direction = aaRot.transformedX
         val upDir: Direction = aaRot.transformedY
