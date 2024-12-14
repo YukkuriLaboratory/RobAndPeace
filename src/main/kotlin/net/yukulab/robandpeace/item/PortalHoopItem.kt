@@ -10,8 +10,9 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
+import net.yukulab.robandpeace.entity.RapEntityType
+import net.yukulab.robandpeace.entity.ThroughHoopPortal
 import qouteall.imm_ptl.core.api.PortalAPI
-import qouteall.imm_ptl.core.portal.Portal
 
 class PortalHoopItem : Item(Settings()) {
     companion object {
@@ -85,7 +86,8 @@ class PortalHoopItem : Item(Settings()) {
         context.world.setBlockState(searchPos, Blocks.STONE.defaultState)
         context.world.setBlockState(searchPos.add(0, 1, 0), Blocks.HAY_BLOCK.defaultState)
 
-        val portal: Portal = Portal.ENTITY_TYPE.create(context.world) ?: error("Failed to create portal")
+        // val portal: Portal = Portal.ENTITY_TYPE.create(context.world) ?: error("Failed to create portal")
+        val portal: ThroughHoopPortal = RapEntityType.THROUGH_HOOP_PORTAL.create(context.world) ?: error("Failed to create portal")
         portal.originPos = portalBasePos.toBottomCenterPos()
         portal.destDim = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
         portal.setOrientationAndSize(
