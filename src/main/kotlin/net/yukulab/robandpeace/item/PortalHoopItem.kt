@@ -90,7 +90,7 @@ class PortalHoopItem : Item(Settings()) {
         portal.destDim = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
         portal.setOrientationAndSize(
             Vec3d(1.0, 0.0, 0.0),
-            Vec3d(0.0, 1.0, 0.0),
+            Vec3d(0.0, 1.0, 0.0), // TODO fix this
             1.0,
             2.0,
         )
