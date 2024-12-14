@@ -118,6 +118,7 @@ class PortalHoopItem : Item(Settings()) {
         val searchPos = interactBlockPos.mutableCopy()
         for (i in 1..maxRange) {
             searchPos.move(playerFacing)
+            logger.info("Searching at x:${searchPos.x}, y:${searchPos.y}, z:${searchPos.z}")
             if (checkAirArea(chunkCache, searchPos, extensionDirection)) {
                 logger.info("Air found! Pos: {}", searchPos)
                 return Result.success(searchPos)
