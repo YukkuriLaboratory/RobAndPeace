@@ -3,11 +3,13 @@ package net.yukulab.robandpeace.item
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemUsageContext
+import net.minecraft.registry.RegistryKey
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.World
 import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
 import net.yukulab.robandpeace.entity.RapEntityType
@@ -49,8 +51,7 @@ class PortalHoopItem : Item(Settings()) {
         val portalBasePos = context.blockPos.add(side.offsetX, side.offsetY, side.offsetZ)
         val portalExtendPos: BlockPos = getExtendPos(side, context.horizontalPlayerFacing, portalBasePos)
 
-        context.world.setBlockState(portalBasePos, Blocks.STONE.defaultState)
-        context.world.setBlockState(portalExtendPos, Blocks.HAY_BLOCK.defaultState)
+        placeDebugBlock(context.world, portalBasePos, portalExtendPos)
 
         logger.info("BasePos: {}, ExtendPos: {}", portalBasePos, portalExtendPos)
 
@@ -84,24 +85,49 @@ class PortalHoopItem : Item(Settings()) {
             return ActionResult.FAIL
         }
 
-        context.world.setBlockState(searchPos, Blocks.STONE.defaultState)
-        context.world.setBlockState(searchPos.add(0, 1, 0), Blocks.HAY_BLOCK.defaultState)
+        placeDebugBlock(context.world, searchPos, searchPos.add(0, 1, 0))
 
-        // val portal: Portal = Portal.ENTITY_TYPE.create(context.world) ?: error("Failed to create portal")
-        val portal: ThroughHoopPortal = RapEntityType.THROUGH_HOOP_PORTAL.create(context.world) ?: error("Failed to create portal")
-        portal.originPos = portalBasePos.toBottomCenterPos().add(0.0, 1.0, 0.0)
-        portal.destDim = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
+        // === Let's place portal ===
+        val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
+
+        createPortal(context.world, portalBasePos.add(0, 1, 0), destDimKey, searchPos.add(0, 1, 0))
+
+        return ActionResult.SUCCESS
+    }
+
+    private fun createPortal(
+        world: World,
+        originPos: BlockPos,
+        destinationDim: RegistryKey<World>,
+        destinationPos: BlockPos,
+    ): ThroughHoopPortal {
+        // Create a new portal
+        val portal: ThroughHoopPortal = RapEntityType.THROUGH_HOOP_PORTAL.create(world) ?: error("Failed to create portal")
+
+        // Link the portal origin & destination
+        portal.originPos = originPos.toBottomCenterPos() // TODO: .add(0.0, 1.0, 0.0)
+        portal.destDim = destinationDim // TODO: (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
+        portal.destination = destinationPos.toBottomCenterPos() // TODO: .add(0.0, 1.0, 0.0)
+
         portal.setOrientationAndSize(
             Vec3d(1.0, 0.0, 0.0),
             Vec3d(0.0, 1.0, 0.0),
             1.0,
             2.0,
         )
-        portal.destination = searchPos.toBottomCenterPos().add(0.0, 1.0, 0.0)
-        PortalManipulation.makePortalRound(portal, 20)
-        context.world.spawnEntity(portal)
-        context.world.spawnEntity(PortalAPI.createReversePortal(portal))
 
-        return ActionResult.SUCCESS
+        // Make it rounded
+        PortalManipulation.makePortalRound(portal, 20)
+
+        // Spawn portals
+        world.spawnEntity(portal) // Origin
+        world.spawnEntity(PortalAPI.createReversePortal(portal)) // Destination
+
+        return portal
+    }
+
+    private fun placeDebugBlock(world: World, posA: BlockPos, posB: BlockPos) {
+        world.setBlockState(posA, Blocks.STONE.defaultState)
+        world.setBlockState(posB, Blocks.HAY_BLOCK.defaultState)
     }
 }
