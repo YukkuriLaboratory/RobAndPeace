@@ -59,8 +59,6 @@ class PortalHoopItem : Item(Settings()) {
             return ActionResult.FAIL
         }
 
-        // logger.info("BasePos: {}, ExtendPos: {}", portalBasePos, portalExtendPos)
-
         // === Search Air area ===
         val destinationPos: BlockPos = searchAirArea(
             context.world,
@@ -184,8 +182,6 @@ class PortalHoopItem : Item(Settings()) {
         portal.destDim = destinationDim
         portal.destination = destinationPos.toBottomCenterPos()
 
-        // Vec3d(1.0, 0.0, 0.0),
-        // Vec3d(0.0, 1.0, 0.0),
         val rightDir: Direction = aaRot.transformedX
         val upDir: Direction = aaRot.transformedY
 
@@ -195,10 +191,6 @@ class PortalHoopItem : Item(Settings()) {
             1.0,
             2.0,
         )
-
-        // portal.setOrientationAndSize(
-        //     Vec3d.of()
-        // )
 
         portal.disableDefaultAnimation()
 
