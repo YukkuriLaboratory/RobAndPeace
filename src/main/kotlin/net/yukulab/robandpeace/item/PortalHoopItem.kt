@@ -53,7 +53,8 @@ class PortalHoopItem : Item(Settings()) {
         val portalExtendPos: BlockPos = getExtendPos(side, context.horizontalPlayerFacing, portalBasePos)
 
         if (checkAirAreaFromWorld(context.world, portalBasePos, portalExtendPos)) {
-            placeDebugBlock(context.world, portalBasePos, portalExtendPos)
+            // placeDebugBlock(context.world, portalBasePos, portalExtendPos)
+            logger.info("You can place the portal")
         } else {
             context.player!!.sendMessage(Text.of("Can't place block!!!! (debug message)"))
             return ActionResult.FAIL
@@ -72,7 +73,7 @@ class PortalHoopItem : Item(Settings()) {
             return ActionResult.FAIL
         }
 
-        placeDebugBlock(context.world, destinationPos, destinationPos.add(0, 1, 0))
+        // placeDebugBlock(context.world, destinationPos, destinationPos.add(0, 1, 0))
 
         // === Let's place portal ===
         val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
