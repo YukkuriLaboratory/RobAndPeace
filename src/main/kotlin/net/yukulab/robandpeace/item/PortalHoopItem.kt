@@ -17,6 +17,7 @@ import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.entity.ThroughHoopPortal
 import qouteall.imm_ptl.core.api.PortalAPI
 import qouteall.imm_ptl.core.portal.PortalManipulation
+import qouteall.q_misc_util.my_util.AARotation
 
 class PortalHoopItem : Item(Settings()) {
     companion object {
@@ -78,7 +79,13 @@ class PortalHoopItem : Item(Settings()) {
         // === Let's place portal ===
         val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
 
-        createPortal(context.world, portalBasePos.add(0, 1, 0), destDimKey, destinationPos.add(0, 1, 0))
+        createPortal(
+            context.world,
+            portalBasePos.add(0, 1, 0),
+            context.side, // TODO: check this
+            destDimKey,
+            destinationPos.add(0, 1, 0),
+        )
 
         return ActionResult.SUCCESS
     }
@@ -103,7 +110,8 @@ class PortalHoopItem : Item(Settings()) {
     ): Result<BlockPos> {
         // 1. Cache
         val cacheStartPos = interactBlockPos
-        val cacheEndPos = interactBlockPos.add( // Long side
+        val cacheEndPos = interactBlockPos.add(
+            // Long side
             playerFacing.offsetX * maximumSearchRange,
             playerFacing.offsetY * maximumSearchRange,
             playerFacing.offsetZ * maximumSearchRange,
@@ -162,9 +170,12 @@ class PortalHoopItem : Item(Settings()) {
     private fun createPortal(
         world: World,
         originPos: BlockPos,
+        wallFacing: Direction,
         destinationDim: RegistryKey<World>,
         destinationPos: BlockPos,
     ): ThroughHoopPortal {
+        val aaRot: AARotation = AARotation.getAARotationFromYZ(Direction.UP, wallFacing)
+
         // Create a new portal
         val portal: ThroughHoopPortal = RapEntityType.THROUGH_HOOP_PORTAL.create(world) ?: error("Failed to create portal")
 
@@ -173,12 +184,23 @@ class PortalHoopItem : Item(Settings()) {
         portal.destDim = destinationDim
         portal.destination = destinationPos.toBottomCenterPos()
 
+        // Vec3d(1.0, 0.0, 0.0),
+        // Vec3d(0.0, 1.0, 0.0),
+        val rightDir: Direction = aaRot.transformedX
+        val upDir: Direction = aaRot.transformedY
+
         portal.setOrientationAndSize(
-            Vec3d(1.0, 0.0, 0.0),
-            Vec3d(0.0, 1.0, 0.0),
+            Vec3d.of(rightDir.vector),
+            Vec3d.of(upDir.vector),
             1.0,
             2.0,
         )
+
+        // portal.setOrientationAndSize(
+        //     Vec3d.of()
+        // )
+
+        portal.disableDefaultAnimation()
 
         // Make it rounded
         PortalManipulation.makePortalRound(portal, 20)
