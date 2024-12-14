@@ -14,7 +14,7 @@ import net.yukulab.robandpeace.entity.ThroughHoopPortal
 
 class PortalOverlayModel(root: ModelPart) : EntityModel<ThroughHoopPortal>() {
     private val base: ModelPart = root.getChild("base")
-    private val cube_r1: ModelPart = root.getChild("cube_r1")
+    private val cube_r1: ModelPart = base.getChild("cube_r1")
 
     override fun render(matrices: MatrixStack?, vertices: VertexConsumer?, light: Int, overlay: Int, color: Int) {
         base.render(matrices, vertices, light, overlay, color)
