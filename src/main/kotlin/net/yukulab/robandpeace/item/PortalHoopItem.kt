@@ -169,9 +169,9 @@ class PortalHoopItem : Item(Settings()) {
         val portal: ThroughHoopPortal = RapEntityType.THROUGH_HOOP_PORTAL.create(world) ?: error("Failed to create portal")
 
         // Link the portal origin & destination
-        portal.originPos = originPos.toBottomCenterPos() // TODO: .add(0.0, 1.0, 0.0)
-        portal.destDim = destinationDim // TODO: (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
-        portal.destination = destinationPos.toBottomCenterPos() // TODO: .add(0.0, 1.0, 0.0)
+        portal.originPos = originPos.toBottomCenterPos()
+        portal.destDim = destinationDim
+        portal.destination = destinationPos.toBottomCenterPos()
 
         portal.setOrientationAndSize(
             Vec3d(1.0, 0.0, 0.0),
