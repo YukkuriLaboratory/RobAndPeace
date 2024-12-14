@@ -13,6 +13,7 @@ import net.yukulab.robandpeace.DelegatedLogger
 import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.entity.ThroughHoopPortal
 import qouteall.imm_ptl.core.api.PortalAPI
+import qouteall.imm_ptl.core.portal.PortalManipulation
 
 class PortalHoopItem : Item(Settings()) {
     companion object {
@@ -88,15 +89,16 @@ class PortalHoopItem : Item(Settings()) {
 
         // val portal: Portal = Portal.ENTITY_TYPE.create(context.world) ?: error("Failed to create portal")
         val portal: ThroughHoopPortal = RapEntityType.THROUGH_HOOP_PORTAL.create(context.world) ?: error("Failed to create portal")
-        portal.originPos = portalBasePos.toBottomCenterPos()
+        portal.originPos = portalBasePos.toBottomCenterPos().add(0.0, 1.0, 0.0)
         portal.destDim = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
         portal.setOrientationAndSize(
             Vec3d(1.0, 0.0, 0.0),
-            Vec3d(0.0, 1.0, 0.0), // TODO fix this
+            Vec3d(0.0, 1.0, 0.0),
             1.0,
             2.0,
         )
-        portal.destination = searchPos.toBottomCenterPos()
+        portal.destination = searchPos.toBottomCenterPos().add(0.0, 1.0, 0.0)
+        PortalManipulation.makePortalRound(portal, 20)
         context.world.spawnEntity(portal)
         context.world.spawnEntity(PortalAPI.createReversePortal(portal))
 
