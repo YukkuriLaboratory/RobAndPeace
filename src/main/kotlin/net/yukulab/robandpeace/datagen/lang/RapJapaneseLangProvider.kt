@@ -9,6 +9,7 @@ import net.yukulab.robandpeace.item.RapItems
 
 class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : RapLangProvider(dataGenerator, "ja_jp", registryLookup) {
     override fun TranslationBuilder.generateTranslations(registryLookup: RegistryWrapper.WrapperLookup) {
+        add(RapServerConfig.KEY_CONFIG_TITLE, "RobAndPeace コンフィグ")
         add(RapServerConfig.KEY_DISABLE_ATTACKING_IN_COOL_TIME, "クールタイム中の攻撃を無効化")
         add(RapServerConfig.KEY_STEAL_COOL_TIME, "クールタイム(Tick)")
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_SUCCESS, "成功時")
@@ -30,12 +31,12 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_HEIGHT, "初期位置(y)")
         add(RapServerConfig.KEY_ITEMS, "アイテム")
         add(RapServerConfig.KEY_ITEMS_SMOKE_INVISIBLE_DURATION, "煙幕のデフォルト効果時間(Tick)")
-        add(RapServerConfig.KEY_ITEMS_WOODEN_GLOVE, "木の手袋")
-        add(RapServerConfig.KEY_ITEMS_STONE_GLOVE, "石の手袋")
-        add(RapServerConfig.KEY_ITEMS_IRON_GLOVE, "鉄の手袋")
-        add(RapServerConfig.KEY_ITEMS_GOLDEN_GLOVE, "金の手袋")
-        add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "ダイヤの手袋")
-        add(RapServerConfig.KEY_ITEMS_NETHERITE_GLOVE, "ネザライトの手袋")
+        add(RapServerConfig.KEY_ITEMS_WOODEN_GLOVE, "木のグローブ")
+        add(RapServerConfig.KEY_ITEMS_STONE_GLOVE, "石のグローブ")
+        add(RapServerConfig.KEY_ITEMS_IRON_GLOVE, "鉄のグローブ")
+        add(RapServerConfig.KEY_ITEMS_GOLDEN_GLOVE, "金のグローブ")
+        add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "ダイヤのグローブ")
+        add(RapServerConfig.KEY_ITEMS_NETHERITE_GLOVE, "ネザライトのグローブ")
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
         add(RapItems.SMOKE, "煙幕")

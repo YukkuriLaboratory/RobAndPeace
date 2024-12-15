@@ -13,13 +13,13 @@
   "text.autoconfig.robandpeace.option.angryGolem.spawnRadius": "スポーン半径",
   "text.autoconfig.robandpeace.option.disableAttackingInCoolTime": "クールタイム中の攻撃を無効化",
   "text.autoconfig.robandpeace.option.items": "アイテム",
-  "text.autoconfig.robandpeace.option.items.diamondGlove": "ダイヤの手袋",
-  "text.autoconfig.robandpeace.option.items.goldenGlove": "金の手袋",
-  "text.autoconfig.robandpeace.option.items.ironGlove": "鉄の手袋",
-  "text.autoconfig.robandpeace.option.items.netheriteGlove": "ネザライトの手袋",
+  "text.autoconfig.robandpeace.option.items.diamondGlove": "ダイヤのグローブ",
+  "text.autoconfig.robandpeace.option.items.goldenGlove": "金のグローブ",
+  "text.autoconfig.robandpeace.option.items.ironGlove": "鉄のグローブ",
+  "text.autoconfig.robandpeace.option.items.netheriteGlove": "ネザライトのグローブ",
   "text.autoconfig.robandpeace.option.items.smokeInvisibleDuration": "煙幕のデフォルト効果時間(Tick)",
-  "text.autoconfig.robandpeace.option.items.stoneGlove": "石の手袋",
-  "text.autoconfig.robandpeace.option.items.woodenGlove": "木の手袋",
+  "text.autoconfig.robandpeace.option.items.stoneGlove": "石のグローブ",
+  "text.autoconfig.robandpeace.option.items.woodenGlove": "木のグローブ",
   "text.autoconfig.robandpeace.option.stealChances": "スリ取り確率",
   "text.autoconfig.robandpeace.option.stealChances.boss": "ボス",
   "text.autoconfig.robandpeace.option.stealChances.criticalBonus": "クリティカルボーナス",
@@ -29,5 +29,6 @@
   "text.autoconfig.robandpeace.option.stealChances.merchantTradeWeight.@Tooltip": "行商人/村人から取引アイテムを盗める割合",
   "text.autoconfig.robandpeace.option.stealCoolTime": "クールタイム(Tick)",
   "text.autoconfig.robandpeace.option.stealCoolTime.onFailure": "失敗時",
-  "text.autoconfig.robandpeace.option.stealCoolTime.onSuccess": "成功時"
+  "text.autoconfig.robandpeace.option.stealCoolTime.onSuccess": "成功時",
+  "text.autoconfig.robandpeace.title": "RobAndPeace コンフィグ"
 }

@@ -103,6 +103,9 @@ class RapServerConfig : ConfigData {
 
     companion object {
         @Excluded
+        const val KEY_CONFIG_TITLE = "text.autoconfig.robandpeace.title"
+
+        @Excluded
         const val KEY_DISABLE_ATTACKING_IN_COOL_TIME = "text.autoconfig.robandpeace.option.disableAttackingInCoolTime"
 
         @Excluded
