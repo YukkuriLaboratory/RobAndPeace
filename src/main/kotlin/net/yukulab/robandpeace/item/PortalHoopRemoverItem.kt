@@ -18,7 +18,7 @@ class PortalHoopRemoverItem : Item(Settings().maxCount(1)) {
     override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         if (world.isClient) return TypedActionResult.pass(user.getStackInHand(hand))
 
-        logger.info("use! user: ${user.name}")
+        logger.debug("item used! user: {}", user.name)
 
         val stack = user.getStackInHand(hand)
         val nearestPortals = McHelper.getEntitiesNearby(

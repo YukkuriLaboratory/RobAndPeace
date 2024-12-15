@@ -44,11 +44,11 @@ class PortalHoopItem : Item(Settings()) {
         // If client side
         if (context.world.isClient) return super.useOnBlock(context)
 
-        context.player!!.sendMessage(Text.of("Yaw: ${context.playerYaw}, Facing: ${context.horizontalPlayerFacing}"))
+        logger.debug("item used on block. Yaw: {}, Facing: {}", context.playerYaw, context.horizontalPlayerFacing)
 
         val side = context.side
         // Logic
-        logger.info("Portal Hoop was used! side: {}, sideOffset -> (x:{}, y:{}, z:{})", side, side.offsetX, side.offsetY, side.offsetZ)
+        logger.debug("Portal Hoop was used! side: {}, sideOffset -> (x:{}, y:{}, z:{})", side, side.offsetX, side.offsetY, side.offsetZ)
 
         // === Portal origin block positions ===
         val portalBasePos = context.blockPos.add(side.offsetX, side.offsetY, side.offsetZ)
@@ -56,7 +56,7 @@ class PortalHoopItem : Item(Settings()) {
 
         if (checkAirAreaFromWorld(context.world, portalBasePos, portalExtendPos)) {
             // placeDebugBlock(context.world, portalBasePos, portalExtendPos)
-            logger.info("You can place the portal")
+            logger.debug("You can place the portal")
         } else {
             context.player!!.sendMessage(Text.of("Can't place block!!!! (debug message)"))
             return ActionResult.FAIL
@@ -137,15 +137,15 @@ class PortalHoopItem : Item(Settings()) {
         val searchPos = interactBlockPos.mutableCopy()
         for (i in 1..maxRange) {
             searchPos.move(playerFacing)
-            logger.info("Searching at x:${searchPos.x}, y:${searchPos.y}, z:${searchPos.z}")
+            logger.debug("Searching at x:${searchPos.x}, y:${searchPos.y}, z:${searchPos.z}")
             if (checkAirArea(chunkCache, searchPos, extensionDirection)) {
-                logger.info("Air found! Pos: {}", searchPos)
+                logger.debug("Air found! Pos: {}", searchPos)
                 return Result.success(searchPos)
             }
         }
 
         // 3. Return
-        logger.info("Air not found.")
+        logger.debug("Air not found.")
         return Result.failure(RuntimeException("Air was not found in this area."))
     }
 
@@ -159,15 +159,15 @@ class PortalHoopItem : Item(Settings()) {
 
         val baseBlockState: BlockState = chunkCache.getBlockState(basePos)
         val extBlockState: BlockState = chunkCache.getBlockState(extendPos)
-        logger.info("loop baseBlockId: ${baseBlockState.block.name}, coord: $basePos")
-        logger.info("loop extBlockId: ${extBlockState.block.name}, coord: $extendPos")
+        logger.debug("loop baseBlockId: {}, coord: {}", baseBlockState.block.name, basePos)
+        logger.debug("loop extBlockId: {}, coord: {}", extBlockState.block.name, extendPos)
 
         // return both blocks are air
         return baseBlockState.isAir && extBlockState.isAir
     }
 
     private fun checkAirAreaFromWorld(world: World, basePos: BlockPos, extensionBlockPos: BlockPos): Boolean {
-        logger.info("Base:{}, Extend:{}", basePos, extensionBlockPos)
+        logger.debug("Base:{}, Extend:{}", basePos, extensionBlockPos)
 
         // Check range is cached
         if (world.isOutOfHeightLimit(basePos) || world.isOutOfHeightLimit(extensionBlockPos)) {
