@@ -37,7 +37,7 @@ class PortalHoopRemoverItem : Item(Settings().maxCount(1)) {
         PortalAPI.removeGlobalPortal(serverWorld, originPortal)
         PortalAPI.removeGlobalPortal(serverWorld, destPortal)
 
-        user.setStackInHand(hand, ItemStack.EMPTY)
+        user.setStackInHand(hand, ItemStack(RapItems.PORTAL_HOOP))
         return TypedActionResult.consume(stack)
     }
 
