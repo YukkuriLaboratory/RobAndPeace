@@ -29,5 +29,6 @@
   "text.autoconfig.robandpeace.option.stealChances.merchantTradeWeight.@Tooltip": "The weight of merchant/villager trade item in stealing chances",
   "text.autoconfig.robandpeace.option.stealCoolTime": "Steal cool time(Tick)",
   "text.autoconfig.robandpeace.option.stealCoolTime.onFailure": "on failure",
-  "text.autoconfig.robandpeace.option.stealCoolTime.onSuccess": "on success"
+  "text.autoconfig.robandpeace.option.stealCoolTime.onSuccess": "on success",
+  "text.autoconfig.robandpeace.title": "RobAndPeace Config"
 }
