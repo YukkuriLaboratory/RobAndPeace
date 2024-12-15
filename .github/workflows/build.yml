@@ -39,8 +39,6 @@ jobs:
           ktlint_version: ${{ steps.ktlint.outputs.version }}
           reporter: ${{ (github.event_name == 'pull_request' && 'github-pr-review' ) || 'github-check' }}
           fail_on_error: true
-      - name: validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v2
 
   build:
     strategy:
