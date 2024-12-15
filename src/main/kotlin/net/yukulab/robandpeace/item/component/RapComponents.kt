@@ -11,6 +11,9 @@ object RapComponents {
     val SMOKE_INVISIBLE_DURATION: ComponentType<Int> = register("smoke_invisible_duration", ComponentType.builder<Int>().codec(Codec.INT))
     val PICKING_CHANCE: ComponentType<Int> = register("picking_chance", ComponentType.builder<Int>().codec(Codec.INT))
     val IS_OMEN: ComponentType<Boolean> = register("is_omen", ComponentType.builder<Boolean>().codec(Codec.BOOL))
+    val PORTAL_HOOP_ENTITY_ID: ComponentType<Int> = register("portal_hoop_entity_id", ComponentType.builder<Int>().codec(Codec.INT))
+    val PORTAL_ID_ORIGIN: ComponentType<Int> = register("portal_id_origin", ComponentType.builder<Int>().codec(Codec.INT))
+    val PORTAL_ID_DESTINATION: ComponentType<Int> = register("portal_id_destination", ComponentType.builder<Int>().codec(Codec.INT))
 
     private fun <T, C : ComponentType.Builder<T>> register(name: String, componentType: C): ComponentType<T> = register(name, componentType.build())
 

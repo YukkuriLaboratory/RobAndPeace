@@ -91,6 +91,9 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
                 ),
             )
         }
+        itemModelGenerator.register(RapItems.SPIDER_WALKER, Models.GENERATED)
+        itemModelGenerator.register(RapItems.PORTAL_HOOP, Models.GENERATED)
+        itemModelGenerator.register(RapItems.PORTAL_HOOP_REMOVER, Models.GENERATED)
     }
 
     companion object {

@@ -11,6 +11,7 @@ ktlint-gradle = "12.1.1"
 cloth-config = "15.0.140"
 modmenu = "11.0.3"
 sodium = "mc1.21-0.5.11"
+immersiveportals = "v6.0.4-mc1.21.1"
 cardinal-components = "6.1.1"
 cardinal-components-api = "6.1.1"
 # for testing
@@ -29,6 +30,7 @@ fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = 
 cloth-config = { module = "me.shedaniel.cloth:cloth-config-fabric", version.ref = "cloth-config" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+immersiveportals = { module = "com.github.iPortalTeam:ImmersivePortalsMod", version.ref = "immersiveportals"}
 # For development
 cardinal-components-base = { module = "org.ladysnake.cardinal-components-api:cardinal-components-base", version.ref = "cardinal-components" }
 cardinal-components-world = { module = "org.ladysnake.cardinal-components-api:cardinal-components-world", version.ref = "cardinal-components" }
