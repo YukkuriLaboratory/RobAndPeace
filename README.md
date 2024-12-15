@@ -11,6 +11,15 @@
 - [ImmersivePortals](https://modrinth.com/mod/immersiveportals)
 - [Cardinal Components API](https://modrinth.com/mod/cardinal-components-api)
 
+## Build
+```shell
+git submodule update --init
+cd gravity-api
+./gradlew publishToMavenLocal
+cd ..
+./gradlew build
+```
+
 ## Credits
 - libs/gravity-changer-1.3.0+mc1.21.jar from [GravityChanger-1.21.1](https://github.com/FugLord77/GravityChanger-1.21.1)
 - below things are borrowed from [PortalGun](https://github.com/iPortalTeam/PortalGun) under the MIT license
