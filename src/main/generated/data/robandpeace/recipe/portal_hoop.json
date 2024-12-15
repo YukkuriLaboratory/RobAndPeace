@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:copper_block"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "minecraft:ghast_tear"
+    },
+    "W": {
+      "item": "minecraft:weathered_copper"
+    }
+  },
+  "pattern": [
+    "DCD",
+    "WGW",
+    "DCD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "robandpeace:portal_hoop"
+  }
+}

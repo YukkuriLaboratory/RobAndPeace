@@ -1,0 +1,65 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_copper_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:copper_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_diamond": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:diamond"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_ghast_tear": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:ghast_tear"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "robandpeace:portal_hoop"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_weathered_copper": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:weathered_copper"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_diamond",
+      "has_copper_block",
+      "has_weathered_copper",
+      "has_ghast_tear"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "robandpeace:portal_hoop"
+    ]
+  }
+}
