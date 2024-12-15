@@ -3,6 +3,7 @@ package net.yukulab.robandpeace.item
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.registry.RegistryKey
 import net.minecraft.text.Text
@@ -15,6 +16,7 @@ import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
 import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.entity.ThroughHoopPortal
+import net.yukulab.robandpeace.item.component.RapComponents
 import qouteall.imm_ptl.core.api.PortalAPI
 import qouteall.imm_ptl.core.portal.PortalManipulation
 import qouteall.q_misc_util.my_util.AARotation
@@ -82,7 +84,7 @@ class PortalHoopItem : Item(Settings()) {
         val offsetX = 0.4 * playerDir.offsetX
         val offsetY = 0.4 * playerDir.offsetY
         val offsetZ = 0.4 * playerDir.offsetZ
-        createPortal(
+        val portalData = createPortal(
             context.world,
             portalBasePos.toCenterPos().add(offsetX, 0.5 + offsetY, offsetZ),
             context.side, // TODO: check this
@@ -90,7 +92,13 @@ class PortalHoopItem : Item(Settings()) {
             destinationPos.toCenterPos().add(-offsetX, 0.5 - offsetY, -offsetZ),
         )
 
-        return ActionResult.SUCCESS
+        val stack = ItemStack(RapItems.PORTAL_HOOP_REMOVER)
+        stack.set(RapComponents.PORTAL_ID_ORIGIN, portalData.origin.id)
+        stack.set(RapComponents.PORTAL_ID_DESTINATION, portalData.destination.id)
+        context.player!!.giveItemStack(stack)
+
+        context.player!!.setStackInHand(context.hand, ItemStack.EMPTY)
+        return ActionResult.CONSUME
     }
 
     /**
@@ -176,7 +184,7 @@ class PortalHoopItem : Item(Settings()) {
         wallFacing: Direction,
         destinationDim: RegistryKey<World>,
         destinationPos: Vec3d,
-    ): ThroughHoopPortal {
+    ): PortalData {
         val aaRot: AARotation = AARotation.getAARotationFromYZ(Direction.UP, wallFacing)
 
         // Create a new portal
@@ -202,11 +210,13 @@ class PortalHoopItem : Item(Settings()) {
         // Make it rounded
         PortalManipulation.makePortalRound(portal, 20)
 
+        val destinationPortal = PortalAPI.createReversePortal(portal)
+
         // Spawn portals
         world.spawnEntity(portal) // Origin
-        world.spawnEntity(PortalAPI.createReversePortal(portal)) // Destination
+        world.spawnEntity(destinationPortal) // Destination
 
-        return portal
+        return PortalData(portal, destinationPortal)
     }
 
     private fun placeDebugBlock(world: World, posA: BlockPos, posB: BlockPos) {
@@ -214,3 +224,5 @@ class PortalHoopItem : Item(Settings()) {
         world.setBlockState(posB, Blocks.HAY_BLOCK.defaultState)
     }
 }
+
+data class PortalData(val origin: ThroughHoopPortal, val destination: ThroughHoopPortal)
