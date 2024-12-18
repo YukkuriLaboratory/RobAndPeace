@@ -1,6 +1,7 @@
 package net.yukulab.robandpeace.mixin.steal;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -13,6 +14,7 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
@@ -181,6 +183,11 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                     default -> {
                     }
                 }
+                var lootingLevel = getRegistryManager().getOptionalWrapper(RegistryKeys.ENCHANTMENT)
+                        .flatMap((registry) -> registry.getOptional(Enchantments.LOOTING))
+                        .map((looting) -> stack.getEnchantments().getLevel(looting))
+                        .orElse(0);
+                chance += lootingLevel;
             }
             var rand = entity.getRandom().nextInt(100);
             if (rand >= chance) {
