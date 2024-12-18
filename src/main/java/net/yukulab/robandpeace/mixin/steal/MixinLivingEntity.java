@@ -146,7 +146,8 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
     private void replacePlayerAttackBehavior(DamageSource source, float amount, CallbackInfo ci) {
         if (source.getAttacker() instanceof PlayerEntity player) {
             var entity = (LivingEntity) (Object) this;
-            var chance = switch (entity) {
+            var baseChance = 0;
+            var multiply = switch (entity) {
                 // bosses
                 case ElderGuardianEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
                 case PiglinBruteEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
@@ -160,7 +161,7 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                 default -> robandpeace$getServerConfigSupplier().get().stealChances.friendly;
             };
             if (source.robandpeace$isCritical()) {
-                chance += robandpeace$getServerConfigSupplier().get().stealChances.criticalBonus;
+                baseChance += robandpeace$getServerConfigSupplier().get().stealChances.criticalBonus;
             }
             var stack = source.getWeaponStack();
             if (stack != null) {
@@ -177,9 +178,9 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                                     robandpeace$getServerConfigSupplier().get().items.netheriteGlove;
                             default -> 0;
                         };
-                        chance += toolBonus;
+                        baseChance += toolBonus;
                     }
-                    case RangedWeaponItem ignored -> chance = 0;
+                    case RangedWeaponItem ignored -> baseChance = 0;
                     default -> {
                     }
                 }
@@ -187,10 +188,11 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                         .flatMap((registry) -> registry.getOptional(Enchantments.LOOTING))
                         .map((looting) -> stack.getEnchantments().getLevel(looting))
                         .orElse(0);
-                chance += lootingLevel;
+                baseChance += lootingLevel;
             }
-            var rand = entity.getRandom().nextInt(100);
-            if (rand >= chance) {
+            var rand = entity.getRandom().nextInt(10000);
+            var chance = baseChance * multiply;
+            if (rand * 0.01 >= chance) {
                 robandpeace$setStealCooldown(robandpeace$getServerConfigSupplier().get().stealCoolTime.onFailure);
                 ci.cancel();
                 return;

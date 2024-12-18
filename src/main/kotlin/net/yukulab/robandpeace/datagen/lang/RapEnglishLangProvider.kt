@@ -15,9 +15,13 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_SUCCESS, "on success")
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_FAILURE, "on failure")
         add(RapServerConfig.KEY_STEAL_CHANCES, "Steal chances")
-        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY, "Friendly")
-        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE, "Hostile")
-        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS, "Boss")
+        val formula = "chance=(1+bonus) x weight"
+        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY, "Friendly multiply")
+        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE, "Hostile multiply")
+        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS, "Boss multiply")
+        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS.configToolTip(), formula)
         add(RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT, "Merchant trade weight")
         add(
             RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT.configToolTip(),
