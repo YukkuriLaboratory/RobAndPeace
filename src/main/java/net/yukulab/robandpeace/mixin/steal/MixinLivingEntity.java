@@ -24,6 +24,8 @@ import net.yukulab.robandpeace.entity.RapEntityType;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.extension.StealCooldownHolder;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -55,6 +57,9 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
     @Shadow
     protected int playerHitTimer;
 
+    @Shadow
+    @Final
+    private static Logger LOGGER;
     @Unique
     private boolean robandpeace$isItemDropped = false;
 
@@ -190,9 +195,12 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                         .orElse(0);
                 baseChance += lootingLevel;
             }
-            var rand = entity.getRandom().nextInt(10000);
+            var rand = entity.getRandom().nextInt(10000) * 0.01;
             var chance = baseChance * multiply;
-            if (rand * 0.01 >= chance) {
+            LOGGER.debug("Steal chance: {}% (base: {}%, multiply: {})", chance, baseChance, multiply);
+            LOGGER.debug("Result: {}", rand);
+            if (rand >= chance) {
+                LOGGER.debug("Steal failed");
                 robandpeace$setStealCooldown(robandpeace$getServerConfigSupplier().get().stealCoolTime.onFailure);
                 ci.cancel();
                 return;
