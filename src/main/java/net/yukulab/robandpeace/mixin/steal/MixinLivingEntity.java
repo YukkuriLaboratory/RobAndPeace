@@ -1,10 +1,7 @@
 package net.yukulab.robandpeace.mixin.steal;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -25,8 +22,6 @@ import net.yukulab.robandpeace.entity.RapEntityType;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.extension.StealCooldownHolder;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,12 +33,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.function.Supplier;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfigInjector {
+public abstract class MixinLivingEntity extends Entity implements StealCooldownHolder, RapConfigInjector {
     @Unique
     private static TrackedData<Long> ROBANDPEACE_STEAL_COOLDOWN;
 
     @Unique
     private Supplier<RapServerConfig> robandpeace$serverConfigSupplier = RapConfigs::getServerConfig;
+
+    public MixinLivingEntity(EntityType<?> type, World world) {
+        super(type, world);
+    }
 
     @Shadow
     protected abstract void dropLoot(DamageSource damageSource, boolean causedByPlayer);
@@ -54,9 +53,8 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
     @Shadow
     protected int playerHitTimer;
 
-    @Shadow
-    @Final
-    private static Logger LOGGER;
+    @Unique
+    private boolean robandpeace$isItemDropped = false;
 
     @Inject(
             method = "<clinit>",
@@ -124,6 +122,15 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
     )
     private boolean disableHurtSoundIfPlayerAttacked(LivingEntity instance, DamageSource damageSource) {
         return !(damageSource.getAttacker() instanceof PlayerEntity);
+    }
+
+    @Override
+    public @Nullable ItemEntity dropStack(ItemStack stack, float yOffset) {
+        var result = super.dropStack(stack, yOffset);
+        if (result != null) {
+            robandpeace$isItemDropped = true;
+        }
+        return result;
     }
 
     @Inject(
@@ -197,7 +204,13 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
                     itemEntity.setOwner(player.getUuid());
                 }
             } else {
-                dropLoot(source, true);
+                for (int i = 0; i < 10000; i++) {
+                    dropLoot(source, true);
+                    if (robandpeace$isItemDropped) {
+                        break;
+                    }
+                }
+                robandpeace$isItemDropped = false;
             }
             // playerHitTimerを0以上にしないとxpが落ちない
             playerHitTimer = 100;
