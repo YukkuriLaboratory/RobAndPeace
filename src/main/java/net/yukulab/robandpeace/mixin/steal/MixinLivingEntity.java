@@ -154,7 +154,7 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                 case EvokerEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
                 case WardenEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
                 case WitherEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
-                case EnderDragonEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
+                case EnderDragonEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.enderDragon;
                 // normal mobs
                 case MerchantEntity ignored -> 100;
                 case HostileEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.hostile;

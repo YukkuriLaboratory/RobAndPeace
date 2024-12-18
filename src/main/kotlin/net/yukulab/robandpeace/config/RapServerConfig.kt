@@ -47,7 +47,11 @@ class RapServerConfig : ConfigData {
 
         @Tooltip
         @JvmField
-        var boss: Double = 0.02
+        var boss: Double = 0.06
+
+        @Tooltip
+        @JvmField
+        var enderDragon: Double = 0.02
 
         @BoundedDiscrete(min = 0, max = 100)
         @Tooltip
@@ -128,6 +132,9 @@ class RapServerConfig : ConfigData {
 
         @Excluded
         const val KEY_STEAL_CHANCES_BOSS = "text.autoconfig.robandpeace.option.stealChances.boss"
+
+        @Excluded
+        const val KEY_STEAL_CHANCES_ENDER_DRAGON = "text.autoconfig.robandpeace.option.stealChances.enderDragon"
 
         @Excluded
         const val KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT =

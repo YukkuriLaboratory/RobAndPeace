@@ -22,6 +22,8 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE.configToolTip(), formula)
         add(RapServerConfig.KEY_STEAL_CHANCES_BOSS, "ボス倍率")
         add(RapServerConfig.KEY_STEAL_CHANCES_BOSS.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_ENDER_DRAGON, "エンダードラゴン倍率")
+        add(RapServerConfig.KEY_STEAL_CHANCES_ENDER_DRAGON.configToolTip(), formula)
         add(RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT, "取引アイテム比率")
         add(
             RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT.configToolTip(),

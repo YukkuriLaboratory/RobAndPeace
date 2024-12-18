@@ -27,6 +27,8 @@
   "text.autoconfig.robandpeace.option.stealChances.boss": "ボス倍率",
   "text.autoconfig.robandpeace.option.stealChances.boss.@Tooltip": "確立=(1+ボーナス)x倍率",
   "text.autoconfig.robandpeace.option.stealChances.criticalBonus": "クリティカルボーナス",
+  "text.autoconfig.robandpeace.option.stealChances.enderDragon": "エンダードラゴン倍率",
+  "text.autoconfig.robandpeace.option.stealChances.enderDragon.@Tooltip": "確立=(1+ボーナス)x倍率",
   "text.autoconfig.robandpeace.option.stealChances.friendly": "友好MOB倍率",
   "text.autoconfig.robandpeace.option.stealChances.friendly.@Tooltip": "確立=(1+ボーナス)x倍率",
   "text.autoconfig.robandpeace.option.stealChances.hostile": "敵対MOB倍率",

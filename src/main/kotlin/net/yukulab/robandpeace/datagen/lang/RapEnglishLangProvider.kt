@@ -22,6 +22,8 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE.configToolTip(), formula)
         add(RapServerConfig.KEY_STEAL_CHANCES_BOSS, "Boss multiply")
         add(RapServerConfig.KEY_STEAL_CHANCES_BOSS.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_ENDER_DRAGON, "Ender Dragon multiply")
+        add(RapServerConfig.KEY_STEAL_CHANCES_ENDER_DRAGON.configToolTip(), formula)
         add(RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT, "Merchant trade weight")
         add(
             RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT.configToolTip(),
