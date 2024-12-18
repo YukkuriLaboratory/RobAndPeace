@@ -71,6 +71,7 @@ repositories {
 
 loom {
     splitEnvironmentSourceSets()
+    log4jConfigs.setFrom(file("log4j2.xml"))
 
     mods {
         create("robandpeace") {
