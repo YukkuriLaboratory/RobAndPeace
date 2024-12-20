@@ -43,6 +43,13 @@ class HiddenTreasureEntityRenderer(context: EntityRendererFactory.Context) : Ent
 
     override fun getTexture(entity: HiddenTreasureEntity): Identifier = Identifier.ofVanilla("textures/entity/elytra.png")
 
+    /**
+     * Render death animation
+     * From Enderdragon renderer
+     * @param matrices
+     * @param animationProgress
+     * @param vertexConsumer
+     */
     private fun renderDeathAnimation(matrices: MatrixStack, animationProgress: Float, vertexConsumer: VertexConsumer) {
         matrices.push()
         val f = min((if (animationProgress > 0.8f) (animationProgress - 0.8f) / 0.2f else 0.0f).toDouble(), 1.0)
