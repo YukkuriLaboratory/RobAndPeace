@@ -151,7 +151,7 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
     private void replacePlayerAttackBehavior(DamageSource source, float amount, CallbackInfo ci) {
         if (source.getAttacker() instanceof PlayerEntity player) {
             var entity = (LivingEntity) (Object) this;
-            var baseChance = 0;
+            var baseChance = 1;
             var multiply = switch (entity) {
                 // bosses
                 case ElderGuardianEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
