@@ -221,12 +221,17 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                     itemEntity.setOwner(player.getUuid());
                 }
             } else {
-                for (int i = 0; i < 10000; i++) {
+                // スリ取り成功時は必ずアイテムをドロップしてほしいが、そもそもアイテムをドロップしないMOBの可能性も考えて7万回まで施行するようにしておく
+                // 例えばドロップ率が0.001%のMOBでも7万回連続でドロップしない確立は0.09%程度になる
+                var millis = System.currentTimeMillis();
+                for (int i = 0; i < 70000; i++) {
                     dropLoot(source, true);
                     if (robandpeace$isItemDropped) {
                         break;
                     }
                 }
+                // 紙魚などでフルに試行されてしまうと初回のみ40ms程度かかり、その後最適化されるのか2回目以降は20ms以下に収まる
+                LOGGER.debug("Drop time: {}ms", System.currentTimeMillis() - millis);
                 robandpeace$isItemDropped = false;
             }
             // playerHitTimerを0以上にしないとxpが落ちない
