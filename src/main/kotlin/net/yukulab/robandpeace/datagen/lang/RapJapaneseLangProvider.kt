@@ -15,7 +15,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_SUCCESS, "成功時")
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_FAILURE, "失敗時")
         add(RapServerConfig.KEY_STEAL_CHANCES, "スリ取り確率")
-        val formula = "確立=(1+ボーナス)x倍率"
+        val formula = "確率=(1+ボーナス)x倍率"
         add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY, "友好MOB倍率")
         add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY.configToolTip(), formula)
         add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE, "敵対MOB倍率")
