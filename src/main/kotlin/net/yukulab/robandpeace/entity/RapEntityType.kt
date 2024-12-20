@@ -20,6 +20,9 @@ object RapEntityType {
     @JvmField
     val THROUGH_HOOP_PORTAL = register("through_hoop_portal", ::ThroughHoopPortal, SpawnGroup.MISC) {}
 
+    @JvmField
+    val HIDDEN_TREASURE_ENTITY = register("hidden_treasure_entity", ::HiddenTreasureEntity, SpawnGroup.MISC) {}
+
     private fun <E : Entity> register(id: String, initializer: (EntityType<E>, World) -> E, group: SpawnGroup, builder: EntityType.Builder<E>.() -> Unit): EntityType<E> = Registry.register(Registries.ENTITY_TYPE, id, EntityType.Builder.create(initializer, group).apply(builder).build(id))
 
     fun init() {

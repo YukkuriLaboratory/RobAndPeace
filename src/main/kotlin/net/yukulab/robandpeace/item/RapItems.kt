@@ -22,6 +22,7 @@ object RapItems {
     val TRIAL_PICKING_TOOL: PickingToolItem = register("trial_picking_tool", PickingToolItem(70, true))
     val PORTAL_HOOP: PortalHoopItem = register("portal_hoop", PortalHoopItem())
     val PORTAL_HOOP_REMOVER: PortalHoopRemoverItem = register("portal_hoop_remover", PortalHoopRemoverItem())
+    val HIDDEN_TREASURE: HiddenTreasureItem = register("hidden_treasure", HiddenTreasureItem())
 
     private fun <T : Item> register(id: String, item: T): T = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, id), item)
 
@@ -42,6 +43,7 @@ object RapItems {
             it.add(TRIAL_PICKING_TOOL)
             it.add(PORTAL_HOOP)
             it.add(PORTAL_HOOP_REMOVER)
+            it.add(HIDDEN_TREASURE)
         }
     }
 }
