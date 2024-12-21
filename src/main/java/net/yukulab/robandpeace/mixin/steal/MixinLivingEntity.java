@@ -1,10 +1,8 @@
 package net.yukulab.robandpeace.mixin.steal;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.*;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -16,6 +14,7 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
@@ -38,12 +37,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.function.Supplier;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfigInjector {
+public abstract class MixinLivingEntity extends Entity implements StealCooldownHolder, RapConfigInjector {
     @Unique
     private static TrackedData<Long> ROBANDPEACE_STEAL_COOLDOWN;
 
     @Unique
     private Supplier<RapServerConfig> robandpeace$serverConfigSupplier = RapConfigs::getServerConfig;
+
+    public MixinLivingEntity(EntityType<?> type, World world) {
+        super(type, world);
+    }
 
     @Shadow
     protected abstract void dropLoot(DamageSource damageSource, boolean causedByPlayer);
@@ -57,6 +60,8 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
     @Shadow
     @Final
     private static Logger LOGGER;
+    @Unique
+    private boolean robandpeace$isItemDropped = false;
 
     @Inject(
             method = "<clinit>",
@@ -126,6 +131,15 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
         return !(damageSource.getAttacker() instanceof PlayerEntity);
     }
 
+    @Override
+    public @Nullable ItemEntity dropStack(ItemStack stack, float yOffset) {
+        var result = super.dropStack(stack, yOffset);
+        if (result != null) {
+            robandpeace$isItemDropped = true;
+        }
+        return result;
+    }
+
     @Inject(
             method = "applyDamage",
             at = @At(
@@ -137,21 +151,22 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
     private void replacePlayerAttackBehavior(DamageSource source, float amount, CallbackInfo ci) {
         if (source.getAttacker() instanceof PlayerEntity player) {
             var entity = (LivingEntity) (Object) this;
-            var chance = switch (entity) {
+            var baseChance = 1;
+            var multiply = switch (entity) {
                 // bosses
                 case ElderGuardianEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
                 case PiglinBruteEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
                 case EvokerEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
                 case WardenEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
                 case WitherEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
-                case EnderDragonEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.boss;
+                case EnderDragonEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.enderDragon;
                 // normal mobs
                 case MerchantEntity ignored -> 100;
                 case HostileEntity ignored -> robandpeace$getServerConfigSupplier().get().stealChances.hostile;
                 default -> robandpeace$getServerConfigSupplier().get().stealChances.friendly;
             };
             if (source.robandpeace$isCritical()) {
-                chance += robandpeace$getServerConfigSupplier().get().stealChances.criticalBonus;
+                baseChance += robandpeace$getServerConfigSupplier().get().stealChances.criticalBonus;
             }
             var stack = source.getWeaponStack();
             if (stack != null) {
@@ -168,15 +183,24 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
                                     robandpeace$getServerConfigSupplier().get().items.netheriteGlove;
                             default -> 0;
                         };
-                        chance += toolBonus;
+                        baseChance += toolBonus;
                     }
-                    case RangedWeaponItem ignored -> chance = 0;
+                    case RangedWeaponItem ignored -> baseChance = 0;
                     default -> {
                     }
                 }
+                var lootingLevel = getRegistryManager().getOptionalWrapper(RegistryKeys.ENCHANTMENT)
+                        .flatMap((registry) -> registry.getOptional(Enchantments.LOOTING))
+                        .map((looting) -> stack.getEnchantments().getLevel(looting))
+                        .orElse(0);
+                baseChance += lootingLevel;
             }
-            var rand = entity.getRandom().nextInt(100);
+            var rand = entity.getRandom().nextInt(10000) * 0.01;
+            var chance = baseChance * multiply;
+            LOGGER.debug("Steal chance: {}% (base: {}%, multiply: {})", chance, baseChance, multiply);
+            LOGGER.debug("Result: {}", rand);
             if (rand >= chance) {
+                LOGGER.debug("Steal failed");
                 robandpeace$setStealCooldown(robandpeace$getServerConfigSupplier().get().stealCoolTime.onFailure);
                 ci.cancel();
                 return;
@@ -197,7 +221,18 @@ public abstract class MixinLivingEntity implements StealCooldownHolder, RapConfi
                     itemEntity.setOwner(player.getUuid());
                 }
             } else {
-                dropLoot(source, true);
+                // スリ取り成功時は必ずアイテムをドロップしてほしいが、そもそもアイテムをドロップしないMOBの可能性も考えて7万回まで施行するようにしておく
+                // 例えばドロップ率が0.001%のMOBでも7万回連続でドロップしない確立は0.09%程度になる
+                var millis = System.currentTimeMillis();
+                for (int i = 0; i < 70000; i++) {
+                    dropLoot(source, true);
+                    if (robandpeace$isItemDropped) {
+                        break;
+                    }
+                }
+                // 紙魚などでフルに試行されてしまうと初回のみ40ms程度かかり、その後最適化されるのか2回目以降は20ms以下に収まる
+                LOGGER.debug("Drop time: {}ms", System.currentTimeMillis() - millis);
+                robandpeace$isItemDropped = false;
             }
             // playerHitTimerを0以上にしないとxpが落ちない
             playerHitTimer = 100;
