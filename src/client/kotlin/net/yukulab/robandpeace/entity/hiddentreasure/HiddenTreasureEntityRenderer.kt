@@ -21,7 +21,8 @@ class HiddenTreasureEntityRenderer(context: EntityRendererFactory.Context) : Ent
     override fun render(entity: HiddenTreasureEntity, yaw: Float, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int) {
         val m: Float = (entity.currentTick + 1) / 200.0f
         matrices.push()
-        matrices.translate(0.0f, -1.0f, -2.0f)
+        // y - 1, z - 2の位置に移動させられていたのでコメントアウト
+        // matrices.translate(0.0f, -1.0f, -2.0f)
         renderDeathAnimation(
             matrices,
             m,
@@ -32,11 +33,12 @@ class HiddenTreasureEntityRenderer(context: EntityRendererFactory.Context) : Ent
             m,
             vertexConsumers.getBuffer(RenderLayer.getDragonRaysDepth()),
         )
-        renderDeathAnimation(
-            matrices,
-            m,
-            vertexConsumers.getBuffer(RenderLayer.getFastClouds()),
-        )
+        // クラッシュしたのでコメントアウト
+        // renderDeathAnimation(
+        //     matrices,
+        //     m,
+        //     vertexConsumers.getBuffer(RenderLayer.getFastClouds()),
+        // )
         matrices.pop()
         super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light)
     }
