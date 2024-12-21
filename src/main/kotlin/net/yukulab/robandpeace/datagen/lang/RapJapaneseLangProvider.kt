@@ -41,7 +41,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_ITEMS_STONE_GLOVE, "石のグローブ")
         add(RapServerConfig.KEY_ITEMS_IRON_GLOVE, "鉄のグローブ")
         add(RapServerConfig.KEY_ITEMS_GOLDEN_GLOVE, "金のグローブ")
-        add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "ダイヤのグローブ")
+        add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "ダイヤモンドのグローブ")
         add(RapServerConfig.KEY_ITEMS_NETHERITE_GLOVE, "ネザライトのグローブ")
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
