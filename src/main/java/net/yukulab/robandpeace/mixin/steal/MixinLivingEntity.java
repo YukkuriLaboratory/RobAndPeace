@@ -131,6 +131,16 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
         return !(damageSource.getAttacker() instanceof PlayerEntity);
     }
 
+    @WrapWithCondition(
+            method = "onDeath",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;drop(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/damage/DamageSource;)V")
+    )
+    private boolean disableItemDropOnDeathForMobEntity(LivingEntity instance, ServerWorld world, DamageSource damageSource) {
+        return !(instance instanceof MobEntity);
+    }
+
     @Override
     public @Nullable ItemEntity dropStack(ItemStack stack, float yOffset) {
         var result = super.dropStack(stack, yOffset);
