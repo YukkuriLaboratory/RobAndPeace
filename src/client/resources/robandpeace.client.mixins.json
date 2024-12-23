@@ -3,6 +3,7 @@
   "package": "net.yukulab.robandpeace.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "spiderwalker.MixinClientPlayerEntity",
     "steal.MixinInGameHud"
   ],
   "injectors": {
