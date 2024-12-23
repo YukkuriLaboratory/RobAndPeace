@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry.BoundedDiscrete
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Excluded
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment
 
 @Config(name = "robandpeace")
 class RapServerConfig : ConfigData {
@@ -27,6 +28,11 @@ class RapServerConfig : ConfigData {
     @CollapsibleObject
     @JvmField
     var items: Items = Items()
+
+    // TODO: add lang for spider walker settings
+    @CollapsibleObject
+    @JvmField
+    var spiderWalkerSettings: SpiderWalkerSettings = SpiderWalkerSettings()
 
     class StealCoolTime {
         @JvmField
@@ -103,6 +109,131 @@ class RapServerConfig : ConfigData {
         @BoundedDiscrete(min = 0, max = 100)
         @JvmField
         var netheriteGlove: Int = 30
+    }
+
+    class SpiderWalkerSettings {
+        @CollapsibleObject
+        @JvmField
+        var walking: Walking = Walking()
+
+        @CollapsibleObject
+        @JvmField
+        var jumping: Jumping = Jumping()
+
+        @CollapsibleObject
+        @JvmField
+        var wall: Wall = Wall()
+
+        class Walking {
+            @JvmField
+            var alwaysSprint: Boolean = false
+
+            @JvmField
+            var sidewaysSprint: Boolean = false
+
+            @JvmField
+            var backwardsSprint: Boolean = false
+
+            @JvmField
+            var defaultGenericMovementSpeed: Float = 0.1f
+
+            @JvmField
+            var sprintMovementSpeedMultiplier: Float = 0.3f
+
+            @JvmField
+            var stepHeight: Float = 0.6f
+        }
+
+        class Jumping {
+            @JvmField
+            var jumpStrength: Float = 0.42f
+
+            @JvmField
+            var coyoteTime: Int = 0
+
+            @JvmField
+            var smoothJumps: Boolean = false
+
+            @JvmField
+            var jumpHorizontalVelocityMultiplier: Float = 0.0f
+
+            @JvmField
+            var sprintJumpHorizontalVelocityMultiplier = 0.2f
+        }
+
+        class Wall {
+            // === general
+
+            @JvmField
+            var wallMovement = false
+
+            @JvmField
+            var wallDistance = 0.05f
+
+            @JvmField
+            var stickyMovement = true
+
+            // === sliding
+
+            @JvmField
+            var wallSliding = true
+
+            @JvmField
+            var slidingSpeed = 0.05f
+
+            // === climbing
+
+            @JvmField
+            var wallClimbing = true
+
+            @JvmField
+            var climbingSpeed = 0.05f
+
+            @JvmField
+            @Comment("-90.0 ~ 90.0")
+            var pitchToClimb = 0.0f
+
+            // === sticking
+
+            @JvmField
+            var wallSticking = true
+
+            // === running
+
+            @JvmField
+            var wallRunning = true
+
+            @JvmField
+            var wallRunSlidingSpeed = 0.0f
+
+            @JvmField
+            var wallRunSpeedBonus = 0.0f
+
+            @JvmField
+            var minimumWallRunSpeed = 0.15f
+
+            @JvmField
+            @Comment("0.0 ~ 180.0")
+            var yawToRun = 0.0f
+
+            // === jumping
+
+            @JvmField
+            var wallJumping = true
+
+            @JvmField
+            var wallJumpVelocityMultiplier = 0.2f
+
+            @JvmField
+            var wallJumpHeight = 0.42f
+
+            @JvmField
+            @Comment("0.0 ~ 180.0")
+            var minimumYawToJump = 91.0f
+
+            @JvmField
+            var jumpOnLeavingWall = false
+        }
     }
 
     companion object {
