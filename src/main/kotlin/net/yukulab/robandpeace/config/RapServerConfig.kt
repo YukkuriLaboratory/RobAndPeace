@@ -238,6 +238,9 @@ class RapServerConfig : ConfigData {
 
     companion object {
         @Excluded
+        const val KEY_ROOT = "text.autoconfig.robandpeace.option"
+
+        @Excluded
         const val KEY_CONFIG_TITLE = "text.autoconfig.robandpeace.title"
 
         @Excluded
@@ -312,5 +315,81 @@ class RapServerConfig : ConfigData {
 
         @Excluded
         const val KEY_ITEMS_NETHERITE_GLOVE = "text.autoconfig.robandpeace.option.items.netheriteGlove"
+    }
+
+    object SpiderWalkerSettingsLang {
+        @Excluded
+        const val KEY_PARENT = "${KEY_ROOT}.spiderWalkerSettings"
+        object Walking {
+
+            @Excluded
+            const val CONFIG_TITLE = "${KEY_PARENT}.walking"
+
+            @Excluded
+            const val ALWAYS_SPRINT = "${KEY_PARENT}.walking.alwaysSprint"
+
+            @Excluded
+            const val SIDEWAYS_SPRINT = "${KEY_PARENT}.walking.sidewaysSprint"
+
+            @Excluded
+            const val BACKWARDS_SPRINT = "${KEY_PARENT}.walking.backwardsSprint"
+
+            @Excluded
+            const val DEFAULT_GENERIC_MOVEMENT_SPEED = "${KEY_PARENT}.walking.defaultGenericMovementSpeed"
+
+            @Excluded
+            const val SPRINT_MOVEMENT_SPEED_MULTIPLIER = "${KEY_PARENT}.walking.sprintMovementSpeedMultiplier"
+
+            @Excluded
+            const val STEP_HEIGHT = "${KEY_PARENT}.walking.stepHeight"
+        }
+
+        object Jumping {
+
+            @Excluded
+            const val CONFIG_TITLE = "${KEY_PARENT}.jumping"
+
+            @Excluded
+            const val JUMP_STRENGTH = "${KEY_PARENT}.jumping.jumpStrength"
+
+            @Excluded
+            const val COYOTE_TIME = "${KEY_PARENT}.jumping.coyoteTime"
+
+            @Excluded
+            const val SMOOTH_JUMPS = "${KEY_PARENT}.jumping.smoothJumps"
+
+            @Excluded
+            const val JUMP_HORIZONTAL_VELOCITY_MULTIPLIER = "${KEY_PARENT}.jumping.jumpHorizontalVelocityMultiplier"
+
+            @Excluded
+            const val SPRINT_JUMP_HORIZONTAL_VELOCITY_MULTIPLIER = "${KEY_PARENT}.jumping.sprintJumpHorizontalVelocityMultiplier"
+        }
+
+        object Wall {
+
+            @Excluded
+            const val CONFIG_TITLE = "${KEY_PARENT}.wall"
+
+            @Excluded
+            const val WALL_MOVEMENT = "${KEY_PARENT}.wall.wallMovement"
+
+            @Excluded
+            const val WALL_DISTANCE = "${KEY_PARENT}.wall.wallDistance"
+
+            @Excluded
+            const val STICKY_MOVEMENT = "${KEY_PARENT}.wall.stickyMovement"
+
+            @Excluded
+            const val WALL_SLIDING = "${KEY_PARENT}.wall.wallSliding"
+
+            @Excluded
+            const val SLIDING_SPEED = "${KEY_PARENT}.wall.slidingSpeed"
+
+            @Excluded
+            const val WALL_CLIMBING = "${KEY_PARENT}.wall.wallClimbing"
+
+            @Excluded
+            const val CLIMBING_SPEED = "${KEY_PARENT}.wall.climbingSpeed"
+        }
     }
 }
