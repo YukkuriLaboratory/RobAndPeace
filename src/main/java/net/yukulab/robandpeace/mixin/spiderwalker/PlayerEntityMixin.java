@@ -34,7 +34,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Mixin(value = PlayerEntity.class)
@@ -64,11 +63,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Shadow
     protected abstract float getOffGroundSpeed();
 
-    // TODO need to networking
-    private static final boolean hasForwardMovement = false,
-            inputJumping = false;
-    private static final float inputForwardMovement = 0.5f;
-
     @Unique
     private boolean canStartSprinting() {
         return !this.isSprinting() && this.isWalking() && this.canSprint() && !this.isUsingItem() && !this.hasStatusEffect(StatusEffects.BLINDNESS) && (!this.hasVehicle() || this.canVehicleSprint(this.getVehicle())) && !this.isFallFlying();
@@ -81,11 +75,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Unique
     private boolean isWalking() {
-//		if (MinecraftClient.getInstance().player == null){ TODO: move to networking
-//			return false;
-//		}
-//		Input input = MinecraftClient.getInstance().player.input;
-        return this.isSubmergedInWater() ? hasForwardMovement : (double) inputForwardMovement >= 0.8;
+        var payload = RobAndPeace.getPlayerMovementStatus(getUuid());
+        boolean hasForwardMovement = payload.getHasForwardMovement();
+        float movementForward = payload.getMovementForward();
+        return this.isSubmergedInWater() ? hasForwardMovement : (double) movementForward >= 0.8;
     }
 
     @Unique
@@ -215,10 +208,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
      */
     @Unique
     private Vec3d applyWallMovement(Vec3d motion) {
-//		if (MinecraftClient.getInstance().player == null){ TODO: move to networking
-//			return motion;
-//		}
-//		Input input = MinecraftClient.getInstance().player.input;
         if (this.isOnGround()) {
             this.isWalling = false;
             return motion;
@@ -244,6 +233,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         float slidingSpeed = config.spiderWalkerSettings.wall.slidingSpeed;
         boolean stickyMovement = config.spiderWalkerSettings.wall.stickyMovement;
         boolean wallJumping = config.spiderWalkerSettings.wall.wallJumping;
+
+        var payload = RobAndPeace.getPlayerMovementStatus(getUuid());
+        boolean hasForwardMovement = payload.getHasForwardMovement();
+        boolean inputJumping = payload.isJumping();
 
         BlockPos blockPos = this.getBlockPos().up();
         World world = this.getWorld();
