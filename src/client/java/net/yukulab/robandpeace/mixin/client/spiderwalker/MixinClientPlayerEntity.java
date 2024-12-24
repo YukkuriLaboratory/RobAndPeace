@@ -9,7 +9,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.network.payload.PlayerMovementPayload;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +24,8 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
         super(world, pos, yaw, gameProfile);
     }
 
-    private static Logger logger = LogUtils.getLogger();
+    @Unique
+    private static final Logger logger = LogUtils.getLogger();
 
     @Shadow
     protected abstract boolean canSprint();
@@ -50,10 +50,9 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
             return;
         }
 
-        boolean isDirty = false;
-        if (sentPayload.getHasForwardMovement() != input.hasForwardMovement()) isDirty = true;
-        if (sentPayload.getMovementForward() != input.movementForward) isDirty = true;
-        if (sentPayload.isJumping() != input.jumping) isDirty = true;
+        boolean isDirty = (sentPayload.getHasForwardMovement() != input.hasForwardMovement()) ||
+                (sentPayload.getMovementForward() != input.movementForward) ||
+                (sentPayload.isJumping() != input.jumping);
         if(isDirty) {
             sentPayload = new PlayerMovementPayload(input.hasForwardMovement(), input.movementForward, input.jumping);
             ClientPlayNetworking.send(sentPayload);
