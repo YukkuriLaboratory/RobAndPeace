@@ -74,6 +74,18 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapServerConfig.SpiderWalkerSettingsLang.Wall.SLIDING_SPEED, "Sliding speed")
         add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_CLIMBING, "Enable wall climbing")
         add(RapServerConfig.SpiderWalkerSettingsLang.Wall.CLIMBING_SPEED, "Climbing speed")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.PITCH_TO_CLIMB, "Pitch to climb")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_STICKING, "Wall sticking")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUNNING, "Wall running")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUN_SLIDING_SPEED, "Wall run sliding speed")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUN_SPEED_BONUS, "Wall run speed bonus")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.MINIMUM_WALL_RUN_SPEED, "Minimum wall run speed")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.YAW_TO_RUN, "Yaw to run")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMPING, "Wall jumping")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMP_VELOCITY_MULTIPLIER, "Wall jump velocity multiplier")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMP_HEIGHT, "Wall jump height")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.MINIMUM_YAW_TO_JUMP, "Minimum yaw to jump")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.JUMP_ON_LEAVING_WALL, "Jump on leaving wall")
         // =================================================================
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")

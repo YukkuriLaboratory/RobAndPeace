@@ -390,6 +390,42 @@ class RapServerConfig : ConfigData {
 
             @Excluded
             const val CLIMBING_SPEED = "${KEY_PARENT}.wall.climbingSpeed"
+
+            @Excluded
+            const val PITCH_TO_CLIMB = "${KEY_PARENT}.wall.pitchToClimb"
+
+            @Excluded
+            const val WALL_STICKING = "${KEY_PARENT}.wall.wallSticking"
+
+            @Excluded
+            const val WALL_RUNNING = "${KEY_PARENT}.wall.wallRunning"
+
+            @Excluded
+            const val WALL_RUN_SLIDING_SPEED = "${KEY_PARENT}.wall.wallRunSlidingSpeed"
+
+            @Excluded
+            const val WALL_RUN_SPEED_BONUS = "${KEY_PARENT}.wall.wallRunSpeedBonus"
+
+            @Excluded
+            const val MINIMUM_WALL_RUN_SPEED = "${KEY_PARENT}.wall.minimumWallRunSpeed"
+
+            @Excluded
+            const val YAW_TO_RUN = "${KEY_PARENT}.wall.yawToRun"
+
+            @Excluded
+            const val WALL_JUMPING = "${KEY_PARENT}.wall.wallJumping"
+
+            @Excluded
+            const val WALL_JUMP_VELOCITY_MULTIPLIER = "${KEY_PARENT}.wall.wallJumpVelocityMultiplier"
+
+            @Excluded
+            const val WALL_JUMP_HEIGHT = "${KEY_PARENT}.wall.wallJumpHeight"
+
+            @Excluded
+            const val MINIMUM_YAW_TO_JUMP = "${KEY_PARENT}.wall.minimumYawToJump"
+
+            @Excluded
+            const val JUMP_ON_LEAVING_WALL = "${KEY_PARENT}.wall.jumpOnLeavingWall"
         }
     }
 }

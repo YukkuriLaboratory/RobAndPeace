@@ -74,6 +74,18 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.SpiderWalkerSettingsLang.Wall.SLIDING_SPEED, "壁スライディングのスピード")
         add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_CLIMBING, "壁登りの有効化")
         add(RapServerConfig.SpiderWalkerSettingsLang.Wall.CLIMBING_SPEED, "壁登りの速度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.PITCH_TO_CLIMB, "壁登りの勾配")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_STICKING, "壁くっつきの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUNNING, "壁走りの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUN_SLIDING_SPEED, "壁走りのスライディングの速度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUN_SPEED_BONUS, "壁走りの速度ボーナス")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.MINIMUM_WALL_RUN_SPEED, "壁走りの最低速度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.YAW_TO_RUN, "走る角度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMPING, "壁ジャンプの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMP_VELOCITY_MULTIPLIER, "壁ジャンプ速度の倍率")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMP_HEIGHT, "壁ジャンプの高さ")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.MINIMUM_YAW_TO_JUMP, "壁ジャンプの最低角度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.JUMP_ON_LEAVING_WALL, "ジャンプ時に壁登りをキャンセル")
         // =================================================================
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
