@@ -165,7 +165,7 @@ class RapServerConfig : ConfigData {
             // === general
 
             @JvmField
-            var wallMovement = false
+            var wallMovement = true
 
             @JvmField
             var wallDistance = 0.05f
