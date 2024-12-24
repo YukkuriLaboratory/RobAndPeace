@@ -148,8 +148,9 @@ class RapServerConfig : ConfigData {
             @JvmField
             var jumpStrength: Float = 0.42f
 
-            @JvmField
-            var coyoteTime: Int = 0 // I don't know what is this...
+            // I don't know what is this...
+            // @JvmField
+            // var coyoteTime: Int = 0
 
             @JvmField
             var smoothJumps: Boolean = false
