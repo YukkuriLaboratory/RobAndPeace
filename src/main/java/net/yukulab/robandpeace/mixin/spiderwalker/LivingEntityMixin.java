@@ -12,6 +12,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,19 +51,6 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow
     protected abstract float getOffGroundSpeed();
-
-    // TODO move this
-//    // input
-//	@Unique
-//	private Input input;
-//
-//	{
-//		assert MinecraftClient.getInstance().player != null;
-//		input = MinecraftClient.getInstance().player.input;
-//	}
-    // TODO need to networking
-    private static final boolean hasForwardMovement = false,
-            inputJumping = false;
 
 	/**
 	 * Injects the default friction behavior to add wall sliding.
@@ -122,6 +110,10 @@ public abstract class LivingEntityMixin extends Entity {
         boolean wallSliding = config.spiderWalkerSettings.wall.wallSliding;
         float slidingSpeed = config.spiderWalkerSettings.wall.slidingSpeed;
         boolean stickyMovement = config.spiderWalkerSettings.wall.stickyMovement;
+
+        var payload = RobAndPeace.getPlayerMovementStatus(getUuid());
+        boolean hasForwardMovement = payload.getHasForwardMovement();
+        boolean inputJumping = payload.isJumping();
 
 		BlockPos blockPos = this.getBlockPos().up();
 		World world = this.getWorld();
