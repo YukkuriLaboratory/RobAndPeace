@@ -21,6 +21,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.config.RapServerConfig;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         super(entityType, world);
     }
 
+    @Unique
     private static final Logger logger = LogUtils.getLogger();
 
     @Shadow
@@ -56,6 +58,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Shadow
     public abstract void addExhaustion(float exhaustion);
 
+    @Unique
+    private static final Identifier SPRINTING_SPEED = Identifier.of("robandpeace", "sprinting_speed");
 
     @Shadow
     protected abstract float getOffGroundSpeed();
@@ -109,6 +113,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         ci.cancel();
     }
 
+    @Unique
     private Vec3d getJumpVec3d(RapServerConfig config, float jumpStrength) {
         float jumpHorizontalVelocityMultiplier = config.spiderWalkerSettings.jumping.jumpHorizontalVelocityMultiplier;
         float sprintJumpHorizontalVelocityMultiplier = config.spiderWalkerSettings.jumping.sprintJumpHorizontalVelocityMultiplier;
@@ -167,7 +172,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         float sprintMovementSpeedMultiplier = config.spiderWalkerSettings.walking.sprintMovementSpeedMultiplier;
         EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
         // TODO check this one works
-        EntityAttributeModifier SPRINTING_SPEED_BOOST = new EntityAttributeModifier(Identifier.of("662A6B8D-DA3E-4C1C-8813-96EA6097278D"), sprintMovementSpeedMultiplier, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        EntityAttributeModifier SPRINTING_SPEED_BOOST = new EntityAttributeModifier(SPRINTING_SPEED, sprintMovementSpeedMultiplier, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         assert entityAttributeInstance != null;
         entityAttributeInstance.removeModifier(SPRINTING_SPEED_BOOST.id());
         if (sprinting) {
