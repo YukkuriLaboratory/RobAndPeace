@@ -2,6 +2,7 @@ package net.yukulab.robandpeace.mixin.spiderwalker;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
+import net.yukulab.robandpeace.extension.RapConfigInjector;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,8 +19,12 @@ public abstract class EntityMixin {
 	boolean realOnGround;
 	@Inject(method = "adjustMovementForCollisions", at = @At("HEAD"))
 	void allowJumpStepHead(Vec3d movement, CallbackInfoReturnable<Vec3d> cir) {
-		this.realOnGround = this.onGround;
-		this.onGround = true;
+        if(this instanceof RapConfigInjector injector) {
+            var config = injector.robandpeace$getServerConfigSupplier().get();
+            boolean smoothJumps = config.spiderWalkerSettings.jumping.smoothJumps;
+            this.realOnGround = this.onGround;
+            this.onGround |= smoothJumps;
+        }
 	}
 	@Inject(method = "adjustMovementForCollisions", at = @At("TAIL"))
 	void allowJumpStepTail(Vec3d movement, CallbackInfoReturnable<Vec3d> cir) {

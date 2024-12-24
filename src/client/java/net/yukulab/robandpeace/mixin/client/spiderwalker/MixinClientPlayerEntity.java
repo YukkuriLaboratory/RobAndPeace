@@ -9,6 +9,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.network.payload.PlayerMovementPayload;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -64,7 +65,15 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
      */
     @ModifyReceiver(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;setSprinting(Z)V"))
     private ClientPlayerEntity removeSprintingLogic(ClientPlayerEntity clientPlayerEntity, boolean sprinting) {
-        if (sprinting || !this.canSprint() || !(this.input.movementForward > 1.0E-5F)) {
+        var config = clientPlayerEntity.robandpeace$getServerConfigSupplier().get();
+        boolean sidewaysSprint = config.spiderWalkerSettings.walking.sidewaysSprint;
+        boolean backwardsSprint = config.spiderWalkerSettings.walking.backwardsSprint;
+        if (sprinting ||
+                !this.canSprint() ||
+                !(this.input.movementForward > 1.0E-5F ||
+                        (Math.abs(this.input.movementSideways) > 1.0E-5F &&
+                                this.input.movementForward > -1.0E-5F && sidewaysSprint) ||
+                        (this.input.movementForward < -1.0E-5F && backwardsSprint))){
             this.setSprinting(sprinting);
         }
         return clientPlayerEntity;

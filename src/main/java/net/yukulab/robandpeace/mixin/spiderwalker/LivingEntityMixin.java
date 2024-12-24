@@ -110,90 +110,91 @@ public abstract class LivingEntityMixin extends Entity {
         boolean wallSliding = config.spiderWalkerSettings.wall.wallSliding;
         float slidingSpeed = config.spiderWalkerSettings.wall.slidingSpeed;
         boolean stickyMovement = config.spiderWalkerSettings.wall.stickyMovement;
+        boolean wallJumping = config.spiderWalkerSettings.wall.wallJumping;
 
         var payload = RobAndPeace.getPlayerMovementStatus(getUuid());
         boolean hasForwardMovement = payload.getHasForwardMovement();
         boolean inputJumping = payload.isJumping();
 
-		BlockPos blockPos = this.getBlockPos().up();
-		World world = this.getWorld();
+        BlockPos blockPos = this.getBlockPos().up();
+        World world = this.getWorld();
 
-		double dx = (double)blockPos.getX() + 0.5 - this.getX();
-		double dz = (double)blockPos.getZ() + 0.5 - this.getZ();
-		double threshold = (double)(this.getWidth() / 2.0F) - 0.1F - wallDistance - 1.0E-7;
+        double dx = (double)blockPos.getX() + 0.5 - this.getX();
+        double dz = (double)blockPos.getZ() + 0.5 - this.getZ();
+        double threshold = (double)(this.getWidth() / 2.0F) - 0.1F - wallDistance - 1.0E-7;
 
-		boolean east = (world.isDirectionSolid( blockPos.east(),this, Direction.WEST) && -dx > threshold);
-		boolean west = (world.isDirectionSolid( blockPos.west(),this, Direction.EAST) && dx > threshold);
-		boolean north = (world.isDirectionSolid( blockPos.north(),this, Direction.SOUTH) && dz > threshold);
-		boolean south = (world.isDirectionSolid( blockPos.south(),this, Direction.NORTH) && -dz > threshold);
-		int wallsTouching = (east?1:0)+(west?1:0)+(north?1:0)+(south?1:0);
+        boolean east = (world.isDirectionSolid( blockPos.east(),this, Direction.WEST) && -dx > threshold);
+        boolean west = (world.isDirectionSolid( blockPos.west(),this, Direction.EAST) && dx > threshold);
+        boolean north = (world.isDirectionSolid( blockPos.north(),this, Direction.SOUTH) && dz > threshold);
+        boolean south = (world.isDirectionSolid( blockPos.south(),this, Direction.NORTH) && -dz > threshold);
+        int wallsTouching = (east?1:0)+(west?1:0)+(north?1:0)+(south?1:0);
 
-		if (wallsTouching == 0 && isWalling){ //Start only using head, continue with feet.
-			blockPos = this.getBlockPos();
-			east = (world.isDirectionSolid( blockPos.east(),this, Direction.WEST) && -dx > threshold);
-			west = (world.isDirectionSolid( blockPos.west(),this, Direction.EAST) && dx > threshold);
-			north = (world.isDirectionSolid( blockPos.north(),this, Direction.SOUTH) && dz > threshold);
-			south = (world.isDirectionSolid( blockPos.south(),this, Direction.NORTH) && -dz > threshold);
-			wallsTouching = (east?1:0)+(west?1:0)+(north?1:0)+(south?1:0);
-		}
+        if (wallsTouching == 0 && isWalling){ //Start only using head, continue with feet.
+            blockPos = this.getBlockPos();
+            east = (world.isDirectionSolid( blockPos.east(),this, Direction.WEST) && -dx > threshold);
+            west = (world.isDirectionSolid( blockPos.west(),this, Direction.EAST) && dx > threshold);
+            north = (world.isDirectionSolid( blockPos.north(),this, Direction.SOUTH) && dz > threshold);
+            south = (world.isDirectionSolid( blockPos.south(),this, Direction.NORTH) && -dz > threshold);
+            wallsTouching = (east?1:0)+(west?1:0)+(north?1:0)+(south?1:0);
+        }
 
-		float yaw = this.getYaw();
-		float pitch = this.getPitch() * -1;
-		yaw += (90.0F * ((east?1:0)-(west?1:0) + (north?(east?2:-2):0)) / wallsTouching);
-		yaw = MathHelper.wrapDegrees(yaw);
-		yaw = Math.abs(yaw);
+        float yaw = this.getYaw();
+        float pitch = this.getPitch() * -1;
+        yaw += (90.0F * ((east?1:0)-(west?1:0) + (north?(east?2:-2):0)) / wallsTouching);
+        yaw = MathHelper.wrapDegrees(yaw);
+        yaw = Math.abs(yaw);
 
-		double motionX = motion.x;
-		double motionZ = motion.z;
-		double motionY = motion.y;
+        double motionX = motion.x;
+        double motionZ = motion.z;
+        double motionY = motion.y;
 
-		if (this.isWalling && ((!inputJumping && yaw > minimumYawToJump) || (jumpOnLeavingWall && wallsTouching == 0))) {// Do a wall jump
-			float f = this.getYaw() * 0.017453292F;
-			motionX += -MathHelper.sin(f) * wallJumpVelocityMultiplier;
-			motionZ += MathHelper.cos(f) * wallJumpVelocityMultiplier;
-			motionY += wallJumpHeight * this.getJumpVelocityMultiplier() + this.getJumpBoostVelocityModifier();
-			this.isWalling = false;
-			this.slidingPos = Optional.of(this.getBlockPos());
-			this.onLanding();
-			return new Vec3d(motionX, motionY, motionZ);
-		}
+        if (this.isWalling && ((wallJumping && !inputJumping && yaw > minimumYawToJump) || (jumpOnLeavingWall && wallsTouching == 0))) {// Do a wall jump
+            float f = this.getYaw() * 0.017453292F;
+            motionX += -MathHelper.sin(f) * wallJumpVelocityMultiplier;
+            motionZ += MathHelper.cos(f) * wallJumpVelocityMultiplier;
+            motionY += wallJumpHeight * this.getJumpVelocityMultiplier() + this.getJumpBoostVelocityModifier();
+            this.isWalling = false;
+            this.slidingPos = Optional.of(this.getBlockPos());
+            this.onLanding();
+            return new Vec3d(motionX, motionY, motionZ);
+        }
 
-		if (wallsTouching == 0 || !inputJumping || (yaw > 90 && !this.isWalling)) { // Stop all wall movement
-			this.isWalling = false;
-			return motion;
-		}
+        if (wallsTouching == 0 || !inputJumping || (yaw > 90 && !this.isWalling)) { // Stop all wall movement
+            this.isWalling = false;
+            return motion;
+        }
 
 
-		this.isWalling = true;
-		if (wallRunning && hasForwardMovement && yaw > yawToRun && (Math.abs(motionX) > minimumWallRunSpeed|| Math.abs(motionZ) > minimumWallRunSpeed)) { // Wall Running
-			motionY = Math.max(motion.y, -wallRunSlidingSpeed);
-			motionX = motion.x * (1 + wallRunSpeedBonus);
-			motionZ = motion.z * (1 + wallRunSpeedBonus);
-		}else if (wallClimbing && pitch > pitchToClimb && yaw < 90 && hasForwardMovement) { // Wall Climbing
-			motionY = climbingSpeed;
-			motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
-			motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
-		} else if (wallSticking && motionY < 0.0 && this.isHoldingOntoLadder()) { //Shifting
-			motionY = 0.0;
-			motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
-			motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
-		} else if (wallSliding){ // Wall Sliding
-			motionY = Math.max(motion.y, -slidingSpeed);
-			motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
-			motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
-		} else {
-			this.isWalling = false;
-			return motion;
-		}
+        this.isWalling = true;
+        if (wallRunning && hasForwardMovement && yaw > yawToRun && (Math.abs(motionX) > minimumWallRunSpeed|| Math.abs(motionZ) > minimumWallRunSpeed)) { // Wall Running
+            motionY = Math.max(motion.y, -wallRunSlidingSpeed);
+            motionX = motion.x * (1 + wallRunSpeedBonus);
+            motionZ = motion.z * (1 + wallRunSpeedBonus);
+        }else if (wallClimbing && pitch > pitchToClimb && yaw < 90 && hasForwardMovement) { // Wall Climbing
+            motionY = climbingSpeed;
+            motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
+            motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
+        } else if (wallSticking && motionY < 0.0 && this.isHoldingOntoLadder()) { //Shifting
+            motionY = 0.0;
+            motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
+            motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
+        } else if (wallSliding){ // Wall Sliding
+            motionY = Math.max(motion.y, -slidingSpeed);
+            motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
+            motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
+        } else {
+            this.isWalling = false;
+            return motion;
+        }
 
-		if (stickyMovement){ // Disable falling off the wall accidentally
-			motionX *= ((north?1:0)+(south?1:0));
-			motionZ *= ((east?1:0)+(west?1:0));
-		}
-		this.slidingPos = Optional.of(this.getBlockPos());
-		this.onLanding();
-		return new Vec3d(motionX, motionY, motionZ);
-	}
+        if (stickyMovement){ // Disable falling off the wall accidentally
+            motionX *= ((north?1:0)+(south?1:0));
+            motionZ *= ((east?1:0)+(west?1:0));
+        }
+        this.slidingPos = Optional.of(this.getBlockPos());
+        this.onLanding();
+        return new Vec3d(motionX, motionY, motionZ);
+    }
 
 	@Unique
 	private Vec3d applyClimbingSpeed(Vec3d motion) {
