@@ -71,8 +71,15 @@ public abstract class LivingEntityMixin extends Entity {
 	public void handleFrictionAndCalculateMovement(Vec3d movementInput, float slipperiness, CallbackInfoReturnable<Vec3d> cir) {
 		this.updateVelocity(this.getMovementSpeedUnique(slipperiness), movementInput);
 
+        if(!(this instanceof RapConfigInjector injector)) return;
+
+        var config = injector.robandpeace$getServerConfigSupplier().get();
+        boolean wallMovement = config.spiderWalkerSettings.wall.wallMovement;
+
 		if (this.isClimbing()) {
             this.setVelocity(this.applyClimbingSpeed(this.getVelocity()));
+        } else if(wallMovement && this.isSpectator()) {
+            this.setVelocity(this.applyWallMovement(this.getVelocity()));
         }
 
         this.move(MovementType.SELF, this.getVelocity());
