@@ -27,3 +27,4 @@ cd ..
   - in src/main/resources/assets/robandpeace/textures/entity
     - overlay_filled.png
     - overlay_frame.png
+- Some codes borrowed from [Better-Mobility](https://github.com/peanutsponge/Better-Mobility) under the MIT license
