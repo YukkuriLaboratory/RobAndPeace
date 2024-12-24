@@ -66,7 +66,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 		if (this.isClimbing()) {
             this.setVelocity(this.applyClimbingSpeed(this.getVelocity()));
-        } else if(wallMovement && this.isSpectator()) {
+        } else if(wallMovement && !this.isSpectator()) {
             this.setVelocity(this.applyWallMovement(this.getVelocity()));
         }
 
