@@ -11,6 +11,7 @@ import net.minecraft.registry.RegistryKey
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.yukulab.robandpeace.MOD_ID
+import net.yukulab.robandpeace.item.portalhoop.PortalHoopItem
 
 object RapItems {
 
@@ -21,7 +22,6 @@ object RapItems {
     val PICKING_TOOL: PickingToolItem = register("picking_tool", PickingToolItem(50))
     val TRIAL_PICKING_TOOL: PickingToolItem = register("trial_picking_tool", PickingToolItem(70, true))
     val PORTAL_HOOP: PortalHoopItem = register("portal_hoop", PortalHoopItem())
-    val PORTAL_HOOP_REMOVER: PortalHoopRemoverItem = register("portal_hoop_remover", PortalHoopRemoverItem())
 
     private fun <T : Item> register(id: String, item: T): T = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, id), item)
 
@@ -41,7 +41,6 @@ object RapItems {
             it.add(PICKING_TOOL)
             it.add(TRIAL_PICKING_TOOL)
             it.add(PORTAL_HOOP)
-            it.add(PORTAL_HOOP_REMOVER)
         }
     }
 }
