@@ -22,8 +22,6 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
-      - name: validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v2
       - name: Get ktlint version
         id: ktlint
         run: |
@@ -39,8 +37,6 @@ jobs:
           ktlint_version: ${{ steps.ktlint.outputs.version }}
           reporter: ${{ (github.event_name == 'pull_request' && 'github-pr-review' ) || 'github-check' }}
           fail_on_error: true
-      - name: validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v2
 
   build:
     strategy:
@@ -58,6 +54,8 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: setup jdk ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
@@ -65,6 +63,11 @@ jobs:
           distribution: 'microsoft'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+      - name: Prepare libs
+        run: |
+          chmod +x gradlew
+          ./gradlew publishToMavenLocal
+        working-directory: gravity-api
       - name: Run Gradle ${{ matrix.task }}
         run: ./gradlew ${{ matrix.task }}
       - name: capture build artifacts

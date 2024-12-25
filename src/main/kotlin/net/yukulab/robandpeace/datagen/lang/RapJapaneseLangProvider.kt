@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
 import net.yukulab.robandpeace.item.PickingToolItem
+import net.yukulab.robandpeace.item.PortalHoopItem
 import net.yukulab.robandpeace.item.RapItems
 
 class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : RapLangProvider(dataGenerator, "ja_jp", registryLookup) {
@@ -15,9 +16,15 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_SUCCESS, "成功時")
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_FAILURE, "失敗時")
         add(RapServerConfig.KEY_STEAL_CHANCES, "スリ取り確率")
-        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY, "友好MOB")
-        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE, "敵対MOB")
-        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS, "ボス")
+        val formula = "確率=(1+ボーナス)x倍率"
+        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY, "友好MOB倍率")
+        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE, "敵対MOB倍率")
+        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS, "ボス倍率")
+        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_ENDER_DRAGON, "エンダードラゴン倍率")
+        add(RapServerConfig.KEY_STEAL_CHANCES_ENDER_DRAGON.configToolTip(), formula)
         add(RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT, "取引アイテム比率")
         add(
             RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT.configToolTip(),
@@ -35,7 +42,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_ITEMS_STONE_GLOVE, "石のグローブ")
         add(RapServerConfig.KEY_ITEMS_IRON_GLOVE, "鉄のグローブ")
         add(RapServerConfig.KEY_ITEMS_GOLDEN_GLOVE, "金のグローブ")
-        add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "ダイヤのグローブ")
+        add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "ダイヤモンドのグローブ")
         add(RapServerConfig.KEY_ITEMS_NETHERITE_GLOVE, "ネザライトのグローブ")
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
@@ -46,7 +53,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapItems.TRIAL_PICKING_TOOL, "試練のピッキングツール")
         add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "不吉なピッキングツール")
         add(RapItems.SPIDER_WALKER, "スパイダーウォーカー")
-        add(RapItems.PORTAL_HOOP, "通り抜けフープ")
-        add(RapItems.PORTAL_HOOP_REMOVER, "通り抜けフープ除去ツール")
+        add(RapItems.PORTAL_HOOP, "通り抜けフープ(設置モード)")
+        add(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, "通り抜けフープ(撤去モード)")
     }
 }

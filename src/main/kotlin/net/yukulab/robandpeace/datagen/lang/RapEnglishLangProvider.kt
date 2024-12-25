@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
 import net.yukulab.robandpeace.item.PickingToolItem
+import net.yukulab.robandpeace.item.PortalHoopItem
 import net.yukulab.robandpeace.item.RapItems
 
 class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: CompletableFuture<RegistryWrapper.WrapperLookup>) : RapLangProvider(dataGenerator, "en_us", registryLookup) {
@@ -15,9 +16,15 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_SUCCESS, "on success")
         add(RapServerConfig.KEY_STEAL_COOL_TIME_ON_FAILURE, "on failure")
         add(RapServerConfig.KEY_STEAL_CHANCES, "Steal chances")
-        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY, "Friendly")
-        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE, "Hostile")
-        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS, "Boss")
+        val formula = "chance=(1+bonus) x weight"
+        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY, "Friendly multiply")
+        add(RapServerConfig.KEY_STEAL_CHANCES_FRIENDLY.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE, "Hostile multiply")
+        add(RapServerConfig.KEY_STEAL_CHANCES_HOSTILE.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS, "Boss multiply")
+        add(RapServerConfig.KEY_STEAL_CHANCES_BOSS.configToolTip(), formula)
+        add(RapServerConfig.KEY_STEAL_CHANCES_ENDER_DRAGON, "Ender Dragon multiply")
+        add(RapServerConfig.KEY_STEAL_CHANCES_ENDER_DRAGON.configToolTip(), formula)
         add(RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT, "Merchant trade weight")
         add(
             RapServerConfig.KEY_STEAL_CHANCES_MERCHANT_TRADE_WEIGHT.configToolTip(),
@@ -46,7 +53,7 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapItems.TRIAL_PICKING_TOOL, "Trial Picking Tool")
         add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "Ominous Picking Tool")
         add(RapItems.SPIDER_WALKER, "Spider Walker")
-        add(RapItems.PORTAL_HOOP, "Portal Hoop")
-        add(RapItems.PORTAL_HOOP_REMOVER, "Portal Hoop Remover")
+        add(RapItems.PORTAL_HOOP, "Portal Hoop(Place Mode)")
+        add(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, "Portal Hoop(Remove Mode)")
     }
 }

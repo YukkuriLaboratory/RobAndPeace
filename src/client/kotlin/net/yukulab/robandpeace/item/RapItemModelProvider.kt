@@ -3,6 +3,7 @@ package net.yukulab.robandpeace.item
 import net.minecraft.client.item.ClampedModelPredicateProvider
 import net.minecraft.client.item.ModelPredicateProviderRegistry
 import net.minecraft.entity.effect.StatusEffects
+import net.yukulab.robandpeace.item.component.RapComponents
 
 object RapItemModelProvider {
     fun registerModelPredicateProviders() {
@@ -17,6 +18,15 @@ object RapItemModelProvider {
         ModelPredicateProviderRegistry.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.KEY_PICKING, itemUsingDetector)
         ModelPredicateProviderRegistry.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.KEY_OMINOUS) { _, _, livingEntity, _ ->
             if (livingEntity?.hasStatusEffect(StatusEffects.BAD_OMEN) == true) {
+                1.0f
+            } else {
+                0.0f
+            }
+        }
+
+        // Portal Hoop
+        ModelPredicateProviderRegistry.register(RapItems.PORTAL_HOOP, PortalHoopItem.KEY_REMOVE_MODE) { stack, _, _, _ ->
+            if (stack.get(RapComponents.PORTAL_HOOP_IS_REMOVE_MODE) == true) {
                 1.0f
             } else {
                 0.0f
