@@ -188,7 +188,7 @@ class RapServerConfig : ConfigData {
             var wallClimbing = true
 
             @JvmField
-            var climbingSpeed = 0.05f
+            var climbingSpeed = 0.085f
 
             @JvmField
             @Comment("-90.0 ~ 90.0")
