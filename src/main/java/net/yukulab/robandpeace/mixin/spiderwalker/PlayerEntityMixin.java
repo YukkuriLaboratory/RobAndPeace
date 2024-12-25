@@ -15,6 +15,7 @@ import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.stat.Stats;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -24,6 +25,7 @@ import net.minecraft.world.World;
 import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.config.RapServerConfig;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
+import net.yukulab.robandpeace.item.RapItems;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -213,6 +215,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             return motion;
         }
 
+        if(!canClimbing()) return motion;
+
         RapConfigInjector injector = this;
         var config = injector.robandpeace$getServerConfigSupplier().get();
         float wallDistance = config.spiderWalkerSettings.wall.wallDistance;
@@ -343,15 +347,19 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Override
     public Optional<BlockPos> getClimbingPos() {
-        if (this.slidingPos.isEmpty())
+        if (this.slidingPos.isEmpty() || !canClimbing())
             return super.getClimbingPos();
         return this.slidingPos;
     }
 
     @Override
     public boolean isClimbing() {
-        return super.isClimbing() || this.isWalling;
+        return (super.isClimbing() || this.isWalling) && canClimbing();
     }
 
+    @Unique
+    private boolean canClimbing() {
+        return getStackInHand(Hand.MAIN_HAND).getItem() == RapItems.INSTANCE.getSPIDER_WALKER();
+    }
 
 }

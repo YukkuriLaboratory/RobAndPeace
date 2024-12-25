@@ -7,6 +7,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -14,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
+import net.yukulab.robandpeace.item.RapItems;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -52,12 +56,17 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     protected abstract float getOffGroundSpeed();
 
-	/**
+    @Shadow
+    public abstract ItemStack getStackInHand(Hand hand);
+
+    /**
 	 * Injects the default friction behavior to add wall sliding.
 	 */
 	@Inject(method = "applyMovementInput", at = @At("HEAD"), cancellable = true)
 	public void handleFrictionAndCalculateMovement(Vec3d movementInput, float slipperiness, CallbackInfoReturnable<Vec3d> cir) {
-		this.updateVelocity(this.getMovementSpeedUnique(slipperiness), movementInput);
+        this.updateVelocity(this.getMovementSpeedUnique(slipperiness), movementInput);
+
+        if(!canClimbing()) return;
 
         if(!(this instanceof RapConfigInjector injector)) return;
 
@@ -90,6 +99,8 @@ public abstract class LivingEntityMixin extends Entity {
 			this.isWalling = false;
 			return motion;
 		}
+
+        if(!canClimbing()) return motion;
 
         if(!(this instanceof RapConfigInjector injector)) return motion;
         var config = injector.robandpeace$getServerConfigSupplier().get();
@@ -220,14 +231,19 @@ public abstract class LivingEntityMixin extends Entity {
 	private Optional<BlockPos> slidingPos = Optional.empty();
 	@Inject(method = "getClimbingPos", at = @At("HEAD"), cancellable = true)
 	public void getClimbingPosHead(CallbackInfoReturnable<Optional<BlockPos>> cir) {
-		if (this.slidingPos.isEmpty())
+		if (this.slidingPos.isEmpty() || !canClimbing())
 			return;
 		cir.setReturnValue(this.slidingPos);
 	}
 	@Inject(method = "isClimbing", at = @At("HEAD"), cancellable = true)
 	public void isClimbingHead(CallbackInfoReturnable<Boolean> cir) {
-		if (this.isWalling){
+		if (this.isWalling && canClimbing()){
 			cir.setReturnValue(true);
 		}
 	}
+
+    @Unique
+    private boolean canClimbing() {
+        return getStackInHand(Hand.MAIN_HAND).getItem() == RapItems.INSTANCE.getSPIDER_WALKER();
+    }
 }
