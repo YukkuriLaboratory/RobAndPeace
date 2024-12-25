@@ -35,9 +35,6 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, world);
     }
 
-    @Unique
-    private static final Logger logger = LogUtils.getLogger();
-
     @Shadow
     public abstract boolean isClimbing();
 
