@@ -53,6 +53,5 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "Ominous Picking Tool")
         add(RapItems.SPIDER_WALKER, "Spider Walker")
         add(RapItems.PORTAL_HOOP, "Portal Hoop")
-        add(RapItems.PORTAL_HOOP_REMOVER, "Portal Hoop Remover")
     }
 }

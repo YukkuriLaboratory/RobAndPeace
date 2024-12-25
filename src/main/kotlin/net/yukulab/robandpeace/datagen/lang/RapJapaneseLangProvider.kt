@@ -53,6 +53,5 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "不吉なピッキングツール")
         add(RapItems.SPIDER_WALKER, "スパイダーウォーカー")
         add(RapItems.PORTAL_HOOP, "通り抜けフープ")
-        add(RapItems.PORTAL_HOOP_REMOVER, "通り抜けフープ除去ツール")
     }
 }
