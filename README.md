@@ -21,7 +21,6 @@ cd ..
 ```
 
 ## Credits
-- Including [GravityChanger-1.21.1](https://github.com/FugLord77/GravityChanger-1.21.1)
 - below things are borrowed from [PortalGun](https://github.com/iPortalTeam/PortalGun) under the MIT license
   - some codes
   - in src/main/resources/assets/robandpeace/textures/entity
