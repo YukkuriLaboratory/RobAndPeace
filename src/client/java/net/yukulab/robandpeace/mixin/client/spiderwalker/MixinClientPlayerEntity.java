@@ -53,7 +53,7 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
         boolean isDirty = (sentPayload.getHasForwardMovement() != input.hasForwardMovement()) ||
                 (sentPayload.getMovementForward() != input.movementForward) ||
                 (sentPayload.isJumping() != input.jumping);
-        if(isDirty) {
+        if (isDirty) {
             sentPayload = new PlayerMovementPayload(input.hasForwardMovement(), input.movementForward, input.jumping);
             ClientPlayNetworking.send(sentPayload);
         }
@@ -72,7 +72,7 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
                 !(this.input.movementForward > 1.0E-5F ||
                         (Math.abs(this.input.movementSideways) > 1.0E-5F &&
                                 this.input.movementForward > -1.0E-5F && sidewaysSprint) ||
-                        (this.input.movementForward < -1.0E-5F && backwardsSprint))){
+                        (this.input.movementForward < -1.0E-5F && backwardsSprint))) {
             this.setSprinting(sprinting);
         }
         return clientPlayerEntity;

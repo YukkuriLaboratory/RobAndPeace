@@ -215,7 +215,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             return motion;
         }
 
-        if(!canClimbing()) return motion;
+        if (!canClimbing()) return motion;
 
         RapConfigInjector injector = this;
         var config = injector.robandpeace$getServerConfigSupplier().get();
