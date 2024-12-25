@@ -1,13 +1,17 @@
-package net.yukulab.robandpeace.item
+package net.yukulab.robandpeace.item.portalhoop
 
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.registry.RegistryKey
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
+import net.minecraft.util.Hand
+import net.minecraft.util.TypedActionResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
@@ -17,33 +21,66 @@ import net.yukulab.robandpeace.DelegatedLogger
 import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.entity.ThroughHoopPortal
 import net.yukulab.robandpeace.item.component.RapComponents
+import qouteall.imm_ptl.core.McHelper
 import qouteall.imm_ptl.core.api.PortalAPI
 import qouteall.imm_ptl.core.portal.PortalManipulation
+import qouteall.imm_ptl.core.portal.global_portals.GlobalPortalStorage
 import qouteall.q_misc_util.my_util.AARotation
+
+data class PortalData(val origin: ThroughHoopPortal, val destination: ThroughHoopPortal)
 
 class PortalHoopItem : Item(Settings()) {
     companion object {
-        val logger by DelegatedLogger()
-        const val maxRange = 6
+        private val logger by DelegatedLogger()
+        private const val MAX_RANGE = 6
 
-        fun getExtendPos(side: Direction, playerFacing: Direction, basePos: BlockPos): BlockPos = when (side) {
+        private fun getExtendPos(side: Direction, playerFacing: Direction, basePos: BlockPos): BlockPos = when (side) {
             Direction.UP -> basePos.mutableCopy().move(
                 playerFacing.offsetX,
                 playerFacing.offsetY,
                 playerFacing.offsetZ,
             )
+
             Direction.DOWN -> basePos.mutableCopy().move(
                 -playerFacing.offsetX,
                 -playerFacing.offsetY,
                 -playerFacing.offsetZ,
             )
+
             Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH -> basePos.add(0, 1, 0)
         }
     }
+
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         // If client side
         if (context.world.isClient) return super.useOnBlock(context)
 
+        val heldStack = context.stack
+
+        // this stack is not in remove mode = place mode
+        if (heldStack.get(RapComponents.PORTAL_HOOP_IS_REMOVE_MODE) != true) {
+            // On place or First use
+            heldStack.set(RapComponents.PORTAL_HOOP_IS_REMOVE_MODE, true)
+            return onPlacePortal(context, heldStack)
+        }
+
+        return super.useOnBlock(context)
+    }
+
+    override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
+        val heldStack: ItemStack = user.getStackInHand(hand)
+
+        // If in remove mode, remove portals.
+        if (heldStack.get(RapComponents.PORTAL_HOOP_IS_REMOVE_MODE) == true) {
+            // On remove
+            heldStack.set(RapComponents.PORTAL_HOOP_IS_REMOVE_MODE, false)
+            return onRemovePortal(world, user, heldStack)
+        }
+
+        return super.use(world, user, hand)
+    }
+
+    private fun onPlacePortal(context: ItemUsageContext, heldStack: ItemStack): ActionResult {
         logger.debug("item used on block. Yaw: {}, Facing: {}", context.playerYaw, context.horizontalPlayerFacing)
 
         val side = context.side
@@ -55,7 +92,6 @@ class PortalHoopItem : Item(Settings()) {
         val portalExtendPos: BlockPos = getExtendPos(side, context.horizontalPlayerFacing, portalBasePos)
 
         if (checkAirAreaFromWorld(context.world, portalBasePos, portalExtendPos)) {
-            // placeDebugBlock(context.world, portalBasePos, portalExtendPos)
             logger.debug("You can place the portal")
         } else {
             context.player!!.sendMessage(Text.of("Can't place block!!!! (debug message)"))
@@ -66,16 +102,14 @@ class PortalHoopItem : Item(Settings()) {
         val destinationPos: BlockPos = searchAirArea(
             context.world,
             context.blockPos,
-            Direction.UP, // because only support y+1 block as extension block. TODO: support gravity-api
+            Direction.UP,
             context.horizontalPlayerFacing,
-            maxRange,
+            MAX_RANGE,
         ).getOrElse {
             logger.error("Failed to search air area")
             context.player!!.sendMessage(Text.of("Air area not found."))
             return ActionResult.FAIL
         }
-
-        // placeDebugBlock(context.world, destinationPos, destinationPos.add(0, 1, 0))
 
         // === Let's place portal ===
         val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
@@ -92,13 +126,42 @@ class PortalHoopItem : Item(Settings()) {
             destinationPos.toCenterPos().add(-offsetX, 0.5 - offsetY, -offsetZ),
         )
 
-        val stack = ItemStack(RapItems.PORTAL_HOOP_REMOVER)
-        stack.set(RapComponents.PORTAL_ID_ORIGIN, portalData.origin.id)
-        stack.set(RapComponents.PORTAL_ID_DESTINATION, portalData.destination.id)
-        context.player!!.giveItemStack(stack)
+        // Set both portal IDs
+        heldStack.set(RapComponents.PORTAL_ID_ORIGIN, portalData.origin.id)
+        heldStack.set(RapComponents.PORTAL_ID_DESTINATION, portalData.destination.id)
 
-        context.player!!.setStackInHand(context.hand, ItemStack.EMPTY)
         return ActionResult.CONSUME
+    }
+
+    private fun onRemovePortal(world: World, user: PlayerEntity, heldStack: ItemStack): TypedActionResult<ItemStack> {
+        // Get all portals
+        val portals = GlobalPortalStorage.getGlobalPortals(world)
+        portals.addAll( // Add nearby portals
+            McHelper.getEntitiesNearby(
+                user,
+                ThroughHoopPortal::class.java,
+                15.0,
+            ),
+        )
+
+        // Get portal IDs from stack
+        val originId = heldStack.get(RapComponents.PORTAL_ID_ORIGIN)
+        val destId = heldStack.get(RapComponents.PORTAL_ID_DESTINATION)
+        if (originId == null || destId == null) {
+            logger.error("Failed to get portal ids from stack")
+            return TypedActionResult.fail(heldStack)
+        }
+
+        // Search origin & destination portals
+        val originPortal = portals.find { p -> p.id == originId }
+        val destPortal = portals.find { p -> p.id == destId }
+
+        // Remove both portals
+        val serverWorld = world as ServerWorld
+        PortalAPI.removeGlobalPortal(serverWorld, originPortal)
+        PortalAPI.removeGlobalPortal(serverWorld, destPortal)
+
+        return TypedActionResult.pass(heldStack)
     }
 
     /**
@@ -135,7 +198,7 @@ class PortalHoopItem : Item(Settings()) {
 
         // 2. Search
         val searchPos = interactBlockPos.mutableCopy()
-        for (i in 1..maxRange) {
+        for (i in 1..MAX_RANGE) {
             searchPos.move(playerFacing)
             logger.debug("Searching at x:${searchPos.x}, y:${searchPos.y}, z:${searchPos.z}")
             if (checkAirArea(chunkCache, searchPos, extensionDirection)) {
@@ -224,5 +287,3 @@ class PortalHoopItem : Item(Settings()) {
         world.setBlockState(posB, Blocks.HAY_BLOCK.defaultState)
     }
 }
-
-data class PortalData(val origin: ThroughHoopPortal, val destination: ThroughHoopPortal)
