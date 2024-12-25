@@ -1,4 +1,4 @@
-package net.yukulab.robandpeace.item.portalhoop
+package net.yukulab.robandpeace.item
 
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity

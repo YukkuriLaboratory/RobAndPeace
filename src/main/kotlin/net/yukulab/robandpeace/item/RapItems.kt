@@ -11,7 +11,6 @@ import net.minecraft.registry.RegistryKey
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.yukulab.robandpeace.MOD_ID
-import net.yukulab.robandpeace.item.portalhoop.PortalHoopItem
 
 object RapItems {
 
