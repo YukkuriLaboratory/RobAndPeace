@@ -10,7 +10,6 @@ import net.yukulab.robandpeace.network.payload.PlayerMovementPayload
 object RabNetworking {
     val PLAYER_MOVEMENT_PACKET: Identifier = Identifier.of(MOD_ID, "player_movement")
 
-    // TODO: add receiver
     fun init() {
         PayloadTypeRegistry.playC2S().register(PlayerMovementPayload.ID, PlayerMovementPayload.CODEC)
 
