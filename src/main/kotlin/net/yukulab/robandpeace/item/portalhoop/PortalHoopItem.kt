@@ -1,7 +1,6 @@
 package net.yukulab.robandpeace.item.portalhoop
 
 import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -280,10 +279,5 @@ class PortalHoopItem : Item(Settings()) {
         world.spawnEntity(destinationPortal) // Destination
 
         return PortalData(portal, destinationPortal)
-    }
-
-    private fun placeDebugBlock(world: World, posA: BlockPos, posB: BlockPos) {
-        world.setBlockState(posA, Blocks.STONE.defaultState)
-        world.setBlockState(posB, Blocks.HAY_BLOCK.defaultState)
     }
 }
