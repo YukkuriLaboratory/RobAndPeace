@@ -1,8 +1,7 @@
 package net.yukulab.robandpeace.mixin.spiderwalker;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.PowderSnowBlock;
+import com.mojang.logging.LogUtils;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +16,7 @@ import net.minecraft.world.World;
 import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.item.RapItems;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,6 +31,10 @@ public abstract class LivingEntityMixin extends Entity {
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
+
+    @Unique
+    private static final Logger logger = LogUtils.getLogger();
+
 	@Shadow
 	public abstract boolean isClimbing();
 	// getMovementSpeed
@@ -57,6 +61,9 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow
     public abstract ItemStack getStackInHand(Hand hand);
+
+    @Shadow
+    private Optional<BlockPos> climbingPos;
 
     /**
 	 * Injects the default friction behavior to add wall sliding.
@@ -240,6 +247,18 @@ public abstract class LivingEntityMixin extends Entity {
 			cir.setReturnValue(true);
 		}
 	}
+
+    @Inject(method = "isClimbing", at = @At("TAIL"), cancellable = true)
+    public void isClimbingOnGrowBerries(CallbackInfoReturnable<Boolean> cir) {
+        BlockPos blockPos = getBlockPos();
+        BlockState blockState = getBlockStateAtPos();
+
+        // This instance check is not necessary, but it is better than not checked.
+        if(blockState.getBlock() instanceof CaveVines && CaveVines.hasBerries(blockState)) {
+            climbingPos = Optional.of(blockPos);
+            cir.setReturnValue(true);
+        }
+    }
 
     @Unique
     private boolean canClimbing() {
