@@ -16,6 +16,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 import net.yukulab.robandpeace.item.PickingToolItem
+import net.yukulab.robandpeace.item.PortalHoopItem
 import net.yukulab.robandpeace.item.RapItems
 
 class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(generator) {
@@ -92,7 +93,15 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
             )
         }
         itemModelGenerator.register(RapItems.SPIDER_WALKER, Models.GENERATED)
-        itemModelGenerator.register(RapItems.PORTAL_HOOP, Models.GENERATED)
+        itemModelGenerator.register(RapItems.PORTAL_HOOP, Models.GENERATED) {
+            overrides(
+                Override(
+                    ModelIds.getItemSubModelId(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE),
+                    listOf(PortalHoopItem.KEY_REMOVE_MODE to 1.0),
+                ),
+            )
+        }
+        itemModelGenerator.register(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, Models.GENERATED)
     }
 
     companion object {
