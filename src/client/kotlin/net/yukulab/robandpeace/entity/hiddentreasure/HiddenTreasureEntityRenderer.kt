@@ -17,12 +17,10 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 
 class HiddenTreasureEntityRenderer(context: EntityRendererFactory.Context) : EntityRenderer<HiddenTreasureEntity>(context) {
-    val HALF_SQRT_3: Float = (sqrt(3.0) / 2.0).toFloat()
+    private val HALF_SQRT_3: Float = (sqrt(3.0) / 2.0).toFloat()
     override fun render(entity: HiddenTreasureEntity, yaw: Float, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int) {
         val m: Float = (entity.currentTick + 1) / 200.0f
         matrices.push()
-        // y - 1, z - 2の位置に移動させられていたのでコメントアウト
-        // matrices.translate(0.0f, -1.0f, -2.0f)
         renderDeathAnimation(
             matrices,
             m,
@@ -33,12 +31,6 @@ class HiddenTreasureEntityRenderer(context: EntityRendererFactory.Context) : Ent
             m,
             vertexConsumers.getBuffer(RenderLayer.getDragonRaysDepth()),
         )
-        // クラッシュしたのでコメントアウト
-        // renderDeathAnimation(
-        //     matrices,
-        //     m,
-        //     vertexConsumers.getBuffer(RenderLayer.getFastClouds()),
-        // )
         matrices.pop()
         super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light)
     }
@@ -85,14 +77,14 @@ class HiddenTreasureEntityRenderer(context: EntityRendererFactory.Context) : Ent
             vector3f4[0.0f, g] = h
             val entry = matrices.peek()
             vertexConsumer.vertex(entry, vector3f).color(i)
-            vertexConsumer.vertex(entry, vector3f2).color(16711935)
-            vertexConsumer.vertex(entry, vector3f3).color(16711935)
+            vertexConsumer.vertex(entry, vector3f2).color(j)
+            vertexConsumer.vertex(entry, vector3f3).color(j)
             vertexConsumer.vertex(entry, vector3f).color(i)
-            vertexConsumer.vertex(entry, vector3f3).color(16711935)
-            vertexConsumer.vertex(entry, vector3f4).color(16711935)
+            vertexConsumer.vertex(entry, vector3f3).color(j)
+            vertexConsumer.vertex(entry, vector3f4).color(j)
             vertexConsumer.vertex(entry, vector3f).color(i)
-            vertexConsumer.vertex(entry, vector3f4).color(16711935)
-            vertexConsumer.vertex(entry, vector3f2).color(16711935)
+            vertexConsumer.vertex(entry, vector3f4).color(j)
+            vertexConsumer.vertex(entry, vector3f2).color(j)
         }
 
         matrices.pop()
