@@ -55,5 +55,6 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapItems.SPIDER_WALKER, "スパイダーウォーカー")
         add(RapItems.PORTAL_HOOP, "通り抜けフープ(設置モード)")
         add(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, "通り抜けフープ(撤去モード)")
+        add(RapItems.HIDDEN_TREASURE, "大秘宝")
     }
 }
