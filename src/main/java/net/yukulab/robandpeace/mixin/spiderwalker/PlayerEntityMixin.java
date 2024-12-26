@@ -296,7 +296,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             motionY = Math.max(motion.y, -wallRunSlidingSpeed);
             motionX = motion.x * (1 + wallRunSpeedBonus);
             motionZ = motion.z * (1 + wallRunSpeedBonus);
-        } else if (wallClimbing && pitch > pitchToClimb && yaw < 90 && hasForwardMovement) { // Wall Climbing
+        } else if (wallClimbing && yaw < 90 && hasForwardMovement) { // Wall Climbing
             motionY = climbingSpeed;
             motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
             motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
