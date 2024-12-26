@@ -259,10 +259,8 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "isClimbing", at = @At("TAIL"), cancellable = true)
     public void isClimbingOnGrowBerries(CallbackInfoReturnable<Boolean> cir) {
         BlockPos blockPos = getBlockPos();
-        BlockState blockState = getBlockStateAtPos();
 
-        // This instance check is not necessary, but it is better than not checked.
-        if (blockState.getBlock() instanceof CaveVines && CaveVines.hasBerries(blockState)) {
+        if (RobAndPeace.getPlayerMovementStatus(getUuid()).isJumping() && getWorld().getBlockState(blockPos.up(2)).getBlock() != Blocks.AIR) {
             climbingPos = Optional.of(blockPos);
             cir.setReturnValue(true);
         }
