@@ -29,7 +29,6 @@ class RapServerConfig : ConfigData {
     @JvmField
     var items: Items = Items()
 
-    // TODO: add lang for spider walker settings
     @CollapsibleObject
     @JvmField
     var spiderWalkerSettings: SpiderWalkerSettings = SpiderWalkerSettings()
