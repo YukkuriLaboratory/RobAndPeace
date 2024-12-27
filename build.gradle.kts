@@ -44,7 +44,6 @@ repositories {
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
-    mavenLocal()
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://maven.shedaniel.me/") }
     maven { url = uri("https://maven.terraformersmc.com/releases/") }
@@ -115,8 +114,6 @@ dependencies {
     }
     modImplementation(libs.modmenu)
     modImplementation(libs.immersiveportals)
-
-    modApi(include("mortimer-kerman:gravity-changer:1.3.0+mc1.21")!!)
 
     modRuntimeOnly(libs.sodium)
     modRuntimeOnly(libs.cardinal.components.base)

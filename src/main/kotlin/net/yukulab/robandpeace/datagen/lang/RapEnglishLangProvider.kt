@@ -45,6 +45,49 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "Diamond Glove")
         add(RapServerConfig.KEY_ITEMS_NETHERITE_GLOVE, "Netherite Glove")
 
+        // === Spider walker settings ===
+        add(RapServerConfig.SpiderWalkerSettingsLang.KEY_PARENT, "Spider Walker Settings")
+
+        // Walking
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.CONFIG_TITLE, "Spider Walker Settings - Walking")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.ALWAYS_SPRINT, "Enable always sprint")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.SIDEWAYS_SPRINT, "Enable sideways sprint")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.BACKWARDS_SPRINT, "Enable backwards sprint")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.DEFAULT_GENERIC_MOVEMENT_SPEED, "Default generic movement speed")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.SPRINT_MOVEMENT_SPEED_MULTIPLIER, "Sprint movement speed multiplier")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.STEP_HEIGHT, "Step height")
+
+        // Jumping
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.CONFIG_TITLE, "Spider Walker Settings - Jumping")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.JUMP_STRENGTH, "Jump strength")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.COYOTE_TIME, "Coyote time")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.SMOOTH_JUMPS, "Enable smooth jumps")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.JUMP_HORIZONTAL_VELOCITY_MULTIPLIER, "Jump horizontal velocity multiplier")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.SPRINT_JUMP_HORIZONTAL_VELOCITY_MULTIPLIER, "Sprint jump horizontal velocity multiplier")
+
+        // Wall
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.CONFIG_TITLE, "Spider Walker Settings - Wall")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_MOVEMENT, "Enable wall movement")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_DISTANCE, "Wall distance")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.STICKY_MOVEMENT, "Enable sticky movement")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_SLIDING, "Enable wall sliding")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.SLIDING_SPEED, "Sliding speed")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_CLIMBING, "Enable wall climbing")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.CLIMBING_SPEED, "Climbing speed")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.PITCH_TO_CLIMB, "Pitch to climb")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_STICKING, "Wall sticking")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUNNING, "Wall running")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUN_SLIDING_SPEED, "Wall run sliding speed")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUN_SPEED_BONUS, "Wall run speed bonus")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.MINIMUM_WALL_RUN_SPEED, "Minimum wall run speed")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.YAW_TO_RUN, "Yaw to run")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMPING, "Wall jumping")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMP_VELOCITY_MULTIPLIER, "Wall jump velocity multiplier")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMP_HEIGHT, "Wall jump height")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.MINIMUM_YAW_TO_JUMP, "Minimum yaw to jump")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.JUMP_ON_LEAVING_WALL, "Jump on leaving wall")
+        // =================================================================
+
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
         add(RapItems.SMOKE, "Smoke")
         add(RapItems.MAGIC_HAND, "Magic Hand")

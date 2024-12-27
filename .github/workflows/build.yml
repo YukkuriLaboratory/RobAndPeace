@@ -63,11 +63,6 @@ jobs:
           distribution: 'microsoft'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Prepare libs
-        run: |
-          chmod +x gradlew
-          ./gradlew publishToMavenLocal
-        working-directory: gravity-api
       - name: Run Gradle ${{ matrix.task }}
         run: ./gradlew ${{ matrix.task }}
       - name: capture build artifacts

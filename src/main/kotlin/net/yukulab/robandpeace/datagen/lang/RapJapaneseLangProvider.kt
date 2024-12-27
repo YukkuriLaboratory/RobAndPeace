@@ -45,6 +45,49 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_ITEMS_DIAMOND_GLOVE, "ダイヤモンドのグローブ")
         add(RapServerConfig.KEY_ITEMS_NETHERITE_GLOVE, "ネザライトのグローブ")
 
+        // === Spider walker settings ===
+        add(RapServerConfig.SpiderWalkerSettingsLang.KEY_PARENT, "スパイダーウォーカー設定")
+
+        // Walking
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.CONFIG_TITLE, "スパイダーウォーカー設定 - ウォーキング")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.ALWAYS_SPRINT, "常に走るモードの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.SIDEWAYS_SPRINT, "横方向に走るモードの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.BACKWARDS_SPRINT, "後ろに走るモードの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.DEFAULT_GENERIC_MOVEMENT_SPEED, "デフォルトの移動速度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.SPRINT_MOVEMENT_SPEED_MULTIPLIER, "走り移動の倍率")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Walking.STEP_HEIGHT, "ステップの高さ")
+
+        // Jumping
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.CONFIG_TITLE, "スパイダーウォーカー設定 - ジャンプ")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.JUMP_STRENGTH, "ジャンプの強さ")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.COYOTE_TIME, "コヨーテタイム (:<")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.SMOOTH_JUMPS, "スムーズなジャンプの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.JUMP_HORIZONTAL_VELOCITY_MULTIPLIER, "水平方向のジャンプ速度の倍率")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Jumping.SPRINT_JUMP_HORIZONTAL_VELOCITY_MULTIPLIER, "水平方向の走りジャンプ速度の倍率")
+
+        // Wall
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.CONFIG_TITLE, "スパイダーウォーカー設定 - 壁")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_MOVEMENT, "壁移動を有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_DISTANCE, "壁との距離")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.STICKY_MOVEMENT, "スティッキーな動きの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_SLIDING, "壁スライディングを有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.SLIDING_SPEED, "壁スライディングのスピード")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_CLIMBING, "壁登りの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.CLIMBING_SPEED, "壁登りの速度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.PITCH_TO_CLIMB, "壁登りの勾配")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_STICKING, "壁くっつきの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUNNING, "壁走りの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUN_SLIDING_SPEED, "壁走りのスライディングの速度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_RUN_SPEED_BONUS, "壁走りの速度ボーナス")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.MINIMUM_WALL_RUN_SPEED, "壁走りの最低速度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.YAW_TO_RUN, "走る角度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMPING, "壁ジャンプの有効化")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMP_VELOCITY_MULTIPLIER, "壁ジャンプ速度の倍率")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.WALL_JUMP_HEIGHT, "壁ジャンプの高さ")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.MINIMUM_YAW_TO_JUMP, "壁ジャンプの最低角度")
+        add(RapServerConfig.SpiderWalkerSettingsLang.Wall.JUMP_ON_LEAVING_WALL, "ジャンプ時に壁登りをキャンセル")
+        // =================================================================
+
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
         add(RapItems.SMOKE, "煙幕")
         add(RapItems.MAGIC_HAND, "マジックハンド")
