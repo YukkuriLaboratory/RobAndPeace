@@ -7,6 +7,7 @@ import net.minecraft.client.render.entity.model.IronGolemEntityModel
 import net.minecraft.util.Identifier
 import net.yukulab.robandpeace.MOD_ID
 import net.yukulab.robandpeace.entity.angrygolem.AngryGolemEntityRenderer
+import net.yukulab.robandpeace.entity.hiddentreasure.HiddenTreasureEntityRenderer
 import net.yukulab.robandpeace.entity.portalhoop.PortalHoopEntityRenderer
 import net.yukulab.robandpeace.entity.portalhoop.model.PortalOverlayModel
 
@@ -21,5 +22,8 @@ object RapEntityRenderers {
         // Portal Hoop entities
         EntityRendererRegistry.register(RapEntityType.THROUGH_HOOP_PORTAL, ::PortalHoopEntityRenderer)
         EntityModelLayerRegistry.registerModelLayer(MODEL_PORTAL_LAYER) { PortalOverlayModel.getTexturedModelData() }
+
+        // Hidden Treasure's fake entities
+        EntityRendererRegistry.register(RapEntityType.HIDDEN_TREASURE_ENTITY, ::HiddenTreasureEntityRenderer)
     }
 }

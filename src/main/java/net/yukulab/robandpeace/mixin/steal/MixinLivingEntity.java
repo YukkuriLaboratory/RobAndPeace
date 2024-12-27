@@ -230,6 +230,8 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                 if (itemEntity != null) {
                     itemEntity.setOwner(player.getUuid());
                 }
+            } else if (entity instanceof EnderDragonEntity dragon) {
+                dragon.setHealth(0);
             } else {
                 // スリ取り成功時は必ずアイテムをドロップしてほしいが、そもそもアイテムをドロップしないMOBの可能性も考えて7万回まで施行するようにしておく
                 // 例えばドロップ率が0.001%のMOBでも7万回連続でドロップしない確立は0.09%程度になる

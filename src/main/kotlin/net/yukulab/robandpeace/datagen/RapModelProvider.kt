@@ -102,6 +102,7 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
             )
         }
         itemModelGenerator.register(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, Models.GENERATED)
+        itemModelGenerator.register(RapItems.HIDDEN_TREASURE, Models.GENERATED)
     }
 
     companion object {

@@ -55,5 +55,6 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapItems.SPIDER_WALKER, "Spider Walker")
         add(RapItems.PORTAL_HOOP, "Portal Hoop(Place Mode)")
         add(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, "Portal Hoop(Remove Mode)")
+        add(RapItems.HIDDEN_TREASURE, "Hidden Treasure")
     }
 }
