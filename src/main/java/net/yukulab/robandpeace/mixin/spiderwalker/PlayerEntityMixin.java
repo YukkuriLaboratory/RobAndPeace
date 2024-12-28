@@ -102,21 +102,21 @@ public abstract class PlayerEntityMixin extends LivingEntity {
      * Executes a jump.
      * Edited s.t. variables can be configured
      */
-    @Inject(method = "jump", at = @At("HEAD"), cancellable = true)
-    public void jump(CallbackInfo ci) {
-        var config = this.robandpeace$getServerConfigSupplier().get();
-        float jumpStrength = config.spiderWalkerSettings.jumping.jumpStrength;
-        Vec3d velocity = getJumpVec3d(config, jumpStrength);
-        this.setVelocity(velocity);
-        this.velocityDirty = true;
-        this.incrementStat(Stats.JUMP);
-        if (this.isSprinting()) {
-            this.addExhaustion(0.2F);
-        } else {
-            this.addExhaustion(0.05F);
-        }
-        ci.cancel();
-    }
+//    @Inject(method = "jump", at = @At("HEAD"), cancellable = true)
+//    public void jump(CallbackInfo ci) {
+//        var config = this.robandpeace$getServerConfigSupplier().get();
+//        float jumpStrength = config.spiderWalkerSettings.jumping.jumpStrength;
+//        Vec3d velocity = getJumpVec3d(config, jumpStrength);
+//        this.setVelocity(velocity);
+//        this.velocityDirty = true;
+//        this.incrementStat(Stats.JUMP);
+//        if (this.isSprinting()) {
+//            this.addExhaustion(0.2F);
+//        } else {
+//            this.addExhaustion(0.05F);
+//        }
+//        ci.cancel();
+//    }
 
     @Unique
     private Vec3d getJumpVec3d(RapServerConfig config, float jumpStrength) {

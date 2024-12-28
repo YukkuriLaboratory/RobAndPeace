@@ -14,6 +14,11 @@ sodium = "mc1.21-0.5.11"
 immersiveportals = "v6.0.4-mc1.21.1"
 cardinal-components = "6.1.1"
 cardinal-components-api = "6.1.1"
+architectury-api = "13.0.8"
+trinkets = "3.10.0"
+night-config = "3.8.1"
+expandability = "12.0.0"
+artifacts = "12.0.6"
 # for testing
 kotest = "5.9.1"
 
@@ -28,6 +33,12 @@ fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-l
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
 cloth-config = { module = "me.shedaniel.cloth:cloth-config-fabric", version.ref = "cloth-config" }
+architectury-api = { module = "dev.architectury:architectury-fabric", version.ref = "architectury-api" }
+trinkets = { module = "dev.emi:trinkets", version.ref = "trinkets" }
+night-config = { module = "com.electronwill.night-config:core", version.ref = "night-config" }
+night-config-toml = { module = "com.electronwill.night-config:toml", version.ref = "night-config" }
+expandability = { module = "be.florens:expandability-fabric", version.ref = "expandability" }
+artifacts = { module = "maven.modrinth:artifacts", version.ref = "artifacts" }
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
 immersiveportals = { module = "com.github.iPortalTeam:ImmersivePortalsMod", version.ref = "immersiveportals"}
