@@ -15,6 +15,9 @@ import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
+import net.yukulab.robandpeace.MOD_ID
+import net.yukulab.robandpeace.item.GLOVE_ITEMS
+import net.yukulab.robandpeace.item.HAS_PLAYER
 import net.yukulab.robandpeace.item.PickingToolItem
 import net.yukulab.robandpeace.item.PortalHoopItem
 import net.yukulab.robandpeace.item.RapItems
@@ -103,6 +106,18 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
         }
         itemModelGenerator.register(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, Models.GENERATED)
         itemModelGenerator.register(RapItems.HIDDEN_TREASURE, Models.GENERATED)
+
+        // Gloves
+        GLOVE_ITEMS.forEach {
+            itemModelGenerator.register(it, Models.HANDHELD) {
+                overrides(
+                    Override(
+                        Identifier.of(MOD_ID, ModelIds.getItemModelId(it).path),
+                        listOf(HAS_PLAYER to 1.0),
+                    ),
+                )
+            }
+        }
     }
 
     companion object {

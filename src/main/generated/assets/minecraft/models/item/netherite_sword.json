@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/handheld",
+  "overrides": [
+    {
+      "model": "robandpeace:item/netherite_sword",
+      "predicate": {
+        "robandpeace:has_player": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "minecraft:item/netherite_sword"
+  }
+}

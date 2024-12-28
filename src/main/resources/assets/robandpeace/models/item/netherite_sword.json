@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"2": "item/diamond_sword",
-		"particle": "item/diamond_sword"
+		"2": "robandpeace:item/netherite_sword",
+		"particle": "robandpeace:item/netherite_sword"
 	},
 	"elements": [
 		{
