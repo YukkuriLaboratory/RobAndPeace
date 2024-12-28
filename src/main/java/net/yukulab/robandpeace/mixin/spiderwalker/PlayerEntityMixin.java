@@ -23,6 +23,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.RobAndPeace;
+import net.yukulab.robandpeace.VariablesKt;
 import net.yukulab.robandpeace.config.RapServerConfig;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.item.RapItems;
@@ -60,7 +61,16 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     public abstract void addExhaustion(float exhaustion);
 
     @Unique
-    private static final Identifier SPRINTING_SPEED = Identifier.of("robandpeace", "sprinting_speed");
+    private static final Identifier SPRINTING_SPEED = Identifier.of(VariablesKt.MOD_ID, "sprinting_speed");
+
+    @Unique
+    private static final Identifier STEP_HEIGHT = Identifier.of(VariablesKt.MOD_ID, "step_height");
+
+    @Unique
+    private static final Identifier MOVEMENT_SPEED = Identifier.of(VariablesKt.MOD_ID, "movement_speed");
+
+    @Unique
+    private static final float DEFAULT_STEP_HEIGHT = 0.6f;
 
     @Shadow
     protected abstract float getOffGroundSpeed();
@@ -136,22 +146,42 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         if (this.canStartSprinting())
             this.setSprinting(alwaysSprint || isSprinting());
         if (this.isSneaking()) {
-            this.setStepHeight(0.6F);
+            this.resetStepHeight();
         } else {
             this.setStepHeight(stepHeight);
         }
         this.getAbilities().setWalkSpeed(defaultGenericMovementSpeed);
-        Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)).setBaseValue(this.getAbilities().getWalkSpeed());
+//        Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED))
+//                .setBaseValue(this.getAbilities().getWalkSpeed());
+        EntityAttributeModifier modifier = new EntityAttributeModifier(MOVEMENT_SPEED, getAbilities().getWalkSpeed(), EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        var instance = getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+        if (instance != null) {
+            instance.removeModifier(MOVEMENT_SPEED);
+            instance.addTemporaryModifier(modifier);
+        }
     }
 
     @Unique
     private void setStepHeight(float stepHeight) {
         var instance = this.getAttributes().getCustomInstance(EntityAttributes.GENERIC_STEP_HEIGHT);
-        if (instance != null) {
-            instance.setBaseValue(stepHeight);
-        } else {
+        if (instance == null) {
             logger.warn("Failed to get step height attribute.");
+            return;
         }
+
+        EntityAttributeModifier modifier = new EntityAttributeModifier(STEP_HEIGHT, DEFAULT_STEP_HEIGHT-stepHeight, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        instance.removeModifier(STEP_HEIGHT);
+        instance.addTemporaryModifier(modifier);
+    }
+
+    @Unique
+    private void resetStepHeight() {
+        var instance = this.getAttributeInstance(EntityAttributes.GENERIC_STEP_HEIGHT);
+        if(instance == null) {
+            logger.warn("Failed to get step height attribute.");
+            return;
+        }
+        instance.removeModifier(STEP_HEIGHT);
     }
 
 
