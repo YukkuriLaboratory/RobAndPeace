@@ -37,7 +37,7 @@ object RapItemModelProvider {
         // Gloves
         GLOVE_ITEMS.forEach {
             ModelPredicateProviderRegistry.register(it, HAS_PLAYER) { _, _, entity, _ ->
-                if (entity is PlayerEntity) {
+                if (entity is PlayerEntity || entity == null) {
                     1.0f
                 } else {
                     0.0f
