@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "robandpeace:item/golden_sword",
+      "predicate": {
+        "robandpeace:has_player": 1.0
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "minecraft:item/golden_sword"
+  }
+}
