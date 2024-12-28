@@ -109,10 +109,10 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
 
         // Gloves
         GLOVE_ITEMS.forEach {
-            itemModelGenerator.register(it, Models.GENERATED) {
+            itemModelGenerator.register(it, Models.HANDHELD) {
                 overrides(
                     Override(
-                        Identifier.of(MOD_ID, "item/" + it.toString().replace("minecraft:", "")),
+                        Identifier.of(MOD_ID, ModelIds.getItemModelId(it).path),
                         listOf(HAS_PLAYER to 1.0),
                     ),
                 )
