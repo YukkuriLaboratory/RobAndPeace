@@ -268,6 +268,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private boolean canClimbing() {
-        return getStackInHand(Hand.MAIN_HAND).getItem() == RapItems.INSTANCE.getSPIDER_WALKER();
+        return getStackInHand(Hand.MAIN_HAND).getItem() == RapItems.INSTANCE.getSPIDER_WALKER() ||
+                getStackInHand(Hand.OFF_HAND).getItem() == RapItems.INSTANCE.getSPIDER_WALKER();
     }
 }
