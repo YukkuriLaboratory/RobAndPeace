@@ -125,7 +125,7 @@ class PortalHoopItem : Item(Settings()) {
             context.world,
             context.blockPos,
             Direction.UP,
-            context.horizontalPlayerFacing,
+            context.side.opposite,
             MAX_RANGE,
         ).getOrElse {
             logger.error("Failed to search air area")
