@@ -19,6 +19,7 @@ import net.minecraft.world.World
 import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
 import net.yukulab.robandpeace.MOD_ID
+import net.yukulab.robandpeace.RobAndPeace
 import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.entity.ThroughHoopPortal
 import net.yukulab.robandpeace.item.component.RapComponents
@@ -71,7 +72,7 @@ class PortalHoopItem : Item(Settings()) {
         // this stack is not in remove mode = place mode
         if (heldStack.get(RapComponents.PORTAL_HOOP_IS_REMOVE_MODE) != true) {
             // On place or First use
-            logger.debug("Portal placing...")
+            if (RobAndPeace.isDebugMode) logger.info("Portal placing...")
             heldStack.set(RapComponents.PORTAL_HOOP_LAST_USED, context.world.time)
             heldStack.set(RapComponents.PORTAL_HOOP_IS_REMOVE_MODE, true)
             return onPlacePortal(context, heldStack)
@@ -93,7 +94,7 @@ class PortalHoopItem : Item(Settings()) {
                 return TypedActionResult.fail(heldStack)
             }
 
-            logger.debug("Portal removing...")
+            if (RobAndPeace.isDebugMode) logger.info("Portal removing...")
             heldStack.set(RapComponents.PORTAL_HOOP_IS_REMOVE_MODE, false)
             return onRemovePortal(world, user, heldStack)
         }
@@ -102,18 +103,18 @@ class PortalHoopItem : Item(Settings()) {
     }
 
     private fun onPlacePortal(context: ItemUsageContext, heldStack: ItemStack): ActionResult {
-        logger.debug("item used on block. Yaw: {}, Facing: {}", context.playerYaw, context.horizontalPlayerFacing)
+        if (RobAndPeace.isDebugMode) logger.info("item used on block. Yaw: {}, Facing: {}", context.playerYaw, context.horizontalPlayerFacing)
 
         val side = context.side
         // Logic
-        logger.debug("Portal Hoop was used! side: {}, sideOffset -> (x:{}, y:{}, z:{})", side, side.offsetX, side.offsetY, side.offsetZ)
+        if (RobAndPeace.isDebugMode) logger.info("Portal Hoop was used! side: {}, sideOffset -> (x:{}, y:{}, z:{})", side, side.offsetX, side.offsetY, side.offsetZ)
 
         // === Portal origin block positions ===
         val portalBasePos = context.blockPos.add(side.offsetX, side.offsetY, side.offsetZ)
         val portalExtendPos: BlockPos = getExtendPos(side, context.horizontalPlayerFacing, portalBasePos)
 
         if (checkAirAreaFromWorld(context.world, portalBasePos, portalExtendPos)) {
-            logger.debug("You can place the portal")
+            if (RobAndPeace.isDebugMode) logger.info("You can place the portal")
         } else {
             context.player!!.sendMessage(Text.of("Can't place block!!!! (debug message)"))
             return ActionResult.FAIL
@@ -226,15 +227,15 @@ class PortalHoopItem : Item(Settings()) {
         val searchPos = interactBlockPos.mutableCopy()
         for (i in 1..MAX_RANGE) {
             searchPos.move(playerFacing)
-            logger.debug("Searching at x:${searchPos.x}, y:${searchPos.y}, z:${searchPos.z}")
+            if (RobAndPeace.isDebugMode) logger.info("Searching at x:${searchPos.x}, y:${searchPos.y}, z:${searchPos.z}")
             if (checkAirArea(chunkCache, searchPos, extensionDirection)) {
-                logger.debug("Air found! Pos: {}", searchPos)
+                if (RobAndPeace.isDebugMode) logger.info("Air found! Pos: {}", searchPos)
                 return Result.success(searchPos)
             }
         }
 
         // 3. Return
-        logger.debug("Air not found.")
+        if (RobAndPeace.isDebugMode) logger.info("Air not found.")
         return Result.failure(RuntimeException("Air was not found in this area."))
     }
 
@@ -248,15 +249,15 @@ class PortalHoopItem : Item(Settings()) {
 
         val baseBlockState: BlockState = chunkCache.getBlockState(basePos)
         val extBlockState: BlockState = chunkCache.getBlockState(extendPos)
-        logger.debug("loop baseBlockId: {}, coord: {}", baseBlockState.block.name, basePos)
-        logger.debug("loop extBlockId: {}, coord: {}", extBlockState.block.name, extendPos)
+        if (RobAndPeace.isDebugMode) logger.info("loop baseBlockId: {}, coord: {}", baseBlockState.block.name, basePos)
+        if (RobAndPeace.isDebugMode) logger.info("loop extBlockId: {}, coord: {}", extBlockState.block.name, extendPos)
 
         // return both blocks are air
         return baseBlockState.isAir && extBlockState.isAir
     }
 
     private fun checkAirAreaFromWorld(world: World, basePos: BlockPos, extensionBlockPos: BlockPos): Boolean {
-        logger.debug("Base:{}, Extend:{}", basePos, extensionBlockPos)
+        if (RobAndPeace.isDebugMode) logger.info("Base:{}, Extend:{}", basePos, extensionBlockPos)
 
         // Check range is cached
         if (world.isOutOfHeightLimit(basePos) || world.isOutOfHeightLimit(extensionBlockPos)) {

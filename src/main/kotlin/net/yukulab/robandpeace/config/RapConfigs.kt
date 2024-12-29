@@ -2,6 +2,7 @@ package net.yukulab.robandpeace.config
 
 import me.shedaniel.autoconfig.AutoConfig
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer
+import net.yukulab.robandpeace.RobAndPeace
 
 object RapConfigs {
     @JvmStatic
@@ -9,6 +10,11 @@ object RapConfigs {
         get() = AutoConfig.getConfigHolder(RapServerConfig::class.java).config
 
     fun init() {
-        AutoConfig.register(RapServerConfig::class.java, ::Toml4jConfigSerializer)
+        val serverConfig = AutoConfig.register(RapServerConfig::class.java, ::Toml4jConfigSerializer)
+        serverConfig.registerSaveListener { _, config ->
+            RobAndPeace.onUpdateConfig(config)
+        }
+        // First load
+        RobAndPeace.onUpdateConfig(serverConfig.get())
     }
 }
