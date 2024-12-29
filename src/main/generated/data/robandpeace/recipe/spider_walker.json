@@ -5,17 +5,23 @@
     "E": {
       "item": "minecraft:ender_pearl"
     },
-    "G": {
-      "item": "minecraft:gold_ingot"
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "minecraft:leather"
     },
     "O": {
       "item": "minecraft:obsidian"
+    },
+    "W": {
+      "item": "minecraft:cobweb"
     }
   },
   "pattern": [
-    "GOG",
-    "OEO",
-    "GOG"
+    "III",
+    "OWO",
+    "LEL"
   ],
   "result": {
     "count": 1,
