@@ -32,32 +32,10 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Shadow
-    public abstract boolean isClimbing();
-
-    // getMovementSpeed
-    @Shadow
-    public abstract float getMovementSpeed();
-
-    // getJumpBoostVelocityModifier
-    @Shadow
-    public abstract float getJumpBoostVelocityModifier();
-
-    //isHoldingOntoLadder
-    @Shadow
-    public abstract boolean isHoldingOntoLadder();
-
-    // jumping
-    @Shadow
-    protected boolean jumping;
-
-    @Shadow
     public abstract void remove(RemovalReason reason);
 
     @Shadow
     protected abstract void fall(double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition);
-
-    @Shadow
-    protected abstract float getOffGroundSpeed();
 
     @Shadow
     public abstract ItemStack getStackInHand(Hand hand);
