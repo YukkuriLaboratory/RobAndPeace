@@ -3,12 +3,15 @@ package net.yukulab.robandpeace.datagen
 import java.util.concurrent.CompletableFuture
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider
+import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder
 import net.minecraft.data.server.recipe.RecipeExporter
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
 import net.minecraft.item.Item
 import net.minecraft.item.Items
 import net.minecraft.recipe.book.RecipeCategory
 import net.minecraft.registry.RegistryWrapper
+import net.minecraft.registry.tag.ItemTags
+import net.minecraft.registry.tag.TagKey
 import net.yukulab.robandpeace.item.RapItems
 
 class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFuture<RegistryWrapper.WrapperLookup>) : FabricRecipeProvider(output, registryFuture) {
@@ -79,7 +82,28 @@ class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFut
             .input('G', Items.GHAST_TEAR)
             .criterionHaveItem(Items.DIAMOND, Items.COPPER_BLOCK, Items.WEATHERED_COPPER, Items.GHAST_TEAR)
             .offerTo(exporter)
+
+        // Glove (without netherite)
+        createGloveRecipe(ItemTags.PLANKS, Items.WOODEN_SWORD)
+        createGloveRecipe(ItemTags.STONE_TOOL_MATERIALS, Items.STONE_SWORD)
+        createGloveRecipe(Items.IRON_INGOT, Items.IRON_SWORD)
+        createGloveRecipe(Items.GOLD_INGOT, Items.GOLDEN_SWORD)
+        createGloveRecipe(Items.DIAMOND, Items.DIAMOND_SWORD)
     }
+
+    private fun createGloveRecipe(materialItem: Item, outputItem: Item): CraftingRecipeJsonBuilder = ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, outputItem)
+        .pattern("MMM")
+        .pattern("IAI")
+        .input('M', materialItem)
+        .input('I', Items.STICK)
+        .input('A', Items.AIR)
+
+    private fun createGloveRecipe(materialTag: TagKey<Item>, outputItem: Item): CraftingRecipeJsonBuilder = ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, outputItem)
+        .pattern("MMM")
+        .pattern("IAI")
+        .input('M', materialTag)
+        .input('I', Items.STICK)
+        .input('A', Items.AIR)
 
     companion object {
         private fun ShapedRecipeJsonBuilder.criterionHaveItem(vararg items: Item): ShapedRecipeJsonBuilder = also {
