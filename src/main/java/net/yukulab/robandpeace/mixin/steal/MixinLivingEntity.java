@@ -182,16 +182,22 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
             if (stack != null) {
                 switch (stack.getItem()) {
                     case SwordItem swordItem -> {
-                        var toolBonus = switch (swordItem.getMaterial()) {
-                            case ToolMaterials.WOOD -> robandpeace$getServerConfigSupplier().get().items.woodenGlove;
-                            case ToolMaterials.STONE -> robandpeace$getServerConfigSupplier().get().items.stoneGlove;
-                            case ToolMaterials.IRON -> robandpeace$getServerConfigSupplier().get().items.ironGlove;
-                            case ToolMaterials.GOLD -> robandpeace$getServerConfigSupplier().get().items.goldenGlove;
-                            case ToolMaterials.DIAMOND ->
+                        var toolMaterial = swordItem.getMaterial();
+                        var tagPath = toolMaterial.getInverseTag().id().getPath();
+                        var toolBonus = switch (tagPath) {
+                            // See ToolMaterials
+                            case "incorrect_for_wooden_tool" -> robandpeace$getServerConfigSupplier().get().items.woodenGlove;
+                            case "incorrect_for_stone_tool" -> robandpeace$getServerConfigSupplier().get().items.stoneGlove;
+                            case "incorrect_for_iron_tool" -> robandpeace$getServerConfigSupplier().get().items.ironGlove;
+                            case "incorrect_for_gold_tool" -> robandpeace$getServerConfigSupplier().get().items.goldenGlove;
+                            case "incorrect_for_diamond_tool" ->
                                     robandpeace$getServerConfigSupplier().get().items.diamondGlove;
-                            case ToolMaterials.NETHERITE ->
+                            case "incorrect_for_netherite_tool" ->
                                     robandpeace$getServerConfigSupplier().get().items.netheriteGlove;
-                            default -> 0;
+                            default -> {
+                                LOGGER.warn("Unknown sword material: {}({})", toolMaterial, tagPath);
+                                yield 0;
+                            }
                         };
                         baseChance += toolBonus;
                     }
