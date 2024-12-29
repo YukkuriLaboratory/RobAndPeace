@@ -60,6 +60,9 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
     @Shadow
     @Final
     private static Logger LOGGER;
+    @Shadow
+    @Nullable
+    protected PlayerEntity attackingPlayer;
     @Unique
     private boolean robandpeace$isItemDropped = false;
 
@@ -242,12 +245,22 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                 // スリ取り成功時は必ずアイテムをドロップしてほしいが、そもそもアイテムをドロップしないMOBの可能性も考えて7万回まで施行するようにしておく
                 // 例えばドロップ率が0.001%のMOBでも7万回連続でドロップしない確立は0.09%程度になる
                 var millis = System.currentTimeMillis();
+                var triedCount = 0;
+                // 強制的に戦闘状態にしないとアイテムをドロップしないMOBがいるので、以前の状態にかかわらず攻撃者を一時的に変更する
+                var prevAttackingPlayer = attackingPlayer;
+                attackingPlayer = player;
                 for (int i = 0; i < 70000; i++) {
+                    triedCount++;
                     dropLoot(source, true);
                     if (robandpeace$isItemDropped) {
                         break;
                     }
                 }
+                attackingPlayer = prevAttackingPlayer;
+                if (triedCount >= 70000) {
+                    LOGGER.debug("Failed Source: {}, attacker: {}", source, source.getAttacker());
+                }
+                LOGGER.debug("Tried count: {}", triedCount);
                 // 紙魚などでフルに試行されてしまうと初回のみ40ms程度かかり、その後最適化されるのか2回目以降は20ms以下に収まる
                 LOGGER.debug("Drop time: {}ms", System.currentTimeMillis() - millis);
                 robandpeace$isItemDropped = false;
