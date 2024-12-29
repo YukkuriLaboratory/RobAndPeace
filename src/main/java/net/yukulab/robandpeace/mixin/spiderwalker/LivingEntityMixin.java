@@ -1,14 +1,11 @@
 package net.yukulab.robandpeace.mixin.spiderwalker;
 
-import com.mojang.logging.LogUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CaveVines;
 import net.minecraft.block.PowderSnowBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +16,6 @@ import net.minecraft.world.World;
 import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.item.RapItems;
-import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -72,27 +68,27 @@ public abstract class LivingEntityMixin extends Entity {
     /**
      * Injects the default friction behavior to add wall sliding.
      */
-    @Inject(method = "applyMovementInput", at = @At("HEAD"), cancellable = true)
-    public void handleFrictionAndCalculateMovement(Vec3d movementInput, float slipperiness, CallbackInfoReturnable<Vec3d> cir) {
-        this.updateVelocity(this.getMovementSpeedUnique(slipperiness), movementInput);
-
-        if (!canClimbing()) return;
-
-        if (!(this instanceof RapConfigInjector injector)) return;
-
-        var config = injector.robandpeace$getServerConfigSupplier().get();
-        boolean wallMovement = config.spiderWalkerSettings.wall.wallMovement;
-
-        if (this.isClimbing()) {
-            this.setVelocity(this.applyClimbingSpeed(this.getVelocity()));
-        } else if (wallMovement && !this.isSpectator()) {
-            this.setVelocity(this.applyWallMovement(this.getVelocity()));
-        }
-
-        this.move(MovementType.SELF, this.getVelocity());
-
-        cir.setReturnValue(this.getVelocity());
-    }
+//    @Inject(method = "applyMovementInput", at = @At("HEAD"), cancellable = true)
+//    public void handleFrictionAndCalculateMovement(Vec3d movementInput, float slipperiness, CallbackInfoReturnable<Vec3d> cir) {
+//        this.updateVelocity(this.getMovementSpeedUnique(slipperiness), movementInput);
+//
+//        if (!canClimbing()) return;
+//
+//        if (!(this instanceof RapConfigInjector injector)) return;
+//
+//        var config = injector.robandpeace$getServerConfigSupplier().get();
+//        boolean wallMovement = config.spiderWalkerSettings.wall.wallMovement;
+//
+//        if (this.isClimbing()) {
+//            this.setVelocity(this.applyClimbingSpeed(this.getVelocity()));
+//        } else if (wallMovement && !this.isSpectator()) {
+//            this.setVelocity(this.applyWallMovement(this.getVelocity()));
+//        }
+//
+//        this.move(MovementType.SELF, this.getVelocity());
+//
+//        cir.setReturnValue(this.getVelocity());
+//    }
 
     @Unique
     private float getMovementSpeedUnique(float slipperiness) {
