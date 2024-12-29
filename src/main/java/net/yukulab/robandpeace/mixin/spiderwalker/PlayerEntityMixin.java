@@ -138,7 +138,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     public void travelHead(Vec3d movementInput, CallbackInfo ci) {
         var config = this.robandpeace$getServerConfigSupplier().get();
         boolean alwaysSprint = config.spiderWalkerSettings.walking.alwaysSprint;
-        float defaultGenericMovementSpeed = config.spiderWalkerSettings.walking.defaultGenericMovementSpeed;
+//        float defaultGenericMovementSpeed = config.spiderWalkerSettings.walking.defaultGenericMovementSpeed;
         float stepHeight = config.spiderWalkerSettings.walking.stepHeight;
         this.horizontalCollision = false;
         if (this.canStartSprinting())
@@ -148,15 +148,15 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         } else {
             this.setStepHeight(stepHeight);
         }
-        this.getAbilities().setWalkSpeed(defaultGenericMovementSpeed);
+//        this.getAbilities().setWalkSpeed(defaultGenericMovementSpeed);
 //        Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED))
 //                .setBaseValue(this.getAbilities().getWalkSpeed());
-        EntityAttributeModifier modifier = new EntityAttributeModifier(MOVEMENT_SPEED, getAbilities().getWalkSpeed(), EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-        var instance = getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-        if (instance != null) {
-            instance.removeModifier(MOVEMENT_SPEED);
-            instance.addTemporaryModifier(modifier);
-        }
+//        EntityAttributeModifier modifier = new EntityAttributeModifier(MOVEMENT_SPEED, getAbilities().getWalkSpeed(), EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+//        var instance = getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+//        if (instance != null) {
+//            instance.removeModifier(MOVEMENT_SPEED);
+//            instance.addTemporaryModifier(modifier);
+//        }
     }
 
     @Unique
@@ -183,25 +183,24 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     }
 
 
-    /**
-     * Sets sprinting to boolean.
-     * Edited s.t. sprinting multiplier can be configured.
-     * Edited s.t. sprint loss on collision is removed and sideways sprinting is possible.
-     */
-    @Override
-    public void setSprinting(boolean sprinting) {
-        super.setSprinting(sprinting);
-        var config = this.robandpeace$getServerConfigSupplier().get();
-        float sprintMovementSpeedMultiplier = config.spiderWalkerSettings.walking.sprintMovementSpeedMultiplier;
-        EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-        // TODO check this one works
-        EntityAttributeModifier SPRINTING_SPEED_BOOST = new EntityAttributeModifier(SPRINTING_SPEED, sprintMovementSpeedMultiplier, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        assert entityAttributeInstance != null;
-        entityAttributeInstance.removeModifier(SPRINTING_SPEED_BOOST.id());
-        if (sprinting) {
-            entityAttributeInstance.addTemporaryModifier(SPRINTING_SPEED_BOOST);
-        }
-    }
+//    /**
+//     * Sets sprinting to boolean.
+//     * Edited s.t. sprinting multiplier can be configured.
+//     * Edited s.t. sprint loss on collision is removed and sideways sprinting is possible.
+//     */
+//    @Override
+//    public void setSprinting(boolean sprinting) {
+//        super.setSprinting(sprinting);
+//        var config = this.robandpeace$getServerConfigSupplier().get();
+//        float sprintMovementSpeedMultiplier = config.spiderWalkerSettings.walking.sprintMovementSpeedMultiplier;
+//        EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+//        EntityAttributeModifier SPRINTING_SPEED_BOOST = new EntityAttributeModifier(SPRINTING_SPEED, sprintMovementSpeedMultiplier, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+//        assert entityAttributeInstance != null;
+//        entityAttributeInstance.removeModifier(SPRINTING_SPEED_BOOST.id());
+//        if (sprinting) {
+//            entityAttributeInstance.addTemporaryModifier(SPRINTING_SPEED_BOOST);
+//        }
+//    }
 
 
     /**

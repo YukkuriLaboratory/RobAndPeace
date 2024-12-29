@@ -133,19 +133,19 @@ class RapServerConfig : ConfigData {
             @JvmField
             var backwardsSprint: Boolean = false
 
-            @JvmField
-            var defaultGenericMovementSpeed: Float = 0.1f
-
-            @JvmField
-            var sprintMovementSpeedMultiplier: Float = 0.3f
+            // @JvmField
+            // var defaultGenericMovementSpeed: Float = 0.1f
+            //
+            // @JvmField
+            // var sprintMovementSpeedMultiplier: Float = 0.3f
 
             @JvmField
             var stepHeight: Float = 0.6f
         }
 
         class Jumping {
-            @JvmField
-            var jumpStrength: Float = 0.42f
+            // @JvmField
+            // var jumpStrength: Float = 0.42f
 
             // I don't know what is this...
             // @JvmField
