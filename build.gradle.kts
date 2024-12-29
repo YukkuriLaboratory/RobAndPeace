@@ -118,6 +118,7 @@ dependencies {
     modImplementation(libs.immersiveportals)
 
     modRuntimeOnly(libs.sodium)
+    modRuntimeOnly(libs.jei)
     modRuntimeOnly(libs.cardinal.components.base)
     modRuntimeOnly(libs.cardinal.components.world)
     modRuntimeOnly(libs.cardinal.components.entity)
