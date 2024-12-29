@@ -2,6 +2,7 @@ package net.yukulab.robandpeace.item
 
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
+import net.minecraft.entity.mob.Angerable
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
@@ -47,9 +48,10 @@ class SmokeItem : Item(Settings()) {
             val duration = stack.getOrDefault(RapComponents.SMOKE_INVISIBLE_DURATION, RapConfigs.serverConfig.items.smokeInvisibleDuration)
             user.addStatusEffect(StatusEffectInstance(StatusEffects.INVISIBILITY, duration, 0, false, false))
             world.getEntitiesByClass(MobEntity::class.java, user.boundingBox.expand(10.0)) {
-                it.isAlive && it.target == user
+                it.isAlive && it.target == user || (it is Angerable && it.shouldAngerAt(user))
             }.forEach {
                 it.target = null
+                (it as? Angerable)?.stopAnger()
             }
         }
 
