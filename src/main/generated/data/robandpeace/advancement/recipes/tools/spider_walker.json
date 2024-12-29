@@ -1,6 +1,16 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
+    "has_cobweb": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:cobweb"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_ender_pearl": {
       "conditions": {
         "items": [
@@ -11,11 +21,21 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_gold_ingot": {
+    "has_iron_ingot": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:gold_ingot"
+            "items": "minecraft:iron_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_leather": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:leather"
           }
         ]
       },
@@ -41,8 +61,10 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_gold_ingot",
+      "has_iron_ingot",
       "has_obsidian",
+      "has_cobweb",
+      "has_leather",
       "has_ender_pearl"
     ]
   ],

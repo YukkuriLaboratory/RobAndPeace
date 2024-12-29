@@ -67,7 +67,7 @@ class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFut
             .input('W', Items.COBWEB)
             .input('L', Items.LEATHER)
             .input('E', Items.ENDER_PEARL)
-            .criterionHaveItem(Items.GOLD_INGOT, Items.OBSIDIAN, Items.ENDER_PEARL)
+            .criterionHaveItem(Items.IRON_INGOT, Items.OBSIDIAN, Items.COBWEB, Items.LEATHER, Items.ENDER_PEARL)
             .offerTo(exporter)
         ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, RapItems.PORTAL_HOOP)
             .pattern("DCD")
