@@ -84,26 +84,26 @@ class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFut
             .offerTo(exporter)
 
         // Glove (without netherite)
-        createGloveRecipe(ItemTags.PLANKS, Items.WOODEN_SWORD)
-        createGloveRecipe(ItemTags.STONE_TOOL_MATERIALS, Items.STONE_SWORD)
-        createGloveRecipe(Items.IRON_INGOT, Items.IRON_SWORD)
-        createGloveRecipe(Items.GOLD_INGOT, Items.GOLDEN_SWORD)
-        createGloveRecipe(Items.DIAMOND, Items.DIAMOND_SWORD)
+        createGloveRecipe(ItemTags.PLANKS, Items.WOODEN_SWORD).offerTo(exporter)
+        createGloveRecipe(ItemTags.STONE_TOOL_MATERIALS, Items.STONE_SWORD).offerTo(exporter)
+        createGloveRecipe(Items.IRON_INGOT, Items.IRON_SWORD).offerTo(exporter)
+        createGloveRecipe(Items.GOLD_INGOT, Items.GOLDEN_SWORD).offerTo(exporter)
+        createGloveRecipe(Items.DIAMOND, Items.DIAMOND_SWORD).offerTo(exporter)
     }
 
-    private fun createGloveRecipe(materialItem: Item, outputItem: Item): CraftingRecipeJsonBuilder = ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, outputItem)
+    private fun createGloveRecipe(materialItem: Item, outputItem: Item): CraftingRecipeJsonBuilder = ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, outputItem)
         .pattern("MMM")
-        .pattern("IAI")
+        .pattern("I I")
         .input('M', materialItem)
         .input('I', Items.STICK)
-        .input('A', Items.AIR)
+        .criterionHaveItem(Items.STICK, materialItem)
 
-    private fun createGloveRecipe(materialTag: TagKey<Item>, outputItem: Item): CraftingRecipeJsonBuilder = ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, outputItem)
+    private fun createGloveRecipe(materialTag: TagKey<Item>, outputItem: Item): CraftingRecipeJsonBuilder = ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, outputItem)
         .pattern("MMM")
-        .pattern("IAI")
+        .pattern("I I")
         .input('M', materialTag)
         .input('I', Items.STICK)
-        .input('A', Items.AIR)
+        .criterionHaveItem(Items.STICK)
 
     companion object {
         private fun ShapedRecipeJsonBuilder.criterionHaveItem(vararg items: Item): ShapedRecipeJsonBuilder = also {
@@ -111,5 +111,6 @@ class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFut
                 criterion(hasItem(item), conditionsFromItem(item))
             }
         }
+        private fun hasTag(itemTagKey: TagKey<Item>): String = "has_${itemTagKey.id.toUnderscoreSeparatedString()}"
     }
 }
