@@ -123,12 +123,12 @@ dependencies {
     modRuntimeOnly(libs.cardinal.components.entity)
 
     // Artifacts
-    modRuntimeOnly(libs.architectury.api)
-    modRuntimeOnly(libs.trinkets)
-    modRuntimeOnly(libs.night.config)
-    modRuntimeOnly(libs.night.config.toml)
-    modRuntimeOnly(libs.expandability)
-    modRuntimeOnly(libs.artifacts)
+    // modRuntimeOnly(libs.architectury.api)
+    // modRuntimeOnly(libs.trinkets)
+    // modRuntimeOnly(libs.night.config)
+    // modRuntimeOnly(libs.night.config.toml)
+    // modRuntimeOnly(libs.expandability)
+    // modRuntimeOnly(libs.artifacts)
 
     testImplementation("org.slf4j:slf4j-api:2.0.16")
     testImplementation("org.slf4j:slf4j-simple:2.0.16")
