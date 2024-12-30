@@ -16,7 +16,7 @@ import net.yukulab.robandpeace.item.RapItems
 
 class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFuture<RegistryWrapper.WrapperLookup>) : FabricRecipeProvider(output, registryFuture) {
     override fun generate(exporter: RecipeExporter) {
-        ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, RapItems.SMOKE)
+        ShapedRecipeJsonBuilder.create(RecipeCategory.COMBAT, RapItems.SMOKE, 2)
             .pattern("BSB")
             .pattern("SFS")
             .pattern("BSB")
