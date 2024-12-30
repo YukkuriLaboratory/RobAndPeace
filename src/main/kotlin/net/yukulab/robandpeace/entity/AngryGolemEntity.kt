@@ -12,6 +12,8 @@ import net.yukulab.robandpeace.config.RapConfigs
 
 class AngryGolemEntity(type: EntityType<AngryGolemEntity>, world: World) : IronGolemEntity(type, world) {
     private var lastTargetPlayer: PlayerEntity? = null
+    private var livingTick = 0
+    private val maxLivingTick = RapConfigs.serverConfig.angryGolem.liveTime
 
     init {
         chooseRandomAngerTime()
@@ -21,9 +23,10 @@ class AngryGolemEntity(type: EntityType<AngryGolemEntity>, world: World) : IronG
         super.tick()
         val targetPlayer = lastTargetPlayer
         if (target == null && targetPlayer != null && canTarget(targetPlayer) && canSee(targetPlayer) && !targetPlayer.hasStatusEffect(StatusEffects.INVISIBILITY)) {
+            angryAt = targetPlayer.uuid
             target = targetPlayer
         }
-        if (!hasAngerTime()) {
+        if (++livingTick >= maxLivingTick) {
             discard()
         }
     }
