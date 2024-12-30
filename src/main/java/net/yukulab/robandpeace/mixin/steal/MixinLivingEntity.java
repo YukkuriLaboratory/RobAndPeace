@@ -12,6 +12,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.registry.RegistryKeys;
@@ -189,10 +190,14 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
                         var tagPath = toolMaterial.getInverseTag().id().getPath();
                         var toolBonus = switch (tagPath) {
                             // See ToolMaterials
-                            case "incorrect_for_wooden_tool" -> robandpeace$getServerConfigSupplier().get().items.woodenGlove;
-                            case "incorrect_for_stone_tool" -> robandpeace$getServerConfigSupplier().get().items.stoneGlove;
-                            case "incorrect_for_iron_tool" -> robandpeace$getServerConfigSupplier().get().items.ironGlove;
-                            case "incorrect_for_gold_tool" -> robandpeace$getServerConfigSupplier().get().items.goldenGlove;
+                            case "incorrect_for_wooden_tool" ->
+                                    robandpeace$getServerConfigSupplier().get().items.woodenGlove;
+                            case "incorrect_for_stone_tool" ->
+                                    robandpeace$getServerConfigSupplier().get().items.stoneGlove;
+                            case "incorrect_for_iron_tool" ->
+                                    robandpeace$getServerConfigSupplier().get().items.ironGlove;
+                            case "incorrect_for_gold_tool" ->
+                                    robandpeace$getServerConfigSupplier().get().items.goldenGlove;
                             case "incorrect_for_diamond_tool" ->
                                     robandpeace$getServerConfigSupplier().get().items.diamondGlove;
                             case "incorrect_for_netherite_tool" ->
@@ -270,16 +275,26 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
             dropXp(player);
             robandpeace$setStealCooldown(robandpeace$getServerConfigSupplier().get().stealCoolTime.onSuccess);
             entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENTITY_CHICKEN_EGG, entity.getSoundCategory(), 1.0F, 1.1F);
-            if (entity instanceof VillagerEntity villager && entity.getWorld() instanceof ServerWorld serverWorld) {
-                var playerReputation = villager.getGossip().getReputationFor(player.getUuid(), (type) -> true);
-                float golemCount = robandpeace$getGolemCount(playerReputation);
+            if (entity instanceof MerchantEntity merchant && entity.getWorld() instanceof ServerWorld serverWorld) {
+                var golemCount = switch (entity) {
+                    case VillagerEntity villager -> {
+                        var playerReputation = villager.getGossip().getReputationFor(player.getUuid(), (type) -> true);
+                        yield robandpeace$getGolemCount(playerReputation);
+                    }
+                    case WanderingTraderEntity ignore ->
+                            robandpeace$getServerConfigSupplier().get().angryGolem.maxSpawnCount;
+                    default -> {
+                        LOGGER.warn("Unknown merchant entity: {}", entity);
+                        yield 0;
+                    }
+                };
                 var spawnRadius = robandpeace$getServerConfigSupplier().get().angryGolem.spawnRadius;
                 var spawnDiameter = spawnRadius * 2;
                 var spawnHeight = robandpeace$getServerConfigSupplier().get().angryGolem.spawnHeight;
                 for (int i = 0; i < golemCount; i++) {
                     var dx = entity.getRandom().nextInt(spawnDiameter) - spawnRadius;
                     var dz = entity.getRandom().nextInt(spawnDiameter) - spawnRadius;
-                    var spawnPos = villager.getBlockPos().add(dx, spawnHeight, dz);
+                    var spawnPos = merchant.getBlockPos().add(dx, spawnHeight, dz);
                     RapEntityType.ANGRY_GOLEM.spawn(serverWorld, (g) -> {
                         g.setTarget(player);
                         g.getDataTracker().set(ROBANDPEACE_STEAL_COOLDOWN, 100000000L);
