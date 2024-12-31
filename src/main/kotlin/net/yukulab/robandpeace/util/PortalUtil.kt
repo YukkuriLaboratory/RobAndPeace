@@ -61,11 +61,6 @@ object PortalUtil {
 
         PortalAPI.addGlobalPortal(world, portal)
         PortalAPI.addGlobalPortal(world, destinationPortal)
-
-        // Spawn portals
-        // world.spawnEntity(portal) // Origin
-        // world.spawnEntity(destinationPortal) // Destination
-
         return PortalData(portal, destinationPortal)
     }
 

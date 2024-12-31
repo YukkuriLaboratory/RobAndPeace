@@ -129,8 +129,8 @@ class PortalHoopItem : Item(Settings()) {
                     // context.world.setBlock(currentPos, Blocks.HAY_BLOCK)
 
                     // Portal placement
-                    val actualOriginVec = portalOriginPos.toCenterPos().offset(context.side, -0.35).add(0.0, 0.5, 0.0)
-                    val actualDestVec = currentPos.toCenterPos().offset(exploreDirection, -0.35).add(0.0, 0.5, 0.0)
+                    val actualOriginVec = portalOriginPos.toCenterPos().offset(exploreDirection, 0.49).add(0.0, 0.5, 0.0)
+                    val actualDestVec = currentPos.toCenterPos().offset(context.side, 0.49).add(0.0, 0.5, 0.0)
                     logger.info("Actual destination -> $actualDestVec")
 
                     val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
