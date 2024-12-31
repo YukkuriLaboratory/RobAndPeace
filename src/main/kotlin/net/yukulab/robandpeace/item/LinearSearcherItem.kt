@@ -2,15 +2,22 @@ package net.yukulab.robandpeace.item
 
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.round
+import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemUsageContext
+import net.minecraft.registry.RegistryKey
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.World
 import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
+import net.yukulab.robandpeace.util.PortalData
+import net.yukulab.robandpeace.util.PortalUtil
 
 class LinearSearcherItem : Item(Settings().maxCount(1)) {
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
@@ -19,22 +26,30 @@ class LinearSearcherItem : Item(Settings().maxCount(1)) {
 
         logger.info("Side:${context.side}, Hitpos:${context.hitPos}, blockPos:${context.blockPos}, CeiledHitpos:${context.hitPos.floor()}")
 
-        val portalOriginPos = context.hitPos.floor()
-        val exploreDirection = context.side.opposite
+        val portalOriginPos: BlockPos = context.blockPos.offset(context.side)
 
+        // TODO: remove this comment
+        // context.world.setBlock(portalOriginPos, Blocks.GOLD_BLOCK)
+
+        val exploreDirection: Direction = context.side.opposite
+
+        val cacheStartPos = portalOriginPos
+        val cacheEndPos = context.blockPos.offset(exploreDirection, SEARCH_MAX)
         // Cache world
-        val worldCache = ChunkCache(
-            context.world,
-            portalOriginPos.toBlockPos(),
-            portalOriginPos.toBlockPos().offset(exploreDirection, SEARCH_MAX).up(),
-        )
+        val worldCache = context.world.getCache(cacheStartPos, cacheEndPos, Direction.UP)
+        logger.info("World cached! from:$cacheStartPos -> to:$cacheEndPos")
 
-        val currentPos = portalOriginPos.toBlockPos().mutableCopy()
+        val currentPos = portalOriginPos.mutableCopy()
         for (i in 0..SEARCH_MAX) {
             logger.info("Place loop in $i")
 
             // Move to exploreDirection
             currentPos.move(exploreDirection)
+
+            if (worldCache.isOutOfHeightLimit(currentPos)) {
+                logger.error("Out of cache's height limit")
+                return ActionResult.FAIL
+            }
 
             // Get state
             val currentState = worldCache.getBlockState(currentPos)
@@ -51,9 +66,28 @@ class LinearSearcherItem : Item(Settings().maxCount(1)) {
                     // If upper block is air too
                     logger.info("This block is equal as air block!")
                     logger.info("Found it! pos: $currentPos")
-                    context.player?.sendMessage(Text.of("Found it! pos: $currentPos"))
-                    val actualDestVec = currentPos.toCenterPos().offset(exploreDirection, -0.4)
+                    context.player?.sendMessage(Text.of("Found it! pos: $currentPos")) // TODO remove
+
+                    // TODO remove this comment
+                    // context.world.setBlock(currentPos, Blocks.HAY_BLOCK)
+
+                    // Portal placement
+                    val actualOriginVec = portalOriginPos.toCenterPos().offset(context.side, -0.4).add(0.0, 0.5, 0.0)
+                    val actualDestVec = currentPos.toCenterPos().offset(exploreDirection, -0.4).add(0.0, 0.5, 0.0)
                     logger.info("Actual destination -> $actualDestVec")
+
+                    val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
+
+                    val portalData: PortalData = PortalUtil.createPortal(
+                        context.world,
+                        actualOriginVec,
+                        context.side,
+                        destDimKey,
+                        actualDestVec,
+                    )
+
+                    context.player?.sendMessage(Text.of("Portal placed!")) // TODO remove
+
                     return ActionResult.SUCCESS
                 } else {
                     // If upper block wasn't air
@@ -72,7 +106,21 @@ class LinearSearcherItem : Item(Settings().maxCount(1)) {
 
     private fun Vec3d.floor() = Vec3d(floor(x), floor(y), floor(z))
 
+    private fun Vec3d.ceil() = Vec3d(ceil(x), ceil(y), ceil(z))
+
+    private fun Vec3d.round() = Vec3d(round(x), round(y), round(z))
+
+    private fun Vec3d.toCenterPos() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
+
     private fun Vec3d.toBlockPos() = BlockPos(x.toCeilInt(), y.toCeilInt(), z.toCeilInt())
+
+    private fun World.setBlock(pos: BlockPos, block: Block) = setBlockState(pos, block.defaultState)
+
+    private fun World.getCache(startPos: BlockPos, endPos: BlockPos, extendDirection: Direction): ChunkCache = if (startPos > endPos) {
+        ChunkCache(this, endPos, startPos.offset(extendDirection))
+    } else {
+        ChunkCache(this, startPos, endPos.offset(extendDirection))
+    }
 
     companion object {
         private val SEARCH_MAX = 10
