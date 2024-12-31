@@ -55,7 +55,7 @@ object PortalUtil {
         portal.disableDefaultAnimation()
 
         // Make it rounded
-        PortalManipulation.makePortalRound(portal, 20)
+        PortalManipulation.makePortalRound(portal, 18)
 
         val destinationPortal = PortalAPI.createReversePortal(portal)
 
