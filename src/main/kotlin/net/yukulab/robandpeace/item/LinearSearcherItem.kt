@@ -8,6 +8,7 @@ import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.registry.RegistryKey
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.math.BlockPos
@@ -79,7 +80,7 @@ class LinearSearcherItem : Item(Settings().maxCount(1)) {
                     val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
 
                     val portalData: PortalData = PortalUtil.createPortal(
-                        context.world,
+                        context.world as ServerWorld,
                         actualOriginVec,
                         context.side,
                         destDimKey,
