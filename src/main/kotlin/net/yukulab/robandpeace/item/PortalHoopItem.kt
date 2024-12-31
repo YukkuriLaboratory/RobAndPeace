@@ -1,5 +1,7 @@
 package net.yukulab.robandpeace.item
 
+import kotlin.math.ceil
+import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
@@ -13,18 +15,17 @@ import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
+import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
 import net.yukulab.robandpeace.MOD_ID
 import net.yukulab.robandpeace.RobAndPeace
-import net.yukulab.robandpeace.entity.ThroughHoopPortal
 import net.yukulab.robandpeace.item.component.RapComponents
-import net.yukulab.robandpeace.util.CacheUtil
 import net.yukulab.robandpeace.util.PortalData
 import net.yukulab.robandpeace.util.PortalUtil
-import net.yukulab.robandpeace.util.SearchUtil
-import qouteall.imm_ptl.core.McHelper
 import qouteall.imm_ptl.core.api.PortalAPI
 import qouteall.imm_ptl.core.portal.Portal
 import qouteall.imm_ptl.core.portal.global_portals.GlobalPortalStorage
@@ -32,7 +33,7 @@ import qouteall.imm_ptl.core.portal.global_portals.GlobalPortalStorage
 class PortalHoopItem : Item(Settings()) {
     companion object {
         private val logger by DelegatedLogger()
-        private const val MAX_RANGE = 6
+        private val SEARCH_MAX = 10
 
         const val SUFFIX_REMOVE_MODE: String = "_remove"
         val KEY_REMOVE_MODE: Identifier = Identifier.of(MOD_ID, "remove")
@@ -42,7 +43,7 @@ class PortalHoopItem : Item(Settings()) {
 
     override fun useOnBlock(context: ItemUsageContext): ActionResult {
         // If client side
-        if (context.world.isClient) return super.useOnBlock(context)
+        if (context.world.isClient || context.world !is ServerWorld) return super.useOnBlock(context)
 
         val heldStack = context.stack
 
@@ -80,39 +81,83 @@ class PortalHoopItem : Item(Settings()) {
     }
 
     private fun onPlacePortal(context: ItemUsageContext, heldStack: ItemStack): ActionResult {
-        if (RobAndPeace.isDebugMode) logger.info("Player hit at ${context.hitPos}")
+        logger.info("Side:${context.side}, Hitpos:${context.hitPos}, blockPos:${context.blockPos}, CeiledHitpos:${context.hitPos.floor()}")
 
-        val clickedSide = context.side
-        val cache = CacheUtil.calculateAndCache(context.world, context.blockPos, clickedSide.opposite, 10)
-        val foundPos = SearchUtil.searchLinear(context.blockPos, clickedSide.opposite, 10, RobAndPeace.isDebugMode) { pos ->
-            checkBothIsAir(cache, pos)
-        }.getOrElse {
-            logger.warn("Failed to search linear: $it")
-            context.player?.sendMessage(Text.of(MSG_AIR_NOT_FOUND))
-            return ActionResult.FAIL
+        val portalOriginPos: BlockPos = context.blockPos.offset(context.side)
+
+        // TODO: remove this comment
+        // context.world.setBlock(portalOriginPos, Blocks.GOLD_BLOCK)
+
+        val exploreDirection: Direction = context.side.opposite
+
+        val cacheStartPos = portalOriginPos
+        val cacheEndPos = context.blockPos.offset(exploreDirection, SEARCH_MAX)
+        // Cache world
+        val worldCache = context.world.getCache(cacheStartPos, cacheEndPos, Direction.UP)
+        logger.info("World cached! from:$cacheStartPos -> to:$cacheEndPos")
+
+        val currentPos = portalOriginPos.mutableCopy()
+        for (i in 0..SEARCH_MAX) {
+            logger.info("Place loop in $i")
+
+            // Move to exploreDirection
+            currentPos.move(exploreDirection)
+
+            if (worldCache.isOutOfHeightLimit(currentPos)) {
+                logger.error("Out of cache's height limit")
+                return ActionResult.FAIL
+            }
+
+            // Get state
+            val currentState = worldCache.getBlockState(currentPos)
+            val calculatedIsAir = currentState.block == Blocks.AIR
+            logger.info("Pos: $currentPos, BlockId: ${currentState.block.name}, IsAir:${currentState.isAir}, =AIR:$calculatedIsAir")
+
+            // If under block is air
+            if (calculatedIsAir) {
+                logger.info("Checking upper block....")
+                val extCurrentState = worldCache.getBlockState(currentPos.up())
+                val extCalculatedIsAir = extCurrentState.block == Blocks.AIR
+
+                if (extCalculatedIsAir) {
+                    // If upper block is air too
+                    logger.info("This block is equal as air block!")
+                    logger.info("Found it! pos: $currentPos")
+                    context.player?.sendMessage(Text.of("Found it! pos: $currentPos")) // TODO remove
+
+                    // TODO remove this comment
+                    // context.world.setBlock(currentPos, Blocks.HAY_BLOCK)
+
+                    // Portal placement
+                    val actualOriginVec = portalOriginPos.toCenterPos().offset(context.side, -0.45).add(0.0, 0.5, 0.0)
+                    val actualDestVec = currentPos.toCenterPos().offset(exploreDirection, -0.45).add(0.0, 0.5, 0.0)
+                    logger.info("Actual destination -> $actualDestVec")
+
+                    val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
+
+                    val portalData: PortalData = PortalUtil.createPortal(
+                        context.world as ServerWorld,
+                        actualOriginVec,
+                        context.side,
+                        destDimKey,
+                        actualDestVec,
+                    )
+
+                    context.player?.sendMessage(Text.of("Portal placed!")) // TODO remove
+
+                    heldStack.set(RapComponents.PORTAL_ID_ORIGIN, portalData.origin.id)
+                    heldStack.set(RapComponents.PORTAL_ID_DESTINATION, portalData.destination.id)
+
+                    return ActionResult.SUCCESS
+                } else {
+                    // If upper block wasn't air
+                    logger.info("Upper block is not air. continue...")
+                    continue
+                }
+            }
         }
-        if (RobAndPeace.isDebugMode) logger.info("found! $foundPos")
 
-        val offsetData = PortalUtil.getOffsetData(context.side)
-        context.world.setBlockState(context.blockPos.offset(context.side), Blocks.HAY_BLOCK.defaultState)
-        context.world.setBlockState(foundPos.offset(context.side.opposite), Blocks.GOLD_BLOCK.defaultState)
-
-        return ActionResult.PASS
-        val originPos = context.blockPos.toCenterPos().offset(context.side, offsetData.baseOffset).add(0.0, 0.5, 0.0)
-        val destinationPos = foundPos.toCenterPos().offset(context.side.opposite, offsetData.extOffset).add(0.0, 0.5, 0.0)
-
-        val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
-
-        val portalData: PortalData = PortalUtil.createPortal(
-            context.world,
-            originPos,
-            context.side,
-            destDimKey,
-            destinationPos,
-        )
-
-        heldStack.set(RapComponents.PORTAL_ID_ORIGIN, portalData.origin.id)
-        heldStack.set(RapComponents.PORTAL_ID_DESTINATION, portalData.destination.id)
+        logger.info("Couldn't find air space...")
 
         return ActionResult.PASS
     }
@@ -120,13 +165,6 @@ class PortalHoopItem : Item(Settings()) {
     private fun onRemovePortal(world: World, user: PlayerEntity, heldStack: ItemStack): TypedActionResult<ItemStack> {
         // Get all portals
         val portals: MutableList<Portal> = GlobalPortalStorage.getGlobalPortals(world).toMutableList()
-        portals.addAll( // Add nearby portals
-            McHelper.getEntitiesNearby(
-                user,
-                ThroughHoopPortal::class.java,
-                15.0,
-            ),
-        )
 
         // Get portal IDs from stack
         val originId = heldStack.get(RapComponents.PORTAL_ID_ORIGIN)
@@ -165,5 +203,25 @@ class PortalHoopItem : Item(Settings()) {
         logger.info("pos:$basePos, id:${baseState.block.translationKey}")
         logger.info("pos:${basePos.up()}, id:${extState.block.translationKey}")
         return baseState.isAir && extState.isAir
+    }
+
+    private fun Double.toCeilInt(): Int = ceil(this).toInt()
+
+    private fun Vec3d.floor() = Vec3d(kotlin.math.floor(x), kotlin.math.floor(y), kotlin.math.floor(z))
+
+    private fun Vec3d.ceil() = Vec3d(ceil(x), ceil(y), ceil(z))
+
+    private fun Vec3d.round() = Vec3d(kotlin.math.round(x), kotlin.math.round(y), kotlin.math.round(z))
+
+    private fun Vec3d.toCenterPos() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
+
+    private fun Vec3d.toBlockPos() = BlockPos(x.toCeilInt(), y.toCeilInt(), z.toCeilInt())
+
+    private fun World.setBlock(pos: BlockPos, block: Block) = setBlockState(pos, block.defaultState)
+
+    private fun World.getCache(startPos: BlockPos, endPos: BlockPos, extendDirection: Direction): ChunkCache = if (startPos > endPos) {
+        ChunkCache(this, endPos, startPos.offset(extendDirection))
+    } else {
+        ChunkCache(this, startPos, endPos.offset(extendDirection))
     }
 }
