@@ -15,8 +15,6 @@ import qouteall.q_misc_util.my_util.AARotation
 
 data class PortalData(val origin: ThroughHoopPortal, val destination: ThroughHoopPortal)
 
-data class OffsetData(val baseOffset: Double, val extOffset: Double)
-
 object PortalUtil {
     fun createPortal(
         world: ServerWorld,
