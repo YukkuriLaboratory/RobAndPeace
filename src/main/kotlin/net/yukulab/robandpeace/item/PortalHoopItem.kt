@@ -1,7 +1,5 @@
 package net.yukulab.robandpeace.item
 
-import kotlin.math.ceil
-import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
@@ -15,13 +13,13 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.math.Vec3d
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
-import net.minecraft.world.chunk.ChunkCache
 import net.yukulab.robandpeace.DelegatedLogger
 import net.yukulab.robandpeace.MOD_ID
 import net.yukulab.robandpeace.RobAndPeace
+import net.yukulab.robandpeace.extension.floor
+import net.yukulab.robandpeace.extension.getCache
 import net.yukulab.robandpeace.item.component.RapComponents
 import net.yukulab.robandpeace.util.PortalData
 import net.yukulab.robandpeace.util.PortalUtil
@@ -86,11 +84,10 @@ class PortalHoopItem : Item(Settings()) {
 
         val exploreDirection: Direction = context.side.opposite
 
-        val cacheStartPos = portalOriginPos
         val cacheEndPos = context.blockPos.offset(exploreDirection, SEARCH_MAX)
         // Cache world
-        val worldCache = context.world.getCache(cacheStartPos, cacheEndPos, Direction.UP)
-        logger.info("World cached! from:$cacheStartPos -> to:$cacheEndPos")
+        val worldCache = context.world.getCache(portalOriginPos, cacheEndPos, Direction.UP)
+        logger.info("World cached! from:$portalOriginPos -> to:$cacheEndPos")
 
         val currentPos = portalOriginPos.mutableCopy()
         for (i in 0..SEARCH_MAX) {
@@ -193,25 +190,5 @@ class PortalHoopItem : Item(Settings()) {
         logger.info("pos:$basePos, id:${baseState.block.translationKey}")
         logger.info("pos:${basePos.up()}, id:${extState.block.translationKey}")
         return baseState.isAir && extState.isAir
-    }
-
-    private fun Double.toCeilInt(): Int = ceil(this).toInt()
-
-    private fun Vec3d.floor() = Vec3d(kotlin.math.floor(x), kotlin.math.floor(y), kotlin.math.floor(z))
-
-    private fun Vec3d.ceil() = Vec3d(ceil(x), ceil(y), ceil(z))
-
-    private fun Vec3d.round() = Vec3d(kotlin.math.round(x), kotlin.math.round(y), kotlin.math.round(z))
-
-    private fun Vec3d.toCenterPos() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
-
-    private fun Vec3d.toBlockPos() = BlockPos(x.toCeilInt(), y.toCeilInt(), z.toCeilInt())
-
-    private fun World.setBlock(pos: BlockPos, block: Block) = setBlockState(pos, block.defaultState)
-
-    private fun World.getCache(startPos: BlockPos, endPos: BlockPos, extendDirection: Direction): ChunkCache = if (startPos > endPos) {
-        ChunkCache(this, endPos, startPos.offset(extendDirection))
-    } else {
-        ChunkCache(this, startPos, endPos.offset(extendDirection))
     }
 }
