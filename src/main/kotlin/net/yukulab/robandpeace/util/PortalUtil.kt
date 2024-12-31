@@ -12,7 +12,6 @@ import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.entity.ThroughHoopPortal
 import qouteall.imm_ptl.core.api.PortalAPI
 import qouteall.imm_ptl.core.portal.PortalManipulation
-import qouteall.imm_ptl.core.portal.global_portals.GlobalPortalStorage
 import qouteall.q_misc_util.my_util.AARotation
 
 data class PortalData(val origin: ThroughHoopPortal, val destination: ThroughHoopPortal)
@@ -60,14 +59,12 @@ object PortalUtil {
 
         val destinationPortal = PortalAPI.createReversePortal(portal)
 
-        // Spawn portals
-        world.spawnEntity(portal) // Origin
-        world.spawnEntity(destinationPortal) // Destination
+        PortalAPI.addGlobalPortal(world, portal)
+        PortalAPI.addGlobalPortal(world, destinationPortal)
 
-        GlobalPortalStorage.get(world).apply {
-            addPortal(portal)
-            addPortal(destinationPortal)
-        }
+        // Spawn portals
+        // world.spawnEntity(portal) // Origin
+        // world.spawnEntity(destinationPortal) // Destination
 
         return PortalData(portal, destinationPortal)
     }
