@@ -2,7 +2,9 @@ package net.yukulab.robandpeace
 
 import java.util.UUID
 import net.fabricmc.api.ModInitializer
+import net.minecraft.util.ActionResult
 import net.yukulab.robandpeace.config.RapConfigs
+import net.yukulab.robandpeace.config.RapServerConfig
 import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.item.RapItems
 import net.yukulab.robandpeace.item.component.RapComponents
@@ -12,6 +14,9 @@ import net.yukulab.robandpeace.network.payload.PlayerMovementPayload
 object RobAndPeace : ModInitializer {
 
     val EMPTY_PAYLOAD = PlayerMovementPayload(false, 0.0f, false)
+
+    @JvmStatic
+    var isDebugMode: Boolean = false
 
     @JvmField
     val playerMovementStatusMap = mutableMapOf<UUID, PlayerMovementPayload>()
@@ -28,5 +33,10 @@ object RobAndPeace : ModInitializer {
         RapItems.init()
         RapEntityType.init()
         RabNetworking.init()
+    }
+
+    fun onUpdateConfig(config: RapServerConfig): ActionResult {
+        isDebugMode = config.debugSettings.enabledDebugMode
+        return ActionResult.SUCCESS
     }
 }

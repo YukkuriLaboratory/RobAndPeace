@@ -33,6 +33,10 @@ class RapServerConfig : ConfigData {
     @JvmField
     var spiderWalkerSettings: SpiderWalkerSettings = SpiderWalkerSettings()
 
+    @CollapsibleObject
+    @JvmField
+    var debugSettings: DebugSettings = DebugSettings()
+
     class StealCoolTime {
         @JvmField
         var onSuccess: Int = 1200
@@ -234,6 +238,11 @@ class RapServerConfig : ConfigData {
             @JvmField
             var jumpOnLeavingWall = false
         }
+    }
+
+    class DebugSettings {
+        @JvmField
+        var enabledDebugMode: Boolean = false
     }
 
     companion object {

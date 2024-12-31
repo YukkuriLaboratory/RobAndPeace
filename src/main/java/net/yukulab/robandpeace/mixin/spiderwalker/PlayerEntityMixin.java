@@ -183,26 +183,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     }
 
 
-//    /**
-//     * Sets sprinting to boolean.
-//     * Edited s.t. sprinting multiplier can be configured.
-//     * Edited s.t. sprint loss on collision is removed and sideways sprinting is possible.
-//     */
-//    @Override
-//    public void setSprinting(boolean sprinting) {
-//        super.setSprinting(sprinting);
-//        var config = this.robandpeace$getServerConfigSupplier().get();
-//        float sprintMovementSpeedMultiplier = config.spiderWalkerSettings.walking.sprintMovementSpeedMultiplier;
-//        EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-//        EntityAttributeModifier SPRINTING_SPEED_BOOST = new EntityAttributeModifier(SPRINTING_SPEED, sprintMovementSpeedMultiplier, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-//        assert entityAttributeInstance != null;
-//        entityAttributeInstance.removeModifier(SPRINTING_SPEED_BOOST.id());
-//        if (sprinting) {
-//            entityAttributeInstance.addTemporaryModifier(SPRINTING_SPEED_BOOST);
-//        }
-//    }
-
-
     /**
      * Overrides the default friction behavior to add wall sliding.
      */
