@@ -1,6 +1,6 @@
 package net.yukulab.robandpeace.item
 
-import net.minecraft.block.Blocks
+import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -102,14 +102,14 @@ class PortalHoopItem : Item(Settings()) {
 
             // Get state
             val currentState = worldCache.getBlockState(currentPos)
-            val calculatedIsAir = currentState.block == Blocks.AIR
+            val calculatedIsAir = isAir(currentState)
             if (RobAndPeace.isDebugMode) logger.info("Pos: $currentPos, BlockId: ${currentState.block.name}, IsAir:${currentState.isAir}, =AIR:$calculatedIsAir")
 
             // If under block is air
             if (calculatedIsAir) {
                 if (RobAndPeace.isDebugMode) logger.info("Checking upper block....")
                 val extCurrentState = worldCache.getBlockState(currentPos.up())
-                val extCalculatedIsAir = extCurrentState.block == Blocks.AIR
+                val extCalculatedIsAir = isAir(extCurrentState)
 
                 if (extCalculatedIsAir) {
                     // If upper block is air too
@@ -147,6 +147,8 @@ class PortalHoopItem : Item(Settings()) {
 
         return ActionResult.PASS
     }
+
+    private fun isAir(state: BlockState): Boolean = state.isAir
 
     private fun onRemovePortal(world: World, user: PlayerEntity, heldStack: ItemStack): TypedActionResult<ItemStack> {
         // Get all portals
