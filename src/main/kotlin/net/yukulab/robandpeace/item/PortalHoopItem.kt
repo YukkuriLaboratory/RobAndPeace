@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.registry.RegistryKey
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
@@ -85,9 +84,6 @@ class PortalHoopItem : Item(Settings()) {
 
         val portalOriginPos: BlockPos = context.blockPos.offset(context.side)
 
-        // TODO: remove this comment
-        // context.world.setBlock(portalOriginPos, Blocks.GOLD_BLOCK)
-
         val exploreDirection: Direction = context.side.opposite
 
         val cacheStartPos = portalOriginPos
@@ -123,10 +119,6 @@ class PortalHoopItem : Item(Settings()) {
                     // If upper block is air too
                     logger.info("This block is equal as air block!")
                     logger.info("Found it! pos: $currentPos")
-                    context.player?.sendMessage(Text.of("Found it! pos: $currentPos")) // TODO remove
-
-                    // TODO remove this comment
-                    // context.world.setBlock(currentPos, Blocks.HAY_BLOCK)
 
                     // Portal placement
                     val actualOriginVec = portalOriginPos.toCenterPos().offset(exploreDirection, 0.3).add(0.0, 0.5, 0.0)
@@ -142,8 +134,6 @@ class PortalHoopItem : Item(Settings()) {
                         destDimKey,
                         actualDestVec,
                     )
-
-                    context.player?.sendMessage(Text.of("Portal placed!")) // TODO remove
 
                     heldStack.set(RapComponents.PORTAL_ID_ORIGIN, portalData.origin.id)
                     heldStack.set(RapComponents.PORTAL_ID_DESTINATION, portalData.destination.id)

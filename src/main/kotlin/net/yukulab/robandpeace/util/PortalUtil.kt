@@ -2,7 +2,6 @@ package net.yukulab.robandpeace.util
 
 import net.minecraft.registry.RegistryKey
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
@@ -62,28 +61,6 @@ object PortalUtil {
         PortalAPI.addGlobalPortal(world, portal)
         PortalAPI.addGlobalPortal(world, destinationPortal)
         return PortalData(portal, destinationPortal)
-    }
-
-    fun getOffsetData(side: Direction): OffsetData = when (side) {
-        Direction.WEST, Direction.EAST -> OffsetData(0.6, -0.4)
-        Direction.NORTH, Direction.SOUTH -> OffsetData(-0.4, 0.6)
-        else -> error("Invalid side: $side")
-    }
-
-    fun getExtendPos(side: Direction, playerFacing: Direction, basePos: BlockPos): BlockPos = when (side) {
-        Direction.UP -> basePos.mutableCopy().move(
-            playerFacing.offsetX,
-            playerFacing.offsetY,
-            playerFacing.offsetZ,
-        )
-
-        Direction.DOWN -> basePos.mutableCopy().move(
-            -playerFacing.offsetX,
-            -playerFacing.offsetY,
-            -playerFacing.offsetZ,
-        )
-
-        Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH -> basePos.add(0, 1, 0)
     }
 
     val logger by DelegatedLogger()
