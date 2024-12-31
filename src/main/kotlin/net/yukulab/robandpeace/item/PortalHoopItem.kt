@@ -1,5 +1,6 @@
 package net.yukulab.robandpeace.item
 
+import net.minecraft.block.Blocks
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -84,7 +85,7 @@ class PortalHoopItem : Item(Settings()) {
         val clickedSide = context.side
         val cache = CacheUtil.calculateAndCache(context.world, context.blockPos, clickedSide.opposite, 10)
         val foundPos = SearchUtil.searchLinear(context.blockPos, clickedSide.opposite, 10, RobAndPeace.isDebugMode) { pos ->
-            cache.getBlockState(pos).isAir && cache.getBlockState(pos.add(0, 1, 0)).isAir
+            checkBothIsAir(cache, pos)
         }.getOrElse {
             logger.warn("Failed to search linear: $it")
             context.player?.sendMessage(Text.of(MSG_AIR_NOT_FOUND))
@@ -93,6 +94,10 @@ class PortalHoopItem : Item(Settings()) {
         if (RobAndPeace.isDebugMode) logger.info("found! $foundPos")
 
         val offsetData = PortalUtil.getOffsetData(context.side)
+        context.world.setBlockState(context.blockPos.offset(context.side), Blocks.HAY_BLOCK.defaultState)
+        context.world.setBlockState(foundPos.offset(context.side.opposite), Blocks.GOLD_BLOCK.defaultState)
+
+        return ActionResult.PASS
         val originPos = context.blockPos.toCenterPos().offset(context.side, offsetData.baseOffset).add(0.0, 0.5, 0.0)
         val destinationPos = foundPos.toCenterPos().offset(context.side.opposite, offsetData.extOffset).add(0.0, 0.5, 0.0)
 
@@ -157,6 +162,8 @@ class PortalHoopItem : Item(Settings()) {
     private fun checkBothIsAir(blockView: BlockView, basePos: BlockPos): Boolean {
         val baseState = blockView.getBlockState(basePos)
         val extState = blockView.getBlockState(basePos.up())
+        logger.info("pos:$basePos, id:${baseState.block.translationKey}")
+        logger.info("pos:${basePos.up()}, id:${extState.block.translationKey}")
         return baseState.isAir && extState.isAir
     }
 }

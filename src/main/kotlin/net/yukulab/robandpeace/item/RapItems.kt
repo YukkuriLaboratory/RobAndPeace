@@ -23,6 +23,8 @@ object RapItems {
     val PORTAL_HOOP: PortalHoopItem = register("portal_hoop", PortalHoopItem())
     val HIDDEN_TREASURE: HiddenTreasureItem = register("hidden_treasure", HiddenTreasureItem())
 
+    val LINEAR_SEARCHER: LinearSearcherItem = register("linear_search", LinearSearcherItem())
+
     private fun <T : Item> register(id: String, item: T): T = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, id), item)
 
     val ITEM_GROUP_KEY: RegistryKey<ItemGroup> = RegistryKey.of(Registries.ITEM_GROUP.key, Identifier.of(MOD_ID, "rap_item_group"))
@@ -42,6 +44,7 @@ object RapItems {
             it.add(TRIAL_PICKING_TOOL)
             it.add(PORTAL_HOOP)
             it.add(HIDDEN_TREASURE)
+            it.add(LINEAR_SEARCHER)
         }
     }
 }
