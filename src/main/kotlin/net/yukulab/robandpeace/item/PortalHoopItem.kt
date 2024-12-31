@@ -13,7 +13,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.TypedActionResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import net.yukulab.robandpeace.DelegatedLogger
 import net.yukulab.robandpeace.MOD_ID
@@ -78,7 +77,7 @@ class PortalHoopItem : Item(Settings()) {
     }
 
     private fun onPlacePortal(context: ItemUsageContext, heldStack: ItemStack): ActionResult {
-        logger.info("Side:${context.side}, Hitpos:${context.hitPos}, blockPos:${context.blockPos}, CeiledHitpos:${context.hitPos.floor()}")
+        if (RobAndPeace.isDebugMode) logger.info("Side:${context.side}, Hitpos:${context.hitPos}, blockPos:${context.blockPos}, CeiledHitpos:${context.hitPos.floor()}")
 
         val portalOriginPos: BlockPos = context.blockPos.offset(context.side)
 
@@ -87,11 +86,11 @@ class PortalHoopItem : Item(Settings()) {
         val cacheEndPos = context.blockPos.offset(exploreDirection, SEARCH_MAX)
         // Cache world
         val worldCache = context.world.getCache(portalOriginPos, cacheEndPos, Direction.UP)
-        logger.info("World cached! from:$portalOriginPos -> to:$cacheEndPos")
+        if (RobAndPeace.isDebugMode) logger.info("World cached! from:$portalOriginPos -> to:$cacheEndPos")
 
         val currentPos = portalOriginPos.mutableCopy()
         for (i in 0..SEARCH_MAX) {
-            logger.info("Place loop in $i")
+            if (RobAndPeace.isDebugMode) logger.info("Place loop in $i")
 
             // Move to exploreDirection
             currentPos.move(exploreDirection)
@@ -104,23 +103,23 @@ class PortalHoopItem : Item(Settings()) {
             // Get state
             val currentState = worldCache.getBlockState(currentPos)
             val calculatedIsAir = currentState.block == Blocks.AIR
-            logger.info("Pos: $currentPos, BlockId: ${currentState.block.name}, IsAir:${currentState.isAir}, =AIR:$calculatedIsAir")
+            if (RobAndPeace.isDebugMode) logger.info("Pos: $currentPos, BlockId: ${currentState.block.name}, IsAir:${currentState.isAir}, =AIR:$calculatedIsAir")
 
             // If under block is air
             if (calculatedIsAir) {
-                logger.info("Checking upper block....")
+                if (RobAndPeace.isDebugMode) logger.info("Checking upper block....")
                 val extCurrentState = worldCache.getBlockState(currentPos.up())
                 val extCalculatedIsAir = extCurrentState.block == Blocks.AIR
 
                 if (extCalculatedIsAir) {
                     // If upper block is air too
-                    logger.info("This block is equal as air block!")
-                    logger.info("Found it! pos: $currentPos")
+                    if (RobAndPeace.isDebugMode) logger.info("This block is equal as air block!")
+                    if (RobAndPeace.isDebugMode) logger.info("Found it! pos: $currentPos")
 
                     // Portal placement
                     val actualOriginVec = portalOriginPos.toCenterPos().offset(exploreDirection, 0.3).add(0.0, 0.5, 0.0)
                     val actualDestVec = currentPos.toCenterPos().offset(context.side, 0.3).add(0.0, 0.5, 0.0)
-                    logger.info("Actual destination -> $actualDestVec")
+                    if (RobAndPeace.isDebugMode) logger.info("Actual destination -> $actualDestVec")
 
                     val destDimKey: RegistryKey<World> = (context.player ?: error("Failed to get player dimension registrykey")).world.registryKey
 
@@ -138,13 +137,13 @@ class PortalHoopItem : Item(Settings()) {
                     return ActionResult.SUCCESS
                 } else {
                     // If upper block wasn't air
-                    logger.info("Upper block is not air. continue...")
+                    if (RobAndPeace.isDebugMode) logger.info("Upper block is not air. continue...")
                     continue
                 }
             }
         }
 
-        logger.info("Couldn't find air space...")
+        if (RobAndPeace.isDebugMode) logger.info("Couldn't find air space...")
 
         return ActionResult.PASS
     }
@@ -182,13 +181,5 @@ class PortalHoopItem : Item(Settings()) {
         "${translationKey}${SUFFIX_REMOVE_MODE}"
     } else {
         super.getTranslationKey(stack)
-    }
-
-    private fun checkBothIsAir(blockView: BlockView, basePos: BlockPos): Boolean {
-        val baseState = blockView.getBlockState(basePos)
-        val extState = blockView.getBlockState(basePos.up())
-        logger.info("pos:$basePos, id:${baseState.block.translationKey}")
-        logger.info("pos:${basePos.up()}, id:${extState.block.translationKey}")
-        return baseState.isAir && extState.isAir
     }
 }
