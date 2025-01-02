@@ -16,12 +16,14 @@ import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
 import net.yukulab.robandpeace.config.RapConfigs
+import net.yukulab.robandpeace.extension.StanHolder
 import net.yukulab.robandpeace.item.component.RapComponents
 
-class SmokeItem : Item(Settings()) {
+class SmokeItem(private val enableStan: Boolean = false) : Item(Settings()) {
     override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val stack = user.getStackInHand(hand)
         val random = world.random
+        val pitch = if (enableStan) 1.5f else 2.0f
         world.playSound(
             null,
             user.x,
@@ -30,12 +32,34 @@ class SmokeItem : Item(Settings()) {
             SoundEvents.BLOCK_FIRE_EXTINGUISH,
             SoundCategory.NEUTRAL,
             0.5f,
-            2f,
+            pitch,
         )
-        repeat(70) {
+        if (enableStan) {
+            world.playSound(
+                null,
+                user.x,
+                user.y,
+                user.z,
+                SoundEvents.ENTITY_GENERIC_EXPLODE,
+                SoundCategory.NEUTRAL,
+                0.3f,
+                1.3f,
+            )
+        }
+        val smokeCount = if (enableStan) {
+            140
+        } else {
+            70
+        }
+        repeat(smokeCount) {
             fun nextSign() = if (random.nextBoolean()) 1 else -1
+            val particleType = if (enableStan) {
+                if (random.nextBoolean()) ParticleTypes.EXPLOSION else ParticleTypes.CAMPFIRE_COSY_SMOKE
+            } else {
+                ParticleTypes.CAMPFIRE_COSY_SMOKE
+            }
             world.addParticle(
-                ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                particleType,
                 user.x + 1 * random.nextDouble() * nextSign(),
                 user.y + 2 * random.nextDouble(),
                 user.z + 1 * random.nextDouble() * nextSign(),
@@ -47,11 +71,14 @@ class SmokeItem : Item(Settings()) {
         if (world is ServerWorld) {
             val duration = stack.getOrDefault(RapComponents.SMOKE_INVISIBLE_DURATION, RapConfigs.serverConfig.items.smokeInvisibleDuration)
             user.addStatusEffect(StatusEffectInstance(StatusEffects.INVISIBILITY, duration, 0, false, false))
-            world.getEntitiesByClass(MobEntity::class.java, user.boundingBox.expand(10.0)) {
+            world.getEntitiesByClass(MobEntity::class.java, user.boundingBox.expand(12.0)) {
                 it.isAlive && it.target == user || (it is Angerable && it.shouldAngerAt(user))
             }.forEach {
                 it.target = null
                 (it as? Angerable)?.stopAnger()
+                if (enableStan && it is StanHolder) {
+                    it.`robandpeace$SetStan`(duration)
+                }
             }
         }
 

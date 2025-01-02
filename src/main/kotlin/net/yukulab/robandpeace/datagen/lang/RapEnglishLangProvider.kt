@@ -90,6 +90,7 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
         add(RapItems.SMOKE, "Smoke")
+        add(RapItems.ADVANCED_SMOKE, "Advanced Smoke")
         add(RapItems.MAGIC_HAND, "Magic Hand")
         add(RapItems.ADVANCED_MAGIC_HAND, "Advanced Magic Hand")
         add(RapItems.PICKING_TOOL, "Picking Tool")
