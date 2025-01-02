@@ -7,7 +7,9 @@ import net.minecraft.entity.SpawnGroup
 import net.minecraft.entity.passive.IronGolemEntity
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
+import net.minecraft.util.Identifier
 import net.minecraft.world.World
+import net.yukulab.robandpeace.MOD_ID
 
 object RapEntityType {
     @JvmField
@@ -23,7 +25,8 @@ object RapEntityType {
     @JvmField
     val HIDDEN_TREASURE_ENTITY = register("hidden_treasure_entity", ::HiddenTreasureEntity, SpawnGroup.MISC) {}
 
-    private fun <E : Entity> register(id: String, initializer: (EntityType<E>, World) -> E, group: SpawnGroup, builder: EntityType.Builder<E>.() -> Unit): EntityType<E> = Registry.register(Registries.ENTITY_TYPE, id, EntityType.Builder.create(initializer, group).apply(builder).build(id))
+    private fun <E : Entity> register(id: String, initializer: (EntityType<E>, World) -> E, group: SpawnGroup, builder: EntityType.Builder<E>.() -> Unit): EntityType<E> =
+        Registry.register(Registries.ENTITY_TYPE, Identifier.of(MOD_ID, id), EntityType.Builder.create(initializer, group).apply(builder).build(id))
 
     fun init() {
         FabricDefaultAttributeRegistry.register(ANGRY_GOLEM, IronGolemEntity.createIronGolemAttributes())
