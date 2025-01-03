@@ -12,13 +12,13 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.particle.SimpleParticleType
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.stat.Stats
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
-import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 import net.yukulab.robandpeace.config.RapConfigs
 import net.yukulab.robandpeace.coroutineScope
@@ -30,8 +30,8 @@ import net.yukulab.robandpeace.serverDispatcher
 class SmokeItem(private val type: Type) : Item(Settings()) {
     override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val stack = user.getStackInHand(hand)
-        playEffects(world, user)
-        if (world is ServerWorld) {
+        if (world is ServerWorld && user is ServerPlayerEntity) {
+            playEffects(world, user)
             val duration = stack.getOrDefault(RapComponents.SMOKE_INVISIBLE_DURATION, RapConfigs.serverConfig.items.smokeInvisibleDuration)
             world.getEntitiesByClass(MobEntity::class.java, user.boundingBox.expand(12.0)) {
                 it.isAlive && it.target == user || (it is Angerable && it.shouldAngerAt(user))
@@ -60,10 +60,9 @@ class SmokeItem(private val type: Type) : Item(Settings()) {
     }
 
     private fun playEffects(
-        world: World,
-        user: PlayerEntity,
+        world: ServerWorld,
+        user: ServerPlayerEntity,
     ) {
-        val random = world.random
         val pitch = when (type) {
             Type.NORMAL -> 2.0f
             Type.EXPLOSION -> 1.5f
@@ -107,44 +106,49 @@ class SmokeItem(private val type: Type) : Item(Settings()) {
                             0.3f,
                             1.3f,
                         )
-                        repeat(70) {
-                            playParticle(random, world, ParticleTypes.FLAME, user)
-                        }
+                        playParticle(70, world, ParticleTypes.FLAME, user)
                     }
                 }
             }
             else -> {}
         }
         val smokeCount = when (type) {
-            Type.NORMAL -> 70
+            Type.NORMAL -> 80
             Type.EXPLOSION -> 140
-            Type.FIRE -> 70
+            Type.FIRE -> 80
         }
-        repeat(smokeCount) {
-            val particleType = when (type) {
-                Type.NORMAL -> ParticleTypes.CAMPFIRE_COSY_SMOKE
-                Type.EXPLOSION -> if (random.nextBoolean()) ParticleTypes.EXPLOSION else ParticleTypes.CAMPFIRE_COSY_SMOKE
-                Type.FIRE -> ParticleTypes.CAMPFIRE_COSY_SMOKE
+        when (type) {
+            Type.NORMAL -> {
+                playParticle(smokeCount, world, ParticleTypes.CAMPFIRE_COSY_SMOKE, user)
             }
-            playParticle(random, world, particleType, user)
+            Type.EXPLOSION -> {
+                playParticle(smokeCount / 2, world, ParticleTypes.CAMPFIRE_COSY_SMOKE, user)
+                playParticle(smokeCount / 2, world, ParticleTypes.EXPLOSION, user)
+            }
+            Type.FIRE -> {
+                playParticle(smokeCount, world, ParticleTypes.CAMPFIRE_COSY_SMOKE, user)
+            }
         }
     }
 
     private fun playParticle(
-        random: Random,
-        world: World,
+        count: Int,
+        world: ServerWorld,
         particleType: SimpleParticleType?,
-        user: PlayerEntity,
+        user: ServerPlayerEntity,
     ) {
-        fun nextSign() = if (random.nextBoolean()) 1 else -1
-        world.addParticle(
+        world.spawnParticles(
+            user,
             particleType,
-            user.x + 1 * random.nextDouble() * nextSign(),
-            user.y + 2 * random.nextDouble(),
-            user.z + 1 * random.nextDouble() * nextSign(),
-            0.01 * nextSign(),
-            0.02,
-            0.01 * nextSign(),
+            false,
+            user.x,
+            user.y + 1.1,
+            user.z,
+            count,
+            0.66,
+            0.52,
+            0.66,
+            0.001,
         )
     }
 

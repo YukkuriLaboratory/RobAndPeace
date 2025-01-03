@@ -20,6 +20,7 @@ night-config = "3.8.1"
 expandability = "12.0.0"
 artifacts = "12.0.6"
 jei = "19.21.0.247"
+replaymod = "1.21-2.6.20"
 # for testing
 kotest = "5.9.1"
 
@@ -44,6 +45,7 @@ modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
 immersiveportals = { module = "com.github.iPortalTeam:ImmersivePortalsMod", version.ref = "immersiveportals"}
 jei = { module = "maven.modrinth:jei", version.ref = "jei"}
+replaymod = { module = "maven.modrinth:replaymod", version.ref = "replaymod"}
 # For development
 cardinal-components-base = { module = "org.ladysnake.cardinal-components-api:cardinal-components-base", version.ref = "cardinal-components" }
 cardinal-components-world = { module = "org.ladysnake.cardinal-components-api:cardinal-components-world", version.ref = "cardinal-components" }
