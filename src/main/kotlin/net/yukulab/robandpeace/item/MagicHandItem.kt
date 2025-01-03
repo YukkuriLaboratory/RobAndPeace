@@ -23,7 +23,7 @@ class MagicHandItem(range: Double, maxDamage: Int) :
                             add(
                                 it,
                                 EntityAttributeModifier(Identifier.of(MOD_ID, "magic_hand"), range, EntityAttributeModifier.Operation.ADD_VALUE),
-                                AttributeModifierSlot.MAINHAND,
+                                AttributeModifierSlot.HAND,
                             )
                         }
                 }
