@@ -32,7 +32,6 @@ class SmokeItem(private val type: Type) : Item(Settings()) {
         playEffects(world, user)
         if (world is ServerWorld) {
             val duration = stack.getOrDefault(RapComponents.SMOKE_INVISIBLE_DURATION, RapConfigs.serverConfig.items.smokeInvisibleDuration)
-            user.addStatusEffect(StatusEffectInstance(StatusEffects.INVISIBILITY, duration, 0, false, false))
             world.getEntitiesByClass(MobEntity::class.java, user.boundingBox.expand(12.0)) {
                 it.isAlive && it.target == user || (it is Angerable && it.shouldAngerAt(user))
             }.forEach {
@@ -48,6 +47,9 @@ class SmokeItem(private val type: Type) : Item(Settings()) {
                     }
                     else -> {}
                 }
+            }
+            if (type == Type.NORMAL) {
+                user.addStatusEffect(StatusEffectInstance(StatusEffects.INVISIBILITY, duration, 0, false, false))
             }
         }
 
