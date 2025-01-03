@@ -18,12 +18,14 @@ import net.minecraft.item.*;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.config.RapConfigs;
 import net.yukulab.robandpeace.config.RapServerConfig;
 import net.yukulab.robandpeace.entity.RapEntityType;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.extension.StealCooldownHolder;
+import net.yukulab.robandpeace.item.MagicHandItem;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -35,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 @Mixin(LivingEntity.class)
@@ -84,7 +87,7 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
     }
 
     /**
-     * disableAttackingInCoolTimeがtrueの場合、クールダウン中は攻撃時のノックバックや耐久消費が発生しないようにする
+     * disableAttackingInCoolTimeがtrueの場合かつクールダウン中、または攻撃が不可能な場合は攻撃時のノックバックや耐久消費が発生しないようにする
      */
     @Inject(
             method = "damage",
@@ -92,15 +95,23 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
             cancellable = true
     )
     private void checkStealCooldownIfAttackingDisabled(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (source.getAttacker() instanceof PlayerEntity) {
-            if (robandpeace$getStealCooldown() > 0 && robandpeace$getServerConfigSupplier().get().disableAttackingInCoolTime) {
+        if (source.getAttacker() instanceof PlayerEntity player) {
+            if (!robandpeace$isAtackable(player) || robandpeace$getStealCooldown() > 0 && robandpeace$getServerConfigSupplier().get().disableAttackingInCoolTime) {
                 cir.setReturnValue(false);
             }
         }
     }
 
     /**
-     * stealCooldownが0以上の場合、クールダウン中はダメージを受けないようにする(disableAttackingInCoolTimeがfalseの場合)
+     * MagicHand所持中はスリ取りができない
+     */
+    @Unique
+    private static boolean robandpeace$isAtackable(PlayerEntity player) {
+        return Arrays.stream(Hand.values()).noneMatch((hand) -> player.getStackInHand(hand).getItem() instanceof MagicHandItem);
+    }
+
+    /**
+     * stealCooldownが0以上の場合、クールダウン中はダメージを受けないようにする
      */
     @WrapWithCondition(
             method = "damage",
@@ -163,7 +174,7 @@ public abstract class MixinLivingEntity extends Entity implements StealCooldownH
             cancellable = true
     )
     private void replacePlayerAttackBehavior(DamageSource source, float amount, CallbackInfo ci) {
-        if (source.getAttacker() instanceof PlayerEntity player) {
+        if (source.getAttacker() instanceof PlayerEntity player && robandpeace$isAtackable(player)) {
             var entity = (LivingEntity) (Object) this;
             var baseChance = 1;
             var multiply = switch (entity) {
