@@ -90,7 +90,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
         add(RapItems.SMOKE, "煙幕")
-        add(RapItems.ADVANCED_SMOKE, "爆幕")
+        add(RapItems.ADVANCED_SMOKE, "煙幕(爆)")
         add(RapItems.MAGIC_HAND, "マジックハンド")
         add(RapItems.ADVANCED_MAGIC_HAND, "上級マジックハンド")
         add(RapItems.PICKING_TOOL, "ピッキングツール")
