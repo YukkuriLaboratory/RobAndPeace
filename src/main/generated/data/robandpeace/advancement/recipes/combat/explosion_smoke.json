@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "robandpeace:advanced_smoke"
+        "recipe": "robandpeace:explosion_smoke"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -48,7 +48,7 @@
   ],
   "rewards": {
     "recipes": [
-      "robandpeace:advanced_smoke"
+      "robandpeace:explosion_smoke"
     ]
   }
 }

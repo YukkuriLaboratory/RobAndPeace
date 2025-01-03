@@ -1,11 +1,12 @@
-// 1.21.1	2025-01-03T09:49:18.877621876	Rob&Peace/Model Definitions
+// 1.21.1	2025-01-03T11:33:32.007100347	Rob&Peace/Model Definitions
 c53c4fef01d5c29284ecfd3c74c6f67ebecd8ce6 assets/robandpeace/models/item/trial_picking_tool_ominous_picking.json
 71de636582a3804aaec558a1183bef7026b68879 assets/robandpeace/models/item/spider_walker.json
 e6fa70c6a9515faee6122e2728473bb77a4c47fa assets/minecraft/models/item/diamond_sword.json
 8fc6e981777938524782c004225c3cb34f81d4d9 assets/robandpeace/models/item/trial_picking_tool_picking.json
 ca265721ac7b0766566fe2b2d95d311e7e7db39e assets/robandpeace/models/item/magic_hand.json
 b06f1569040b73b35e8e337b40a1f6895c2b5fa9 assets/minecraft/models/item/wooden_sword.json
-3b96ee023980bc3eb52e2a783de4200bc59b06eb assets/robandpeace/models/item/advanced_smoke.json
+07aaea84ac82f0dd99ddee155a4b14c03c7b93cd assets/robandpeace/models/item/explosion_smoke.json
+252c4363ef5fb25b040a91bb22ddb8372d0c07b7 assets/robandpeace/models/item/fire_smoke.json
 c22ddd0143409e341e5d9d2a0c65112036e4e305 assets/minecraft/models/item/golden_sword.json
 c1d470d6bf2568803f49da3409617b512f2bc1ce assets/robandpeace/models/item/picking_tool_picking.json
 cad56d3aa4ff0fc3c07cb7b807706c8f5819c61d assets/robandpeace/models/item/portal_hoop_remove.json

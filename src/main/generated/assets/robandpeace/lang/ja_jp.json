@@ -1,7 +1,8 @@
 {
   "entity.robandpeace.angry_golem": "用心棒のゴーレム",
   "item.robandpeace.advanced_magic_hand": "上級マジックハンド",
-  "item.robandpeace.advanced_smoke": "煙幕(爆)",
+  "item.robandpeace.explosion_smoke": "煙幕(爆)",
+  "item.robandpeace.fire_smoke": "煙幕(滅)",
   "item.robandpeace.hidden_treasure": "大秘宝",
   "item.robandpeace.magic_hand": "マジックハンド",
   "item.robandpeace.picking_tool": "ピッキングツール",

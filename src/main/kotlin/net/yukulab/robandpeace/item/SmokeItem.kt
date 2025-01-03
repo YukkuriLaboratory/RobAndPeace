@@ -19,44 +19,22 @@ import net.yukulab.robandpeace.config.RapConfigs
 import net.yukulab.robandpeace.extension.StanHolder
 import net.yukulab.robandpeace.item.component.RapComponents
 
-class SmokeItem(private val enableStan: Boolean = false) : Item(Settings()) {
+class SmokeItem(private val type: Type) : Item(Settings()) {
     override fun use(world: World, user: PlayerEntity, hand: Hand): TypedActionResult<ItemStack> {
         val stack = user.getStackInHand(hand)
         val random = world.random
-        val pitch = if (enableStan) 1.5f else 2.0f
-        world.playSound(
-            null,
-            user.x,
-            user.y,
-            user.z,
-            SoundEvents.BLOCK_FIRE_EXTINGUISH,
-            SoundCategory.NEUTRAL,
-            0.5f,
-            pitch,
-        )
-        if (enableStan) {
-            world.playSound(
-                null,
-                user.x,
-                user.y,
-                user.z,
-                SoundEvents.ENTITY_GENERIC_EXPLODE,
-                SoundCategory.NEUTRAL,
-                0.3f,
-                1.3f,
-            )
-        }
-        val smokeCount = if (enableStan) {
+        playSound(world, user)
+        val smokeCount = if (type != Type.NORMAL) {
             140
         } else {
             70
         }
         repeat(smokeCount) {
             fun nextSign() = if (random.nextBoolean()) 1 else -1
-            val particleType = if (enableStan) {
-                if (random.nextBoolean()) ParticleTypes.EXPLOSION else ParticleTypes.CAMPFIRE_COSY_SMOKE
-            } else {
-                ParticleTypes.CAMPFIRE_COSY_SMOKE
+            val particleType = when (type) {
+                Type.NORMAL -> ParticleTypes.CAMPFIRE_COSY_SMOKE
+                Type.EXPLOSION -> if (random.nextBoolean()) ParticleTypes.EXPLOSION else ParticleTypes.CAMPFIRE_COSY_SMOKE
+                Type.FIRE -> if (random.nextBoolean()) ParticleTypes.FLAME else ParticleTypes.CAMPFIRE_COSY_SMOKE
             }
             world.addParticle(
                 particleType,
@@ -76,8 +54,14 @@ class SmokeItem(private val enableStan: Boolean = false) : Item(Settings()) {
             }.forEach {
                 it.target = null
                 (it as? Angerable)?.stopAnger()
-                if (enableStan && it is StanHolder) {
-                    it.`robandpeace$SetStan`(duration)
+                when (type) {
+                    Type.EXPLOSION -> if (it is StanHolder) {
+                        it.`robandpeace$SetStan`(duration)
+                    }
+                    Type.FIRE -> {
+                        it.discard()
+                    }
+                    else -> {}
                 }
             }
         }
@@ -85,5 +69,59 @@ class SmokeItem(private val enableStan: Boolean = false) : Item(Settings()) {
         user.incrementStat(Stats.USED.getOrCreateStat(this))
         stack.decrementUnlessCreative(1, user)
         return TypedActionResult.success(stack, world.isClient())
+    }
+
+    private fun playSound(
+        world: World,
+        user: PlayerEntity,
+    ) {
+        val pitch = when (type) {
+            Type.NORMAL -> 2.0f
+            Type.EXPLOSION -> 1.5f
+            Type.FIRE -> 1.3f
+        }
+        world.playSound(
+            null,
+            user.x,
+            user.y,
+            user.z,
+            SoundEvents.BLOCK_FIRE_EXTINGUISH,
+            SoundCategory.NEUTRAL,
+            0.5f,
+            pitch,
+        )
+        when (type) {
+            Type.EXPLOSION -> {
+                world.playSound(
+                    null,
+                    user.x,
+                    user.y,
+                    user.z,
+                    SoundEvents.ENTITY_GENERIC_EXPLODE,
+                    SoundCategory.NEUTRAL,
+                    0.3f,
+                    1.3f,
+                )
+            }
+            Type.FIRE -> {
+                world.playSound(
+                    null,
+                    user.x,
+                    user.y,
+                    user.z,
+                    SoundEvents.ENTITY_GHAST_SHOOT,
+                    SoundCategory.NEUTRAL,
+                    0.3f,
+                    1.3f,
+                )
+            }
+            else -> {}
+        }
+    }
+
+    enum class Type {
+        NORMAL,
+        EXPLOSION,
+        FIRE,
     }
 }

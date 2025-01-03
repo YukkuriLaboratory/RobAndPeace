@@ -27,7 +27,8 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
 
     override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
         itemModelGenerator.register(RapItems.SMOKE, Models.GENERATED)
-        itemModelGenerator.register(RapItems.ADVANCED_SMOKE, Models.GENERATED)
+        itemModelGenerator.register(RapItems.EXPLOSION_SMOKE, Models.GENERATED)
+        itemModelGenerator.register(RapItems.FIRE_SMOKE, Models.GENERATED)
         itemModelGenerator.register(RapItems.MAGIC_HAND, Models.GENERATED)
         itemModelGenerator.register(RapItems.ADVANCED_MAGIC_HAND, Models.GENERATED)
         itemModelGenerator.register(RapItems.PICKING_TOOL, Models.GENERATED) {
