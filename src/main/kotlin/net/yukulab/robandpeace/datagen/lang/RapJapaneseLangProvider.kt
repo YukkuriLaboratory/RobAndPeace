@@ -39,6 +39,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_HEIGHT, "初期位置(y)")
         add(RapServerConfig.KEY_ITEMS, "アイテム")
         add(RapServerConfig.KEY_ITEMS_SMOKE_INVISIBLE_DURATION, "煙幕のデフォルト効果時間(Tick)")
+        add(RapServerConfig.KEY_ITEMS_FIRE_SMOKE_EFFECT_DELAY, "煙幕(滅)の効果遅延(Tick)")
         add(RapServerConfig.KEY_ITEMS_WOODEN_GLOVE, "木のグローブ")
         add(RapServerConfig.KEY_ITEMS_STONE_GLOVE, "石のグローブ")
         add(RapServerConfig.KEY_ITEMS_IRON_GLOVE, "鉄のグローブ")

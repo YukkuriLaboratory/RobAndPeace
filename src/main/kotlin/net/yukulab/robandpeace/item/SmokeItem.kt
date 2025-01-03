@@ -1,6 +1,5 @@
 package net.yukulab.robandpeace.item
 
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.minecraft.entity.effect.StatusEffectInstance
@@ -23,6 +22,7 @@ import net.minecraft.world.World
 import net.yukulab.robandpeace.config.RapConfigs
 import net.yukulab.robandpeace.coroutineScope
 import net.yukulab.robandpeace.extension.SmokeEffectHolder
+import net.yukulab.robandpeace.extension.ticks
 import net.yukulab.robandpeace.item.component.RapComponents
 import net.yukulab.robandpeace.serverDispatcher
 
@@ -43,7 +43,8 @@ class SmokeItem(private val type: Type) : Item(Settings()) {
                         it.`robandpeace$SetStan`(duration)
                     }
                     Type.FIRE -> if (it is SmokeEffectHolder) {
-                        it.`robandpeace$SetDiscard`(20)
+                        val delay = RapConfigs.serverConfig.items.fireSmokeEffectDelay
+                        it.`robandpeace$SetDiscard`(delay)
                     }
                     else -> {}
                 }
@@ -90,7 +91,8 @@ class SmokeItem(private val type: Type) : Item(Settings()) {
             }
             Type.FIRE -> {
                 coroutineScope.launch {
-                    delay(1.seconds)
+                    val delay = RapConfigs.serverConfig.items.fireSmokeEffectDelay
+                    delay(delay.ticks)
                     launch(serverDispatcher) {
                         world.playSound(
                             null,

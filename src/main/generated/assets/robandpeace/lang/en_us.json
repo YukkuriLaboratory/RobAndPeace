@@ -21,6 +21,7 @@
   "text.autoconfig.robandpeace.option.disableAttackingInCoolTime": "Disable attacking in cool time",
   "text.autoconfig.robandpeace.option.items": "Items",
   "text.autoconfig.robandpeace.option.items.diamondGlove": "Diamond Glove",
+  "text.autoconfig.robandpeace.option.items.fireSmokeEffectDelay": "Fire smoke effect delay(Tick)",
   "text.autoconfig.robandpeace.option.items.goldenGlove": "Golden Glove",
   "text.autoconfig.robandpeace.option.items.ironGlove": "Iron Glove",
   "text.autoconfig.robandpeace.option.items.netheriteGlove": "Netherite Glove",
