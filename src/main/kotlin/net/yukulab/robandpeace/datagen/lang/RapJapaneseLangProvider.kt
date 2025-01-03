@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
+import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.item.PickingToolItem
 import net.yukulab.robandpeace.item.PortalHoopItem
 import net.yukulab.robandpeace.item.RapItems
@@ -99,5 +100,7 @@ class RapJapaneseLangProvider(dataGenerator: FabricDataOutput, registryLookup: C
         add(RapItems.PORTAL_HOOP, "通り抜けフープ(設置モード)")
         add(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, "通り抜けフープ(撤去モード)")
         add(RapItems.HIDDEN_TREASURE, "大秘宝")
+
+        add(RapEntityType.ANGRY_GOLEM, "用心棒のゴーレム")
     }
 }
