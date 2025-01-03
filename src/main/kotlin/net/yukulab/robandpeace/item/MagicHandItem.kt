@@ -17,11 +17,16 @@ class MagicHandItem(range: Double, maxDamage: Int) :
     Item(
         Settings().attributeModifiers(
             AttributeModifiersComponent.builder()
-                .add(
-                    EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE,
-                    EntityAttributeModifier(Identifier.of(MOD_ID, "magic_hand"), range, EntityAttributeModifier.Operation.ADD_VALUE),
-                    AttributeModifierSlot.HAND,
-                )
+                .apply {
+                    listOf(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE, EntityAttributes.PLAYER_ENTITY_INTERACTION_RANGE)
+                        .forEach {
+                            add(
+                                it,
+                                EntityAttributeModifier(Identifier.of(MOD_ID, "magic_hand"), range, EntityAttributeModifier.Operation.ADD_VALUE),
+                                AttributeModifierSlot.HAND,
+                            )
+                        }
+                }
                 .build(),
         ).maxCount(1).maxDamage(maxDamage),
     ) {
