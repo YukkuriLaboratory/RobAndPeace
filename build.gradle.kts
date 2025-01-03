@@ -122,6 +122,7 @@ dependencies {
     modRuntimeOnly(libs.cardinal.components.base)
     modRuntimeOnly(libs.cardinal.components.world)
     modRuntimeOnly(libs.cardinal.components.entity)
+    modRuntimeOnly(libs.replaymod)
 
     // Artifacts
     // modRuntimeOnly(libs.architectury.api)
