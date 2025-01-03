@@ -92,8 +92,8 @@ class SmokeItem(private val type: Type) : Item(Settings()) {
                 )
             }
             Type.FIRE -> {
+                val delay = RapConfigs.serverConfig.items.fireSmokeEffectDelay
                 coroutineScope.launch {
-                    val delay = RapConfigs.serverConfig.items.fireSmokeEffectDelay
                     delay(delay.ticks)
                     launch(serverDispatcher) {
                         world.playSound(
