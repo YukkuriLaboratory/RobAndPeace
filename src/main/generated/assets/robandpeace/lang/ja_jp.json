@@ -1,6 +1,8 @@
 {
   "entity.robandpeace.angry_golem": "用心棒のゴーレム",
   "item.robandpeace.advanced_magic_hand": "上級マジックハンド",
+  "item.robandpeace.explosion_smoke": "煙幕(爆)",
+  "item.robandpeace.fire_smoke": "煙幕(滅)",
   "item.robandpeace.hidden_treasure": "大秘宝",
   "item.robandpeace.magic_hand": "マジックハンド",
   "item.robandpeace.picking_tool": "ピッキングツール",
@@ -19,6 +21,7 @@
   "text.autoconfig.robandpeace.option.disableAttackingInCoolTime": "クールタイム中の攻撃を無効化",
   "text.autoconfig.robandpeace.option.items": "アイテム",
   "text.autoconfig.robandpeace.option.items.diamondGlove": "ダイヤモンドのグローブ",
+  "text.autoconfig.robandpeace.option.items.fireSmokeEffectDelay": "煙幕(滅)の効果遅延(Tick)",
   "text.autoconfig.robandpeace.option.items.goldenGlove": "金のグローブ",
   "text.autoconfig.robandpeace.option.items.ironGlove": "鉄のグローブ",
   "text.autoconfig.robandpeace.option.items.netheriteGlove": "ネザライトのグローブ",

@@ -1,6 +1,8 @@
 {
   "entity.robandpeace.angry_golem": "Angry Golem",
   "item.robandpeace.advanced_magic_hand": "Advanced Magic Hand",
+  "item.robandpeace.explosion_smoke": "Smoke(Explosion)",
+  "item.robandpeace.fire_smoke": "Smoke(Fire)",
   "item.robandpeace.hidden_treasure": "Hidden Treasure",
   "item.robandpeace.magic_hand": "Magic Hand",
   "item.robandpeace.picking_tool": "Picking Tool",
@@ -19,6 +21,7 @@
   "text.autoconfig.robandpeace.option.disableAttackingInCoolTime": "Disable attacking in cool time",
   "text.autoconfig.robandpeace.option.items": "Items",
   "text.autoconfig.robandpeace.option.items.diamondGlove": "Diamond Glove",
+  "text.autoconfig.robandpeace.option.items.fireSmokeEffectDelay": "Fire smoke effect delay(Tick)",
   "text.autoconfig.robandpeace.option.items.goldenGlove": "Golden Glove",
   "text.autoconfig.robandpeace.option.items.ironGlove": "Iron Glove",
   "text.autoconfig.robandpeace.option.items.netheriteGlove": "Netherite Glove",

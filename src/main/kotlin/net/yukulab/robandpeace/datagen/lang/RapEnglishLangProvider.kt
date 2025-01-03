@@ -39,6 +39,7 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapServerConfig.KEY_ANGRY_GOLEM_SPAWN_HEIGHT, "Spawn height")
         add(RapServerConfig.KEY_ITEMS, "Items")
         add(RapServerConfig.KEY_ITEMS_SMOKE_INVISIBLE_DURATION, "Smoke default effect duration(Tick)")
+        add(RapServerConfig.KEY_ITEMS_FIRE_SMOKE_EFFECT_DELAY, "Fire smoke effect delay(Tick)")
         add(RapServerConfig.KEY_ITEMS_WOODEN_GLOVE, "Wooden Glove")
         add(RapServerConfig.KEY_ITEMS_STONE_GLOVE, "Stone Glove")
         add(RapServerConfig.KEY_ITEMS_IRON_GLOVE, "Iron Glove")
@@ -91,6 +92,8 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
 
         add(RapItems.ITEM_GROUP_KEY, "RobAndPeace")
         add(RapItems.SMOKE, "Smoke")
+        add(RapItems.EXPLOSION_SMOKE, "Smoke(Explosion)")
+        add(RapItems.FIRE_SMOKE, "Smoke(Fire)")
         add(RapItems.MAGIC_HAND, "Magic Hand")
         add(RapItems.ADVANCED_MAGIC_HAND, "Advanced Magic Hand")
         add(RapItems.PICKING_TOOL, "Picking Tool")

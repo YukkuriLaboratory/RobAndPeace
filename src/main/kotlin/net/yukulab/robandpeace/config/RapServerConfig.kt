@@ -89,6 +89,9 @@ class RapServerConfig : ConfigData {
         @JvmField
         var smokeInvisibleDuration: Int = 60
 
+        @JvmField
+        var fireSmokeEffectDelay: Int = 20
+
         @BoundedDiscrete(min = 0, max = 100)
         @JvmField
         var woodenGlove: Int = 5
@@ -306,6 +309,9 @@ class RapServerConfig : ConfigData {
 
         @Excluded
         const val KEY_ITEMS_SMOKE_INVISIBLE_DURATION = "text.autoconfig.robandpeace.option.items.smokeInvisibleDuration"
+
+        @Excluded
+        const val KEY_ITEMS_FIRE_SMOKE_EFFECT_DELAY = "text.autoconfig.robandpeace.option.items.fireSmokeEffectDelay"
 
         @Excluded
         const val KEY_ITEMS_WOODEN_GLOVE = "text.autoconfig.robandpeace.option.items.woodenGlove"

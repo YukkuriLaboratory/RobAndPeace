@@ -14,7 +14,9 @@ import net.yukulab.robandpeace.MOD_ID
 
 object RapItems {
 
-    val SMOKE: SmokeItem = register("smoke", SmokeItem())
+    val SMOKE: SmokeItem = register("smoke", SmokeItem(SmokeItem.Type.NORMAL))
+    val EXPLOSION_SMOKE: SmokeItem = register("explosion_smoke", SmokeItem(SmokeItem.Type.EXPLOSION))
+    val FIRE_SMOKE: SmokeItem = register("fire_smoke", SmokeItem(SmokeItem.Type.FIRE))
     val SPIDER_WALKER: SpiderWalkerItem = register("spider_walker", SpiderWalkerItem())
     val MAGIC_HAND: MagicHandItem = register("magic_hand", MagicHandItem(5.0, 131))
     val ADVANCED_MAGIC_HAND: MagicHandItem = register("advanced_magic_hand", MagicHandItem(8.0, 1561))
@@ -35,6 +37,8 @@ object RapItems {
         Registry.register(Registries.ITEM_GROUP, ITEM_GROUP_KEY, ITEM_GROUP)
         ItemGroupEvents.modifyEntriesEvent(ITEM_GROUP_KEY).register {
             it.add(SMOKE)
+            it.add(EXPLOSION_SMOKE)
+            it.add(FIRE_SMOKE)
             it.add(SPIDER_WALKER)
             it.add(MAGIC_HAND)
             it.add(ADVANCED_MAGIC_HAND)
