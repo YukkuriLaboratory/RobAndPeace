@@ -4,7 +4,7 @@ import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.runBlocking
@@ -20,7 +20,7 @@ import net.yukulab.robandpeace.network.RabNetworking
 import net.yukulab.robandpeace.network.payload.PlayerMovementPayload
 
 object RobAndPeace : ModInitializer {
-    private val job = Job()
+    private val job = SupervisorJob()
     val coroutineScope = CoroutineScope(Dispatchers.Default + job)
     lateinit var serverDispatcher: CoroutineDispatcher
         private set

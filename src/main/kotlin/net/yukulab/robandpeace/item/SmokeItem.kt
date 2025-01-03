@@ -2,6 +2,7 @@ package net.yukulab.robandpeace.item
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.mob.Angerable
@@ -95,7 +96,7 @@ class SmokeItem(private val type: Type) : Item(Settings()) {
                 val delay = RapConfigs.serverConfig.items.fireSmokeEffectDelay
                 coroutineScope.launch {
                     delay(delay.ticks)
-                    launch(serverDispatcher) {
+                    withContext(serverDispatcher) {
                         world.playSound(
                             null,
                             user.x,
