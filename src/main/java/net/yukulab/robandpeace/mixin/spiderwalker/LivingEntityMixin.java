@@ -63,7 +63,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Inject(method = "isClimbing", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "isClimbing", at = @At("RETURN"), cancellable = true)
     public void isClimbingOnGrowBerries(CallbackInfoReturnable<Boolean> cir) {
         BlockPos blockPos = getBlockPos();
 
