@@ -366,7 +366,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Override
     public boolean isClimbing() {
-        return super.isClimbing() || (this.isWalling && canClimbing());
+        return super.isClimbing() || isWalling;
     }
 
     @Unique

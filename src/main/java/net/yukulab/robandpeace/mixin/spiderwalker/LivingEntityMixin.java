@@ -56,18 +56,11 @@ public abstract class LivingEntityMixin extends Entity {
         cir.setReturnValue(this.slidingPos);
     }
 
-    @Inject(method = "isClimbing", at = @At("HEAD"), cancellable = true)
-    public void isClimbingHead(CallbackInfoReturnable<Boolean> cir) {
-        if (canClimbing()) {
-            cir.setReturnValue(true);
-        }
-    }
-
     @Inject(method = "isClimbing", at = @At("RETURN"), cancellable = true)
     public void isClimbingOnGrowBerries(CallbackInfoReturnable<Boolean> cir) {
         BlockPos blockPos = getBlockPos();
 
-        if (RobAndPeace.getPlayerMovementStatus(getUuid()).isJumping() && getWorld().getBlockState(blockPos.up(2)).getBlock() != Blocks.AIR) {
+        if (canClimbing() && RobAndPeace.getPlayerMovementStatus(getUuid()).isJumping() && getWorld().getBlockState(blockPos.up(2)).getBlock() != Blocks.AIR) {
             climbingPos = Optional.of(blockPos);
             cir.setReturnValue(true);
         }
