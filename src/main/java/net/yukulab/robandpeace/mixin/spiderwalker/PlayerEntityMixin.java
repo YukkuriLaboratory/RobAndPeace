@@ -201,7 +201,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
         this.move(MovementType.SELF, this.getVelocity());
 
-        return this.getVelocity();
+        Vec3d vec3d = this.getVelocity();
+        if ((this.horizontalCollision || this.jumping) && (this.isClimbing() || this.getBlockStateAtPos().isOf(Blocks.POWDER_SNOW) && PowderSnowBlock.canWalkOnPowderSnow(this))) {
+            vec3d = new Vec3d(vec3d.x, 0.2, vec3d.z);
+        }
+
+        return vec3d;
     }
 
     @Unique
