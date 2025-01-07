@@ -11,11 +11,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_string": {
+    "has_nether_star": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:string"
+            "items": "minecraft:nether_star"
           }
         ]
       },
@@ -27,11 +27,11 @@
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "has_tnt": {
+    "has_wind_charge": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:tnt"
+            "items": "minecraft:wind_charge"
           }
         ]
       },
@@ -42,8 +42,8 @@
     [
       "has_the_recipe",
       "has_blaze_powder",
-      "has_string",
-      "has_tnt"
+      "has_wind_charge",
+      "has_nether_star"
     ]
   ],
   "rewards": {

@@ -1,21 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_bone_meal": {
+    "has_blaze_powder": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:bone_meal"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_string": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:string"
+            "items": "minecraft:blaze_powder"
           }
         ]
       },
@@ -36,13 +26,23 @@
         ]
       },
       "trigger": "minecraft:inventory_changed"
+    },
+    "has_wind_charge": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:wind_charge"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "has_bone_meal",
-      "has_string",
+      "has_blaze_powder",
+      "has_wind_charge",
       "has_tnt"
     ]
   ],
