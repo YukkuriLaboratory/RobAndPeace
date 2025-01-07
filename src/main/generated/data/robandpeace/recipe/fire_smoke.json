@@ -9,7 +9,7 @@
       "item": "minecraft:tnt"
     },
     "S": {
-      "item": "minecraft:string"
+      "item": "minecraft:wind_charge"
     }
   },
   "pattern": [
@@ -18,7 +18,7 @@
     "BSB"
   ],
   "result": {
-    "count": 2,
+    "count": 1,
     "id": "robandpeace:fire_smoke"
   }
 }
