@@ -1,6 +1,7 @@
 package net.yukulab.robandpeace
 
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,7 @@ object RobAndPeace : ModInitializer {
     var isDebugMode: Boolean = false
 
     @JvmField
-    val playerMovementStatusMap = mutableMapOf<UUID, PlayerMovementPayload>()
+    val playerMovementStatusMap = ConcurrentHashMap<UUID, PlayerMovementPayload>()
 
     @JvmStatic
     fun getPlayerMovementStatus(playerUUID: UUID): PlayerMovementPayload = playerMovementStatusMap.getOrDefault(playerUUID, EMPTY_PAYLOAD)
