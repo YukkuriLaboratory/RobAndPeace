@@ -43,7 +43,7 @@ class PickingToolItem(pickingChance: Int, private val isOminous: Boolean = false
         val blockPos = context.blockPos
         val blockState = world.getBlockState(blockPos)
         val blockEntity = world.getBlockEntity(blockPos)
-        if (!isNotUnlockable(world, blockEntity, blockState, player)) {
+        if (!isNotUnlockable(world, blockEntity, blockState, player, stack)) {
             player?.setCurrentHand(context.hand)
         }
         return ActionResult.PASS
@@ -65,7 +65,7 @@ class PickingToolItem(pickingChance: Int, private val isOminous: Boolean = false
     }
 
     override fun inventoryTick(stack: ItemStack?, world: World?, entity: Entity?, slot: Int, selected: Boolean) {
-        if (isOminous && entity is LivingEntity && entity.hasStatusEffect(StatusEffects.BAD_OMEN)) {
+        if (isOminous && entity is LivingEntity && entity.hasStatusEffect(StatusEffects.TRIAL_OMEN)) {
             stack?.set(RapComponents.IS_OMEN, true)
         } else {
             stack?.set(RapComponents.IS_OMEN, false)
@@ -78,7 +78,7 @@ class PickingToolItem(pickingChance: Int, private val isOminous: Boolean = false
             if (result is BlockHitResult) {
                 val blockEntity = world.getBlockEntity(result.blockPos)
                 val blockState = world.getBlockState(result.blockPos)
-                if (isNotUnlockable(world, blockEntity, blockState, user)) {
+                if (isNotUnlockable(world, blockEntity, blockState, user, stack)) {
                     user.stopUsingItem()
                 } else if (remainingUseTicks % 4 == 0 && world.random.nextInt(4) < 2) {
                     world.playSound(null, user.blockPos, SoundEvents.BLOCK_CHAIN_BREAK, user.soundCategory, 1.0f, 2f)
@@ -139,10 +139,10 @@ class PickingToolItem(pickingChance: Int, private val isOminous: Boolean = false
         }
     }
 
-    private fun isNotUnlockable(world: World?, blockEntity: BlockEntity?, blockState: BlockState, entity: LivingEntity?): Boolean = world !is ServerWorld ||
+    private fun isNotUnlockable(world: World?, blockEntity: BlockEntity?, blockState: BlockState, entity: LivingEntity?, itemStack: ItemStack?): Boolean = world !is ServerWorld ||
         blockEntity !is VaultBlockEntity ||
         entity !is PlayerEntity ||
-        (blockState[VaultBlock.OMINOUS] && (!isOminous || !entity.hasStatusEffect(StatusEffects.BAD_OMEN))) ||
+        (blockState[VaultBlock.OMINOUS] && itemStack?.get(RapComponents.IS_OMEN) != true) ||
         (blockEntity.serverData as AccessorVaultServerData).invokeHasRewardedPlayer(entity)
 
     companion object {

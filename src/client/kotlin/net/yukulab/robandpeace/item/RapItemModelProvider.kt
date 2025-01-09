@@ -2,7 +2,6 @@ package net.yukulab.robandpeace.item
 
 import net.minecraft.client.item.ClampedModelPredicateProvider
 import net.minecraft.client.item.ModelPredicateProviderRegistry
-import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.player.PlayerEntity
 import net.yukulab.robandpeace.item.component.RapComponents
 
@@ -17,8 +16,8 @@ object RapItemModelProvider {
         }
         ModelPredicateProviderRegistry.register(RapItems.PICKING_TOOL, PickingToolItem.KEY_PICKING, itemUsingDetector)
         ModelPredicateProviderRegistry.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.KEY_PICKING, itemUsingDetector)
-        ModelPredicateProviderRegistry.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.KEY_OMINOUS) { _, _, livingEntity, _ ->
-            if (livingEntity?.hasStatusEffect(StatusEffects.BAD_OMEN) == true) {
+        ModelPredicateProviderRegistry.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.KEY_OMINOUS) { itemStack, _, _, _ ->
+            if (itemStack[RapComponents.IS_OMEN] == true) {
                 1.0f
             } else {
                 0.0f
