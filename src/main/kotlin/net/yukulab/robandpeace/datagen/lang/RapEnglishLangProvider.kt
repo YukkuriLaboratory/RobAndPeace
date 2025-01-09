@@ -98,7 +98,7 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapItems.ADVANCED_MAGIC_HAND, "Advanced Magic Hand")
         add(RapItems.PICKING_TOOL, "Picking Tool")
         add(RapItems.TRIAL_PICKING_TOOL, "Trial Picking Tool")
-        add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "Ominous Picking Tool")
+        add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "Trial Picking Tool")
         add(RapItems.SPIDER_WALKER, "Spider Walker")
         add(RapItems.PORTAL_HOOP, "Portal Hoop(Place Mode)")
         add(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, "Portal Hoop(Remove Mode)")
