@@ -12,7 +12,7 @@ object RobPeaceClient : ClientModInitializer {
         RapEntityRenderers.init()
         RapItemModelProvider.registerModelPredicateProviders()
         ClientPlayNetworking.registerGlobalReceiver(PlayerMovementPayload.ID) { payload, context ->
-            logger.info(
+            logger.debug(
                 "Player movement updated! uuid:{} myuuid:{}",
                 payload.playerUUID,
                 MinecraftClient.getInstance().player?.uuid,
