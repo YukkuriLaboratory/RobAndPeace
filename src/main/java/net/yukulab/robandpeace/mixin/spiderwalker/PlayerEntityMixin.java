@@ -1,7 +1,5 @@
 package net.yukulab.robandpeace.mixin.spiderwalker;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.logging.LogUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PowderSnowBlock;
@@ -24,6 +22,7 @@ import net.yukulab.robandpeace.VariablesKt;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.item.RapItems;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,7 +30,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -68,8 +69,19 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Unique
     private static final float DEFAULT_STEP_HEIGHT = 0.6f;
 
+    @Unique
+    private EntityPose robandpeace$prevPose;
+
     @Shadow
     protected abstract float getOffGroundSpeed();
+
+    @Shadow
+    @Final
+    private static Map<EntityPose, EntityDimensions> POSE_DIMENSIONS;
+
+    @Shadow
+    @Final
+    public static EntityDimensions STANDING_DIMENSIONS;
 
     @Unique
     private boolean canStartSprinting() {
@@ -374,5 +386,18 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             }
         }
         return par1;
+    }
+
+    @Override
+    public void setPose(EntityPose pose) {
+        robandpeace$prevPose = getPose();
+        super.setPose(pose);
+    }
+
+    @Inject(method = "getBaseDimensions", at = @At("HEAD"), cancellable = true)
+    private void keepCrouchingDimensionsIfPlayerHeadingRoof(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+        if (robandpeace$prevPose == EntityPose.CROUCHING && pose == EntityPose.STANDING && canClimbing() && isClimbing()) {
+            cir.setReturnValue(POSE_DIMENSIONS.getOrDefault(EntityPose.CROUCHING, STANDING_DIMENSIONS));
+        }
     }
 }
