@@ -15,7 +15,7 @@ object RobPeaceClient : ClientModInitializer {
             logger.info(
                 "Player movement updated! uuid:{} myuuid:{}",
                 payload.playerUUID,
-                MinecraftClient.getInstance().player?.uuid
+                MinecraftClient.getInstance().player?.uuid,
             )
             RobAndPeace.playerMovementStatusMap[payload.playerUUID] = payload
         }
