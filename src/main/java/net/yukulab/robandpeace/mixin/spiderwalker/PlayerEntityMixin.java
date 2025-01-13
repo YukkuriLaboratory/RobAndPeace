@@ -1,13 +1,11 @@
 package net.yukulab.robandpeace.mixin.spiderwalker;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.logging.LogUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PowderSnowBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffects;
@@ -23,7 +21,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.VariablesKt;
-import net.yukulab.robandpeace.config.RapServerConfig;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.item.RapItems;
 import org.slf4j.Logger;
@@ -32,6 +29,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Optional;
@@ -116,22 +114,22 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 //        ci.cancel();
 //    }
 
-    @Unique
-    private Vec3d getJumpVec3d(RapServerConfig config, float jumpStrength) {
-        float jumpHorizontalVelocityMultiplier = config.spiderWalkerSettings.jumping.jumpHorizontalVelocityMultiplier;
-        float sprintJumpHorizontalVelocityMultiplier = config.spiderWalkerSettings.jumping.sprintJumpHorizontalVelocityMultiplier;
-        Vec3d velocity = this.getVelocity();
-        float jumpVelocity = jumpStrength * this.getJumpVelocityMultiplier() + this.getJumpBoostVelocityModifier();
-        velocity = new Vec3d(velocity.x, jumpVelocity, velocity.z);
-        float f = this.getYaw() * 0.017453292F;
-        if (this.isSprinting())
-            velocity = velocity.add(-MathHelper.sin(f) * sprintJumpHorizontalVelocityMultiplier,
-                    0.0, MathHelper.cos(f) * sprintJumpHorizontalVelocityMultiplier);
-        else
-            velocity = velocity.add(-MathHelper.sin(f) * jumpHorizontalVelocityMultiplier,
-                    0.0, MathHelper.cos(f) * jumpHorizontalVelocityMultiplier);
-        return velocity;
-    }
+//    @Unique
+//    private Vec3d getJumpVec3d(RapServerConfig config, float jumpStrength) {
+//        float jumpHorizontalVelocityMultiplier = config.spiderWalkerSettings.jumping.jumpHorizontalVelocityMultiplier;
+//        float sprintJumpHorizontalVelocityMultiplier = config.spiderWalkerSettings.jumping.sprintJumpHorizontalVelocityMultiplier;
+//        Vec3d velocity = this.getVelocity();
+//        float jumpVelocity = jumpStrength * this.getJumpVelocityMultiplier() + this.getJumpBoostVelocityModifier();
+//        velocity = new Vec3d(velocity.x, jumpVelocity, velocity.z);
+//        float f = this.getYaw() * 0.017453292F;
+//        if (this.isSprinting())
+//            velocity = velocity.add(-MathHelper.sin(f) * sprintJumpHorizontalVelocityMultiplier,
+//                    0.0, MathHelper.cos(f) * sprintJumpHorizontalVelocityMultiplier);
+//        else
+//            velocity = velocity.add(-MathHelper.sin(f) * jumpHorizontalVelocityMultiplier,
+//                    0.0, MathHelper.cos(f) * jumpHorizontalVelocityMultiplier);
+//        return velocity;
+//    }
 
 
     @Inject(method = "travel", at = @At("HEAD"))
@@ -143,19 +141,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         this.horizontalCollision = false;
         if (this.canStartSprinting())
             this.setSprinting(alwaysSprint || isSprinting());
-        if (this.isSneaking()) {
-            this.resetStepHeight();
-        } else {
-            this.setStepHeight(stepHeight);
-        }
-//        this.getAbilities().setWalkSpeed(defaultGenericMovementSpeed);
-//        Objects.requireNonNull(this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED))
-//                .setBaseValue(this.getAbilities().getWalkSpeed());
-//        EntityAttributeModifier modifier = new EntityAttributeModifier(MOVEMENT_SPEED, getAbilities().getWalkSpeed(), EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-//        var instance = getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-//        if (instance != null) {
-//            instance.removeModifier(MOVEMENT_SPEED);
-//            instance.addTemporaryModifier(modifier);
+//        if (this.isSneaking()) {
+//            this.resetStepHeight();
+//        } else {
+//            this.setStepHeight(stepHeight);
 //        }
     }
 
@@ -375,4 +364,15 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                 getStackInHand(Hand.OFF_HAND).getItem() == RapItems.INSTANCE.getSPIDER_WALKER();
     }
 
+    @ModifyArg(method = "updatePose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setPose(Lnet/minecraft/entity/EntityPose;)V"))
+    private EntityPose fixClimbingPose(EntityPose par1) {
+        if(canClimbing() && isClimbing()) {
+            if(!RobAndPeace.getPlayerMovementStatus(getUuid()).isSneaking()) {
+                setSneaking(false);
+//                if(getPos().y%1>0.4) setPosition(getPos().add(0.0, -0.325, 0.0));
+                return EntityPose.STANDING;
+            }
+        }
+        return par1;
+    }
 }
