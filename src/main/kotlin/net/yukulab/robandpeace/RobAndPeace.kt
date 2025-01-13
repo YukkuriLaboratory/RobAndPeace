@@ -26,7 +26,7 @@ object RobAndPeace : ModInitializer {
     lateinit var serverDispatcher: CoroutineDispatcher
         private set
 
-    val EMPTY_PAYLOAD = PlayerMovementPayload(false, 0.0f, false)
+    val EMPTY_PAYLOAD = PlayerMovementPayload(UUID.randomUUID(), false, 0.0f, false)
 
     @JvmStatic
     var isDebugMode: Boolean = false

@@ -15,7 +15,7 @@ object RabNetworking {
         PayloadTypeRegistry.playS2C().register(PlayerMovementPayload.ID, PlayerMovementPayload.CODEC)
 
         ServerPlayNetworking.registerGlobalReceiver(PlayerMovementPayload.ID) { payload, context ->
-            RobAndPeace.playerMovementStatusMap[context.player().uuid] = payload
+            RobAndPeace.playerMovementStatusMap[payload.playerUUID] = payload
             context.server().playerManager.playerList.forEach {
                 ServerPlayNetworking.send(it, payload)
             }

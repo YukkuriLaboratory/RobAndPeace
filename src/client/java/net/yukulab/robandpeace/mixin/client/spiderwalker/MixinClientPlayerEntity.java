@@ -43,7 +43,7 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
     private void onTick(CallbackInfo ci) {
         // First synchronization
         if (sentPayload == null) {
-            sentPayload = new PlayerMovementPayload(input.hasForwardMovement(), input.movementForward, input.jumping);
+            sentPayload = new PlayerMovementPayload(getUuid(), input.hasForwardMovement(), input.movementForward, input.jumping);
             logger.info("First player movement syncing...");
             ClientPlayNetworking.send(sentPayload);
             logger.info("First player movement sync was completed.");
@@ -54,7 +54,7 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
                 (sentPayload.getMovementForward() != input.movementForward) ||
                 (sentPayload.isJumping() != input.jumping);
         if (isDirty) {
-            sentPayload = new PlayerMovementPayload(input.hasForwardMovement(), input.movementForward, input.jumping);
+            sentPayload = new PlayerMovementPayload(getUuid(), input.hasForwardMovement(), input.movementForward, input.jumping);
             ClientPlayNetworking.send(sentPayload);
         }
     }
