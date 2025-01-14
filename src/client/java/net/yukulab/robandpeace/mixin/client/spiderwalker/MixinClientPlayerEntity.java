@@ -6,15 +6,18 @@ import com.mojang.logging.LogUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.input.Input;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.yukulab.robandpeace.RobAndPeace;
+import net.yukulab.robandpeace.extension.MovementPayloadHolder;
 import net.yukulab.robandpeace.item.RapItems;
 import net.yukulab.robandpeace.network.payload.PlayerMovementPayload;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,10 +25,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Optional;
-
 @Mixin(value = ClientPlayerEntity.class, priority = 999)
-public abstract class MixinClientPlayerEntity extends PlayerEntity {
+public abstract class MixinClientPlayerEntity extends PlayerEntity implements MovementPayloadHolder {
     public MixinClientPlayerEntity(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
@@ -41,8 +42,9 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
 
     @Shadow
     private boolean inSneakingPose;
-    @Unique
-    private PlayerMovementPayload sentPayload = null;
+    @Shadow
+    @Final
+    public ClientPlayNetworkHandler networkHandler;
 
     @Inject(
             method = "tick",
@@ -50,21 +52,24 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
     )
     private void onTick(CallbackInfo ci) {
         // First synchronization
-        if (sentPayload == null) {
-            sentPayload = new PlayerMovementPayload(getUuid(), input.hasForwardMovement(), input.movementForward, input.jumping, input.sneaking);
+        var payload = robandpeace$getPlayerMovementPayload();
+        if (payload == null) {
+            payload = new PlayerMovementPayload(getUuid(), input.hasForwardMovement(), input.movementForward, input.jumping, input.sneaking);
+            robandpeace$setPlayerMovementPayload(payload);
             logger.info("First player movement syncing...");
-            ClientPlayNetworking.send(sentPayload);
+            ClientPlayNetworking.send(payload);
             logger.info("First player movement sync was completed.");
             return;
         }
 
-        boolean isDirty = (sentPayload.getHasForwardMovement() != input.hasForwardMovement()) ||
-                (sentPayload.getMovementForward() != input.movementForward) ||
-                (sentPayload.isJumping() != input.jumping) ||
-                (sentPayload.isSneaking() != input.sneaking);
+        boolean isDirty = (payload.getHasForwardMovement() != input.hasForwardMovement()) ||
+                (payload.getMovementForward() != input.movementForward) ||
+                (payload.isJumping() != input.jumping) ||
+                (payload.isSneaking() != input.sneaking);
         if (isDirty) {
-            sentPayload = new PlayerMovementPayload(getUuid(), input.hasForwardMovement(), input.movementForward, input.jumping, input.sneaking);
-            ClientPlayNetworking.send(sentPayload);
+            payload = new PlayerMovementPayload(getUuid(), input.hasForwardMovement(), input.movementForward, input.jumping, input.sneaking);
+            robandpeace$setPlayerMovementPayload(payload);
+            ClientPlayNetworking.send(payload);
         }
     }
 
@@ -89,11 +94,18 @@ public abstract class MixinClientPlayerEntity extends PlayerEntity {
 
     @Inject(method = "tickMovement", at = @At("RETURN"))
     private void fixSneakingWhenClimbing(CallbackInfo ci) {
-        if(isClimbing() && canClimbing()) {
-            if (RobAndPeace.getPlayerMovementStatus(getUuid()).isJumping() && getWorld().getBlockState(getBlockPos().up(2)).getBlock() != Blocks.AIR) {
-                logger.info("Sneak info: {}", input.sneaking);
+        var entity = (ClientPlayerEntity) (Object) this;
+        if (isClimbing() && canClimbing()) {
+            var payload = robandpeace$getPlayerMovementPayload();
+            if (payload != null && payload.isJumping() && getWorld().getBlockState(getBlockPos().up(2)).getBlock() != Blocks.AIR) {
+//                logger.info("Sneak info: {}", input.sneaking);
                 setSneaking(input.sneaking);
                 inSneakingPose = input.sneaking;
+                if (input.sneaking) {
+                    networkHandler.sendPacket(new ClientCommandC2SPacket(entity, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+                } else {
+                    networkHandler.sendPacket(new ClientCommandC2SPacket(entity, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+                }
             }
         }
     }

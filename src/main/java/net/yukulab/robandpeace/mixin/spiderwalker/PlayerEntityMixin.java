@@ -17,8 +17,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.VariablesKt;
+import net.yukulab.robandpeace.extension.MovementPayloadHolder;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.item.RapItems;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ import java.util.Optional;
 
 
 @Mixin(value = PlayerEntity.class)
-public abstract class PlayerEntityMixin extends LivingEntity {
+public abstract class PlayerEntityMixin extends LivingEntity implements MovementPayloadHolder {
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
@@ -50,12 +50,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Shadow
     public abstract HungerManager getHungerManager();
-
-    @Shadow
-    public abstract void incrementStat(Identifier stat);
-
-    @Shadow
-    public abstract void addExhaustion(float exhaustion);
 
     @Unique
     private static final Identifier SPRINTING_SPEED = Identifier.of(VariablesKt.MOD_ID, "sprinting_speed");
@@ -95,7 +89,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Unique
     private boolean isWalking() {
-        var payload = RobAndPeace.getPlayerMovementStatus(getUuid());
+        var payload = robandpeace$getPlayerMovementPayload();
         boolean hasForwardMovement = payload.getHasForwardMovement();
         float movementForward = payload.getMovementForward();
         return this.isSubmergedInWater() ? hasForwardMovement : (double) movementForward >= 0.8;
@@ -142,8 +136,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 //                    0.0, MathHelper.cos(f) * jumpHorizontalVelocityMultiplier);
 //        return velocity;
 //    }
-
-
     @Inject(method = "travel", at = @At("HEAD"))
     public void travelHead(Vec3d movementInput, CallbackInfo ci) {
         var config = this.robandpeace$getServerConfigSupplier().get();
@@ -168,7 +160,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             return;
         }
 
-        EntityAttributeModifier modifier = new EntityAttributeModifier(STEP_HEIGHT, DEFAULT_STEP_HEIGHT-stepHeight, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityAttributeModifier modifier = new EntityAttributeModifier(STEP_HEIGHT, DEFAULT_STEP_HEIGHT - stepHeight, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         instance.removeModifier(STEP_HEIGHT);
         instance.addTemporaryModifier(modifier);
     }
@@ -176,7 +168,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Unique
     private void resetStepHeight() {
         var instance = this.getAttributeInstance(EntityAttributes.GENERIC_STEP_HEIGHT);
-        if(instance == null) {
+        if (instance == null) {
             logger.warn("Failed to get step height attribute.");
             return;
         }
@@ -251,7 +243,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         boolean stickyMovement = config.spiderWalkerSettings.wall.stickyMovement;
         boolean wallJumping = config.spiderWalkerSettings.wall.wallJumping;
 
-        var payload = RobAndPeace.getPlayerMovementStatus(getUuid());
+        var payload = robandpeace$getPlayerMovementPayload();
+        if (payload == null) {
+            payload = DEFAULT_PAYLOAD;
+        }
         boolean hasForwardMovement = payload.getHasForwardMovement();
         boolean inputJumping = payload.isJumping();
 
@@ -378,8 +373,9 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @ModifyArg(method = "updatePose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setPose(Lnet/minecraft/entity/EntityPose;)V"))
     private EntityPose fixClimbingPose(EntityPose par1) {
-        if(canClimbing() && isClimbing()) {
-            if(!RobAndPeace.getPlayerMovementStatus(getUuid()).isSneaking()) {
+        if (canClimbing() && isClimbing()) {
+            var payload = robandpeace$getPlayerMovementPayload();
+            if (payload == null || !payload.isSneaking()) {
                 setSneaking(false);
 //                if(getPos().y%1>0.4) setPosition(getPos().add(0.0, -0.325, 0.0));
                 return EntityPose.STANDING;
