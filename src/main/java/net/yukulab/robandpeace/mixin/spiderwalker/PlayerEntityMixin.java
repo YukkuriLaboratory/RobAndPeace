@@ -2,6 +2,7 @@ package net.yukulab.robandpeace.mixin.spiderwalker;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.PowderSnowBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -30,7 +31,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -371,29 +371,26 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
                 getStackInHand(Hand.OFF_HAND).getItem() == RapItems.INSTANCE.getSPIDER_WALKER();
     }
 
-    @ModifyArg(method = "updatePose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setPose(Lnet/minecraft/entity/EntityPose;)V"))
-    private EntityPose fixClimbingPose(EntityPose par1) {
-        if (canClimbing() && isClimbing()) {
-            var payload = robandpeace$getPlayerMovementPayload();
-            if (payload == null || !payload.isSneaking()) {
-                setSneaking(false);
-//                if(getPos().y%1>0.4) setPosition(getPos().add(0.0, -0.325, 0.0));
-                return EntityPose.STANDING;
-            }
-        }
-        return par1;
-    }
-
     @Override
     public void setPose(EntityPose pose) {
         robandpeace$prevPose = getPose();
         super.setPose(pose);
     }
 
-    @Inject(method = "getBaseDimensions", at = @At("HEAD"), cancellable = true)
-    private void keepCrouchingDimensionsIfPlayerHeadingRoof(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
-        if (robandpeace$prevPose == EntityPose.CROUCHING && pose == EntityPose.STANDING && canClimbing() && isClimbing()) {
-            cir.setReturnValue(POSE_DIMENSIONS.getOrDefault(EntityPose.CROUCHING, STANDING_DIMENSIONS));
+    @ModifyArg(method = "updatePose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setPose(Lnet/minecraft/entity/EntityPose;)V"))
+    private EntityPose fixClimbingPose(EntityPose par1) {
+        if (robandpeace$prevPose == EntityPose.CROUCHING && canClimbing() && isClimbing()) {
+            var payload = robandpeace$getPlayerMovementPayload();
+            if (payload == null || !payload.isSneaking()) {
+                var headPos = getBlockPos().up(2);
+                var headBlockState = getWorld().getBlockState(headPos);
+                if (headBlockState.isSideSolidFullSquare(getWorld(), headPos, Direction.DOWN) || headBlockState.getCollisionShape(getWorld(), headPos).getMin(Direction.Axis.Y) == 0) {
+                    setPosition(getPos().add(0.0, -0.3, 0.0));
+                }
+                setSneaking(false);
+                return EntityPose.STANDING;
+            }
         }
+        return par1;
     }
 }
