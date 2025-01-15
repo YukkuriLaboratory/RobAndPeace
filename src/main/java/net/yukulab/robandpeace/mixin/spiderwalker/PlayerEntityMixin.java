@@ -6,6 +6,9 @@ import net.minecraft.block.PowderSnowBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerAbilities;
@@ -18,6 +21,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.yukulab.robandpeace.VariablesKt;
+import net.yukulab.robandpeace.extension.CustomClimbingStateHolder;
 import net.yukulab.robandpeace.extension.MovementPayloadHolder;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.item.RapItems;
@@ -37,7 +41,7 @@ import java.util.Optional;
 
 
 @Mixin(value = PlayerEntity.class)
-public abstract class PlayerEntityMixin extends LivingEntity implements MovementPayloadHolder {
+public abstract class PlayerEntityMixin extends LivingEntity implements MovementPayloadHolder, CustomClimbingStateHolder {
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
@@ -62,6 +66,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
 
     @Unique
     private static final float DEFAULT_STEP_HEIGHT = 0.6f;
+
+    @Unique
+    private static TrackedData<Boolean> ROBANDPEACE_IS_CLIMBING;
 
     @Shadow
     protected abstract float getOffGroundSpeed();
@@ -95,6 +102,22 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
     @Unique
     private boolean canSprint() {
         return this.hasVehicle() || (float) this.getHungerManager().getFoodLevel() > 6.0F || this.getAbilities().allowFlying;
+    }
+
+    @Inject(
+            method = "<clinit>",
+            at = @At("RETURN")
+    )
+    private static void addClimbingDataTrackerEntry(CallbackInfo ci) {
+        ROBANDPEACE_IS_CLIMBING = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    }
+
+    @Inject(
+            method = "initDataTracker",
+            at = @At("RETURN")
+    )
+    private void initDataTracker(DataTracker.Builder builder, CallbackInfo ci) {
+        builder.add(ROBANDPEACE_IS_CLIMBING, false);
     }
 
     /**
@@ -204,8 +227,15 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
         return (this.isOnGround()) ? this.getMovementSpeed() * (0.21600002F / (slipperiness * slipperiness * slipperiness)) : this.getOffGroundSpeed();
     }
 
-    @Unique
-    private boolean isWalling = false;
+    @Override
+    public boolean robandpeace$isClimbing() {
+        return this.dataTracker.get(ROBANDPEACE_IS_CLIMBING);
+    }
+
+    @Override
+    public void robandpeace$setClimbing(boolean wallClimbing) {
+        this.dataTracker.set(ROBANDPEACE_IS_CLIMBING, wallClimbing);
+    }
 
     /**
      * Overrides the default friction behavior to add wall sliding, wall running, wall climbing, and wall sticking.
@@ -213,7 +243,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
     @Unique
     private Vec3d applyWallMovement(Vec3d motion) {
         if (this.isOnGround()) {
-            this.isWalling = false;
+            robandpeace$setClimbing(false);
             return motion;
         }
 
@@ -261,6 +291,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
         boolean south = (world.isDirectionSolid(blockPos.south(), this, Direction.NORTH) && -dz > threshold);
         int wallsTouching = (east ? 1 : 0) + (west ? 1 : 0) + (north ? 1 : 0) + (south ? 1 : 0);
 
+        var isWalling = robandpeace$isClimbing();
         if (wallsTouching == 0 && isWalling) { //Start only using head, continue with feet.
             blockPos = this.getBlockPos();
             east = (world.isDirectionSolid(blockPos.east(), this, Direction.WEST) && -dx > threshold);
@@ -280,24 +311,24 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
         double motionZ = motion.z;
         double motionY = motion.y;
 
-        if (this.isWalling && ((wallJumping && !inputJumping && yaw > minimumYawToJump) || (jumpOnLeavingWall && wallsTouching == 0))) {// Do a wall jump
+        if (isWalling && ((wallJumping && !inputJumping && yaw > minimumYawToJump) || (jumpOnLeavingWall && wallsTouching == 0))) {// Do a wall jump
             float f = this.getYaw() * 0.017453292F;
             motionX += -MathHelper.sin(f) * wallJumpVelocityMultiplier;
             motionZ += MathHelper.cos(f) * wallJumpVelocityMultiplier;
             motionY += wallJumpHeight * this.getJumpVelocityMultiplier() + this.getJumpBoostVelocityModifier();
-            this.isWalling = false;
+            robandpeace$setClimbing(false);
             this.slidingPos = Optional.of(this.getBlockPos());
             this.onLanding();
             return new Vec3d(motionX, motionY, motionZ);
         }
 
-        if (wallsTouching == 0 || !inputJumping || (yaw > 90 && !this.isWalling)) { // Stop all wall movement
-            this.isWalling = false;
+        if (wallsTouching == 0 || !inputJumping || (yaw > 90 && !isWalling)) { // Stop all wall movement
+            robandpeace$setClimbing(false);
             return motion;
         }
 
 
-        this.isWalling = true;
+        robandpeace$setClimbing(true);
         if (wallRunning && hasForwardMovement && yaw > yawToRun && (Math.abs(motionX) > minimumWallRunSpeed || Math.abs(motionZ) > minimumWallRunSpeed)) { // Wall Running
             motionY = Math.max(motion.y, -wallRunSlidingSpeed);
             motionX = motion.x * (1 + wallRunSpeedBonus);
@@ -315,7 +346,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
             motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
             motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
         } else {
-            this.isWalling = false;
+            robandpeace$setClimbing(false);
             return motion;
         }
         if (isSneaking()) {
@@ -363,7 +394,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
 
     @Override
     public boolean isClimbing() {
-        return super.isClimbing() || isWalling;
+        return super.isClimbing() || robandpeace$isClimbing();
     }
 
     @Unique
