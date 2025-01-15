@@ -31,6 +31,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -221,6 +222,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
         }
 
         if (!canClimbing()) return motion;
+        var player = (PlayerEntity) (Object) this;
 
         RapConfigInjector injector = this;
         var config = injector.robandpeace$getServerConfigSupplier().get();
@@ -320,6 +322,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
             this.isWalling = false;
             return motion;
         }
+        if (isSneaking()) {
+            robandpeace$prevPose = EntityPose.STANDING;
+            player.calculateDimensions();
+        }
 
         if (stickyMovement) { // Disable falling off the wall accidentally
             motionX *= ((north ? 1 : 0) + (south ? 1 : 0));
@@ -382,15 +388,17 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
         if (robandpeace$prevPose == EntityPose.CROUCHING && canClimbing() && isClimbing()) {
             var payload = robandpeace$getPlayerMovementPayload();
             if (payload == null || !payload.isSneaking()) {
-                var headPos = getBlockPos().up(2);
-                var headBlockState = getWorld().getBlockState(headPos);
-                if (headBlockState.isSideSolidFullSquare(getWorld(), headPos, Direction.DOWN) || headBlockState.getCollisionShape(getWorld(), headPos).getMin(Direction.Axis.Y) == 0) {
-                    setPosition(getPos().add(0.0, -0.3, 0.0));
-                }
                 setSneaking(false);
                 return EntityPose.STANDING;
             }
         }
         return par1;
+    }
+
+    @Inject(method = "getBaseDimensions", at = @At("HEAD"), cancellable = true)
+    private void keepCrouchingDimensionsIfPlayerHeadingRoof(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+        if (robandpeace$prevPose == EntityPose.STANDING && pose == EntityPose.CROUCHING && canClimbing() && isClimbing()) {
+            cir.setReturnValue(POSE_DIMENSIONS.getOrDefault(EntityPose.STANDING, STANDING_DIMENSIONS));
+        }
     }
 }
