@@ -2,7 +2,6 @@ package net.yukulab.robandpeace.mixin.spiderwalker;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.PowderSnowBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -63,9 +62,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
 
     @Unique
     private static final float DEFAULT_STEP_HEIGHT = 0.6f;
-
-    @Unique
-    private EntityPose robandpeace$prevPose;
 
     @Shadow
     protected abstract float getOffGroundSpeed();
@@ -323,7 +319,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
             return motion;
         }
         if (isSneaking()) {
-            robandpeace$prevPose = EntityPose.STANDING;
             player.calculateDimensions();
         }
 
@@ -377,15 +372,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
                 getStackInHand(Hand.OFF_HAND).getItem() == RapItems.INSTANCE.getSPIDER_WALKER();
     }
 
-    @Override
-    public void setPose(EntityPose pose) {
-        robandpeace$prevPose = getPose();
-        super.setPose(pose);
-    }
-
     @ModifyArg(method = "updatePose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setPose(Lnet/minecraft/entity/EntityPose;)V"))
     private EntityPose fixClimbingPose(EntityPose par1) {
-        if (robandpeace$prevPose == EntityPose.CROUCHING && canClimbing() && isClimbing()) {
+        if (canClimbing() && isClimbing()) {
             var payload = robandpeace$getPlayerMovementPayload();
             if (payload == null || !payload.isSneaking()) {
                 setSneaking(false);
@@ -395,9 +384,18 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Movement
         return par1;
     }
 
+    @Inject(
+            method = "jump",
+            at = @At("RETURN")
+    )
+    private void expandDimensionsWhenJumping(CallbackInfo ci) {
+        var player = (PlayerEntity) (Object) this;
+        player.calculateDimensions();
+    }
+
     @Inject(method = "getBaseDimensions", at = @At("HEAD"), cancellable = true)
-    private void keepCrouchingDimensionsIfPlayerHeadingRoof(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
-        if (robandpeace$prevPose == EntityPose.STANDING && pose == EntityPose.CROUCHING && canClimbing() && isClimbing()) {
+    private void keepStandingDimensionsIfPlayerClimbingOrJumpingWithCrouching(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+        if (pose == EntityPose.CROUCHING && (canClimbing() && isClimbing()) || (jumping && getWorld().getBlockState(getBlockPos().up()).isAir())) {
             cir.setReturnValue(POSE_DIMENSIONS.getOrDefault(EntityPose.STANDING, STANDING_DIMENSIONS));
         }
     }
