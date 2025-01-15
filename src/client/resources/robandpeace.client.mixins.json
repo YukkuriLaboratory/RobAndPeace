@@ -5,6 +5,7 @@
   "client": [
     "spiderwalker.MixinAbstractClientPlayerEntity",
     "spiderwalker.MixinClientPlayerEntity",
+    "spiderwalker.MixinPlayerEntityRenderer",
     "steal.MixinInGameHud"
   ],
   "injectors": {
