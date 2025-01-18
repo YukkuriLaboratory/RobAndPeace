@@ -6,6 +6,9 @@ import net.minecraft.block.PowderSnowBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerAbilities;
@@ -17,8 +20,9 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.yukulab.robandpeace.RobAndPeace;
 import net.yukulab.robandpeace.VariablesKt;
+import net.yukulab.robandpeace.extension.CustomClimbingStateHolder;
+import net.yukulab.robandpeace.extension.MovementPayloadHolder;
 import net.yukulab.robandpeace.extension.RapConfigInjector;
 import net.yukulab.robandpeace.item.RapItems;
 import org.slf4j.Logger;
@@ -37,7 +41,7 @@ import java.util.Optional;
 
 
 @Mixin(value = PlayerEntity.class)
-public abstract class PlayerEntityMixin extends LivingEntity {
+public abstract class PlayerEntityMixin extends LivingEntity implements MovementPayloadHolder, CustomClimbingStateHolder {
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
@@ -50,12 +54,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Shadow
     public abstract HungerManager getHungerManager();
-
-    @Shadow
-    public abstract void incrementStat(Identifier stat);
-
-    @Shadow
-    public abstract void addExhaustion(float exhaustion);
 
     @Unique
     private static final Identifier SPRINTING_SPEED = Identifier.of(VariablesKt.MOD_ID, "sprinting_speed");
@@ -70,7 +68,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     private static final float DEFAULT_STEP_HEIGHT = 0.6f;
 
     @Unique
-    private EntityPose robandpeace$prevPose;
+    private static TrackedData<Boolean> ROBANDPEACE_IS_CLIMBING;
 
     @Shadow
     protected abstract float getOffGroundSpeed();
@@ -95,7 +93,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Unique
     private boolean isWalking() {
-        var payload = RobAndPeace.getPlayerMovementStatus(getUuid());
+        var payload = robandpeace$getPlayerMovementPayload();
         boolean hasForwardMovement = payload.getHasForwardMovement();
         float movementForward = payload.getMovementForward();
         return this.isSubmergedInWater() ? hasForwardMovement : (double) movementForward >= 0.8;
@@ -104,6 +102,22 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Unique
     private boolean canSprint() {
         return this.hasVehicle() || (float) this.getHungerManager().getFoodLevel() > 6.0F || this.getAbilities().allowFlying;
+    }
+
+    @Inject(
+            method = "<clinit>",
+            at = @At("RETURN")
+    )
+    private static void addClimbingDataTrackerEntry(CallbackInfo ci) {
+        ROBANDPEACE_IS_CLIMBING = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    }
+
+    @Inject(
+            method = "initDataTracker",
+            at = @At("RETURN")
+    )
+    private void initDataTracker(DataTracker.Builder builder, CallbackInfo ci) {
+        builder.add(ROBANDPEACE_IS_CLIMBING, false);
     }
 
     /**
@@ -142,8 +156,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 //                    0.0, MathHelper.cos(f) * jumpHorizontalVelocityMultiplier);
 //        return velocity;
 //    }
-
-
     @Inject(method = "travel", at = @At("HEAD"))
     public void travelHead(Vec3d movementInput, CallbackInfo ci) {
         var config = this.robandpeace$getServerConfigSupplier().get();
@@ -168,7 +180,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             return;
         }
 
-        EntityAttributeModifier modifier = new EntityAttributeModifier(STEP_HEIGHT, DEFAULT_STEP_HEIGHT-stepHeight, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        EntityAttributeModifier modifier = new EntityAttributeModifier(STEP_HEIGHT, DEFAULT_STEP_HEIGHT - stepHeight, EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         instance.removeModifier(STEP_HEIGHT);
         instance.addTemporaryModifier(modifier);
     }
@@ -176,7 +188,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Unique
     private void resetStepHeight() {
         var instance = this.getAttributeInstance(EntityAttributes.GENERIC_STEP_HEIGHT);
-        if(instance == null) {
+        if (instance == null) {
             logger.warn("Failed to get step height attribute.");
             return;
         }
@@ -215,8 +227,15 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         return (this.isOnGround()) ? this.getMovementSpeed() * (0.21600002F / (slipperiness * slipperiness * slipperiness)) : this.getOffGroundSpeed();
     }
 
-    @Unique
-    private boolean isWalling = false;
+    @Override
+    public boolean robandpeace$isClimbing() {
+        return this.dataTracker.get(ROBANDPEACE_IS_CLIMBING);
+    }
+
+    @Override
+    public void robandpeace$setClimbing(boolean wallClimbing) {
+        this.dataTracker.set(ROBANDPEACE_IS_CLIMBING, wallClimbing);
+    }
 
     /**
      * Overrides the default friction behavior to add wall sliding, wall running, wall climbing, and wall sticking.
@@ -224,11 +243,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Unique
     private Vec3d applyWallMovement(Vec3d motion) {
         if (this.isOnGround()) {
-            this.isWalling = false;
+            robandpeace$setClimbing(false);
             return motion;
         }
 
         if (!canClimbing()) return motion;
+        var player = (PlayerEntity) (Object) this;
 
         RapConfigInjector injector = this;
         var config = injector.robandpeace$getServerConfigSupplier().get();
@@ -251,7 +271,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         boolean stickyMovement = config.spiderWalkerSettings.wall.stickyMovement;
         boolean wallJumping = config.spiderWalkerSettings.wall.wallJumping;
 
-        var payload = RobAndPeace.getPlayerMovementStatus(getUuid());
+        var payload = robandpeace$getPlayerMovementPayload();
+        if (payload == null) {
+            payload = DEFAULT_PAYLOAD;
+        }
         boolean hasForwardMovement = payload.getHasForwardMovement();
         boolean inputJumping = payload.isJumping();
 
@@ -268,6 +291,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         boolean south = (world.isDirectionSolid(blockPos.south(), this, Direction.NORTH) && -dz > threshold);
         int wallsTouching = (east ? 1 : 0) + (west ? 1 : 0) + (north ? 1 : 0) + (south ? 1 : 0);
 
+        var isWalling = robandpeace$isClimbing();
         if (wallsTouching == 0 && isWalling) { //Start only using head, continue with feet.
             blockPos = this.getBlockPos();
             east = (world.isDirectionSolid(blockPos.east(), this, Direction.WEST) && -dx > threshold);
@@ -287,24 +311,24 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         double motionZ = motion.z;
         double motionY = motion.y;
 
-        if (this.isWalling && ((wallJumping && !inputJumping && yaw > minimumYawToJump) || (jumpOnLeavingWall && wallsTouching == 0))) {// Do a wall jump
+        if (isWalling && ((wallJumping && !inputJumping && yaw > minimumYawToJump) || (jumpOnLeavingWall && wallsTouching == 0))) {// Do a wall jump
             float f = this.getYaw() * 0.017453292F;
             motionX += -MathHelper.sin(f) * wallJumpVelocityMultiplier;
             motionZ += MathHelper.cos(f) * wallJumpVelocityMultiplier;
             motionY += wallJumpHeight * this.getJumpVelocityMultiplier() + this.getJumpBoostVelocityModifier();
-            this.isWalling = false;
+            robandpeace$setClimbing(false);
             this.slidingPos = Optional.of(this.getBlockPos());
             this.onLanding();
             return new Vec3d(motionX, motionY, motionZ);
         }
 
-        if (wallsTouching == 0 || !inputJumping || (yaw > 90 && !this.isWalling)) { // Stop all wall movement
-            this.isWalling = false;
+        if (wallsTouching == 0 || !inputJumping || (yaw > 90 && !isWalling)) { // Stop all wall movement
+            robandpeace$setClimbing(false);
             return motion;
         }
 
 
-        this.isWalling = true;
+        robandpeace$setClimbing(true);
         if (wallRunning && hasForwardMovement && yaw > yawToRun && (Math.abs(motionX) > minimumWallRunSpeed || Math.abs(motionZ) > minimumWallRunSpeed)) { // Wall Running
             motionY = Math.max(motion.y, -wallRunSlidingSpeed);
             motionX = motion.x * (1 + wallRunSpeedBonus);
@@ -322,8 +346,11 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             motionX = MathHelper.clamp(motionX, -climbingSpeed, climbingSpeed);
             motionZ = MathHelper.clamp(motionZ, -climbingSpeed, climbingSpeed);
         } else {
-            this.isWalling = false;
+            robandpeace$setClimbing(false);
             return motion;
+        }
+        if (isSneaking()) {
+            player.calculateDimensions();
         }
 
         if (stickyMovement) { // Disable falling off the wall accidentally
@@ -367,7 +394,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Override
     public boolean isClimbing() {
-        return super.isClimbing() || isWalling;
+        return super.isClimbing() || robandpeace$isClimbing();
     }
 
     @Unique
@@ -378,26 +405,29 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @ModifyArg(method = "updatePose", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setPose(Lnet/minecraft/entity/EntityPose;)V"))
     private EntityPose fixClimbingPose(EntityPose par1) {
-        if(canClimbing() && isClimbing()) {
-            if(!RobAndPeace.getPlayerMovementStatus(getUuid()).isSneaking()) {
+        if (canClimbing() && isClimbing()) {
+            var payload = robandpeace$getPlayerMovementPayload();
+            if (payload == null || !payload.isSneaking()) {
                 setSneaking(false);
-//                if(getPos().y%1>0.4) setPosition(getPos().add(0.0, -0.325, 0.0));
                 return EntityPose.STANDING;
             }
         }
         return par1;
     }
 
-    @Override
-    public void setPose(EntityPose pose) {
-        robandpeace$prevPose = getPose();
-        super.setPose(pose);
+    @Inject(
+            method = "jump",
+            at = @At("RETURN")
+    )
+    private void expandDimensionsWhenJumping(CallbackInfo ci) {
+        var player = (PlayerEntity) (Object) this;
+        player.calculateDimensions();
     }
 
     @Inject(method = "getBaseDimensions", at = @At("HEAD"), cancellable = true)
-    private void keepCrouchingDimensionsIfPlayerHeadingRoof(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
-        if (robandpeace$prevPose == EntityPose.CROUCHING && pose == EntityPose.STANDING && canClimbing() && isClimbing()) {
-            cir.setReturnValue(POSE_DIMENSIONS.getOrDefault(EntityPose.CROUCHING, STANDING_DIMENSIONS));
+    private void keepStandingDimensionsIfPlayerClimbingOrJumpingWithCrouching(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+        if (pose == EntityPose.CROUCHING && (canClimbing() && isClimbing()) || (jumping && getWorld().getBlockState(getBlockPos().up()).isAir())) {
+            cir.setReturnValue(POSE_DIMENSIONS.getOrDefault(EntityPose.STANDING, STANDING_DIMENSIONS));
         }
     }
 }

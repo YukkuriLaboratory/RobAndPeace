@@ -1,7 +1,5 @@
 package net.yukulab.robandpeace
 
-import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +16,6 @@ import net.yukulab.robandpeace.entity.RapEntityType
 import net.yukulab.robandpeace.item.RapItems
 import net.yukulab.robandpeace.item.component.RapComponents
 import net.yukulab.robandpeace.network.RabNetworking
-import net.yukulab.robandpeace.network.payload.PlayerMovementPayload
 
 object RobAndPeace : ModInitializer {
     private val job = SupervisorJob()
@@ -26,16 +23,8 @@ object RobAndPeace : ModInitializer {
     lateinit var serverDispatcher: CoroutineDispatcher
         private set
 
-    val EMPTY_PAYLOAD = PlayerMovementPayload(UUID.randomUUID(), false, 0.0f, false, false)
-
     @JvmStatic
     var isDebugMode: Boolean = false
-
-    @JvmField
-    val playerMovementStatusMap = ConcurrentHashMap<UUID, PlayerMovementPayload>()
-
-    @JvmStatic
-    fun getPlayerMovementStatus(playerUUID: UUID): PlayerMovementPayload = playerMovementStatusMap.getOrDefault(playerUUID, EMPTY_PAYLOAD)
 
     override fun onInitialize() {
         // This code runs as soon as Minecraft is in a mod-load-ready state.

@@ -11,6 +11,7 @@
     "accessor.AccessorVaultSharedData",
     "spiderwalker.EntityMixin",
     "spiderwalker.LivingEntityMixin",
+    "spiderwalker.MixinServerPlayerEntity",
     "spiderwalker.PlayerEntityMixin",
     "steal.MixinDamageSource",
     "steal.MixinLivingEntity",

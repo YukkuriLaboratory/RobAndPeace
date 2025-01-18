@@ -9,7 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.yukulab.robandpeace.RobAndPeace;
+import net.yukulab.robandpeace.extension.CustomClimbingStateHolder;
+import net.yukulab.robandpeace.extension.MovementPayloadHolder;
 import net.yukulab.robandpeace.item.RapItems;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,9 +36,6 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract ItemStack getStackInHand(Hand hand);
 
-    @Shadow
-    private Optional<BlockPos> climbingPos;
-
     /**
      * Used in fall damage calculations, probably currently broken
      */
@@ -53,11 +51,16 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "isClimbing", at = @At("RETURN"), cancellable = true)
     public void isClimbingOnGrowBerries(CallbackInfoReturnable<Boolean> cir) {
+        var entity = (LivingEntity) (Object) this;
         BlockPos blockPos = getBlockPos();
-
-        if (canClimbing() && RobAndPeace.getPlayerMovementStatus(getUuid()).isJumping() && getWorld().getBlockState(blockPos.up(2)).getBlock() != Blocks.AIR) {
-            climbingPos = Optional.of(blockPos);
-            cir.setReturnValue(true);
+        if (canClimbing() && entity instanceof MovementPayloadHolder payloadHolder) {
+            var payload = payloadHolder.robandpeace$getPlayerMovementPayload();
+            if (payload != null && payload.isJumping() && getWorld().getBlockState(blockPos.up(2)).getBlock() != Blocks.AIR) {
+                if (entity instanceof CustomClimbingStateHolder climbingStateHolder) {
+                    climbingStateHolder.robandpeace$setClimbing(true);
+                }
+                cir.setReturnValue(true);
+            }
         }
     }
 
