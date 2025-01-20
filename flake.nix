@@ -13,6 +13,7 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        libraries = with pkgs; lib.makeLibraryPath [ libpulseaudio libGL udev ];
       in
       {
         formatter = pkgs.nixfmt-rfc-style;
@@ -21,7 +22,7 @@
                 bashInteractive
             ];
             shellHook = ''
-                export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${pkgs.libpulseaudio}/lib
+                export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${libraries}
             '';
         };
       }
