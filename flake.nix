@@ -23,6 +23,9 @@
             ];
             shellHook = ''
                 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${libraries}
+                export __GLX_VENDOR_LIBRARY_NAME=mesa
+                export MESA_LOADER_DRIVER_OVERRIDE=zink
+                export GALLIUM_DRIVER=zink
             '';
         };
       }
