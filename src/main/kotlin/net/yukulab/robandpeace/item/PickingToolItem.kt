@@ -59,7 +59,7 @@ class PickingToolItem(pickingChance: Int, private val isOminous: Boolean = false
     override fun getEatSound(): SoundEvent = SoundEvents.INTENTIONALLY_EMPTY
 
     override fun getTranslationKey(stack: ItemStack?): String = if (isOminous && stack?.get(RapComponents.IS_OMEN) == true) {
-        "${translationKey}${SUFFIX_OMINOUS}"
+        "${translationKey}${SUFFIX_TRIAL}"
     } else {
         super.getTranslationKey(stack)
     }
@@ -146,9 +146,9 @@ class PickingToolItem(pickingChance: Int, private val isOminous: Boolean = false
         (blockEntity.serverData as AccessorVaultServerData).invokeHasRewardedPlayer(entity)
 
     companion object {
-        const val SUFFIX_OMINOUS: String = "_ominous"
+        const val SUFFIX_TRIAL: String = "_trial"
         const val SUFFIX_PICKING: String = "_picking"
-        val KEY_OMINOUS: Identifier = Identifier.of(MOD_ID, "ominous")
+        val KEY_TRIAL: Identifier = Identifier.of(MOD_ID, "trial")
         val KEY_PICKING: Identifier = Identifier.of(MOD_ID, "picking")
     }
 }

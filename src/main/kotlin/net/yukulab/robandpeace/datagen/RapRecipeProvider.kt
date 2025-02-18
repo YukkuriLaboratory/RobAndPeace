@@ -69,7 +69,7 @@ class RapRecipeProvider(output: FabricDataOutput, registryFuture: CompletableFut
             .input('S', Items.STICK)
             .criterionHaveItem(Items.IRON_NUGGET, Items.STICK)
             .offerTo(exporter)
-        ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, RapItems.TRIAL_PICKING_TOOL)
+        ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, RapItems.OMINOUS_PICKING_TOOL)
             .pattern("DGD")
             .pattern(" P ")
             .pattern(" K ")

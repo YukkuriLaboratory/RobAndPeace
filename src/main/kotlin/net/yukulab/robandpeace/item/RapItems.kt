@@ -21,7 +21,7 @@ object RapItems {
     val MAGIC_HAND: MagicHandItem = register("magic_hand", MagicHandItem(5.0, 131))
     val ADVANCED_MAGIC_HAND: MagicHandItem = register("advanced_magic_hand", MagicHandItem(8.0, 1561))
     val PICKING_TOOL: PickingToolItem = register("picking_tool", PickingToolItem(50))
-    val TRIAL_PICKING_TOOL: PickingToolItem = register("trial_picking_tool", PickingToolItem(70, true))
+    val OMINOUS_PICKING_TOOL: PickingToolItem = register("ominous_picking_tool", PickingToolItem(70, true))
     val PORTAL_HOOP: PortalHoopItem = register("portal_hoop", PortalHoopItem())
     val HIDDEN_TREASURE: HiddenTreasureItem = register("hidden_treasure", HiddenTreasureItem())
 
@@ -43,7 +43,7 @@ object RapItems {
             it.add(MAGIC_HAND)
             it.add(ADVANCED_MAGIC_HAND)
             it.add(PICKING_TOOL)
-            it.add(TRIAL_PICKING_TOOL)
+            it.add(OMINOUS_PICKING_TOOL)
             it.add(PORTAL_HOOP)
             it.add(HIDDEN_TREASURE)
         }
