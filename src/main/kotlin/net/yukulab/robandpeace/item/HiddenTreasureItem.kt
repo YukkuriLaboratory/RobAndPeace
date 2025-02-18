@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.TypedActionResult
 import net.minecraft.world.World
@@ -16,7 +17,12 @@ class HiddenTreasureItem : Item(Settings()) {
         if (world.isClient || world !is ServerWorld) return TypedActionResult.pass(heldStack)
 
         RapEntityType.HIDDEN_TREASURE_ENTITY.spawn(world, { it.owner = user }, user.blockPos, SpawnReason.MOB_SUMMONED, true, true)
+        user.sendMessage(Text.translatable(translationKey + SUFFIX_CONSUME))
         user.getStackInHand(hand).decrement(1)
         return TypedActionResult.consume(heldStack)
+    }
+
+    companion object {
+        const val SUFFIX_CONSUME = "_consume"
     }
 }
