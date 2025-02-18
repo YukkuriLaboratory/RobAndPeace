@@ -51,24 +51,24 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
                 ),
             )
         }
-        itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, Models.GENERATED) {
+        itemModelGenerator.register(RapItems.OMINOUS_PICKING_TOOL, Models.GENERATED) {
             overrides(
                 Override(
-                    ModelIds.getItemSubModelId(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS),
-                    listOf(PickingToolItem.KEY_OMINOUS to 1.0),
+                    ModelIds.getItemSubModelId(RapItems.OMINOUS_PICKING_TOOL, PickingToolItem.SUFFIX_TRIAL),
+                    listOf(PickingToolItem.KEY_TRIAL to 1.0),
                 ),
                 Override(
-                    ModelIds.getItemSubModelId(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_PICKING),
+                    ModelIds.getItemSubModelId(RapItems.OMINOUS_PICKING_TOOL, PickingToolItem.SUFFIX_PICKING),
                     listOf(PickingToolItem.KEY_PICKING to 1.0),
                 ),
                 Override(
-                    ModelIds.getItemSubModelId(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS + PickingToolItem.SUFFIX_PICKING),
-                    listOf(PickingToolItem.KEY_OMINOUS to 1.0, PickingToolItem.KEY_PICKING to 1.0),
+                    ModelIds.getItemSubModelId(RapItems.OMINOUS_PICKING_TOOL, PickingToolItem.SUFFIX_TRIAL + PickingToolItem.SUFFIX_PICKING),
+                    listOf(PickingToolItem.KEY_TRIAL to 1.0, PickingToolItem.KEY_PICKING to 1.0),
                 ),
             )
         }
-        itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, Models.GENERATED)
-        itemModelGenerator.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_PICKING, null, Models.GENERATED) {
+        itemModelGenerator.register(RapItems.OMINOUS_PICKING_TOOL, PickingToolItem.SUFFIX_TRIAL, Models.GENERATED)
+        itemModelGenerator.register(RapItems.OMINOUS_PICKING_TOOL, PickingToolItem.SUFFIX_PICKING, null, Models.GENERATED) {
             display(
                 Display(
                     ModelTransformationMode.FIRST_PERSON_RIGHT_HAND,
@@ -81,9 +81,9 @@ class RapModelProvider(generator: FabricDataOutput) : FabricModelProvider(genera
             )
         }
         itemModelGenerator.register(
-            RapItems.TRIAL_PICKING_TOOL,
-            PickingToolItem.SUFFIX_OMINOUS + PickingToolItem.SUFFIX_PICKING,
-            PickingToolItem.SUFFIX_OMINOUS,
+            RapItems.OMINOUS_PICKING_TOOL,
+            PickingToolItem.SUFFIX_TRIAL + PickingToolItem.SUFFIX_PICKING,
+            PickingToolItem.SUFFIX_TRIAL,
             Models.GENERATED,
         ) {
             display(

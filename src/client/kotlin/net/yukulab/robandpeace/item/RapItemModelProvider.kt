@@ -15,8 +15,8 @@ object RapItemModelProvider {
             }
         }
         ModelPredicateProviderRegistry.register(RapItems.PICKING_TOOL, PickingToolItem.KEY_PICKING, itemUsingDetector)
-        ModelPredicateProviderRegistry.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.KEY_PICKING, itemUsingDetector)
-        ModelPredicateProviderRegistry.register(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.KEY_OMINOUS) { itemStack, _, _, _ ->
+        ModelPredicateProviderRegistry.register(RapItems.OMINOUS_PICKING_TOOL, PickingToolItem.KEY_PICKING, itemUsingDetector)
+        ModelPredicateProviderRegistry.register(RapItems.OMINOUS_PICKING_TOOL, PickingToolItem.KEY_TRIAL) { itemStack, _, _, _ ->
             if (itemStack[RapComponents.IS_OMEN] == true) {
                 1.0f
             } else {

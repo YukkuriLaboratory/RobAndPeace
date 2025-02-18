@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "robandpeace:trial_picking_tool"
+        "recipe": "robandpeace:ominous_picking_tool"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -48,7 +48,7 @@
   ],
   "rewards": {
     "recipes": [
-      "robandpeace:trial_picking_tool"
+      "robandpeace:ominous_picking_tool"
     ]
   }
 }

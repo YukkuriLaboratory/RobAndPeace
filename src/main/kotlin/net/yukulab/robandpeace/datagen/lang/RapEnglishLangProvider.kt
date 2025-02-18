@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.minecraft.registry.RegistryWrapper
 import net.yukulab.robandpeace.config.RapServerConfig
 import net.yukulab.robandpeace.entity.RapEntityType
+import net.yukulab.robandpeace.item.HiddenTreasureItem
 import net.yukulab.robandpeace.item.PickingToolItem
 import net.yukulab.robandpeace.item.PortalHoopItem
 import net.yukulab.robandpeace.item.RapItems
@@ -97,12 +98,13 @@ class RapEnglishLangProvider(dataGenerator: FabricDataOutput, registryLookup: Co
         add(RapItems.MAGIC_HAND, "Magic Hand")
         add(RapItems.ADVANCED_MAGIC_HAND, "Advanced Magic Hand")
         add(RapItems.PICKING_TOOL, "Picking Tool")
-        add(RapItems.TRIAL_PICKING_TOOL, "Trial Picking Tool")
-        add(RapItems.TRIAL_PICKING_TOOL, PickingToolItem.SUFFIX_OMINOUS, "Trial Picking Tool")
+        add(RapItems.OMINOUS_PICKING_TOOL, "Ominous Picking Tool")
+        add(RapItems.OMINOUS_PICKING_TOOL, PickingToolItem.SUFFIX_TRIAL, "Trial Picking Tool")
         add(RapItems.SPIDER_WALKER, "Spider Walker")
         add(RapItems.PORTAL_HOOP, "Portal Hoop(Place Mode)")
         add(RapItems.PORTAL_HOOP, PortalHoopItem.SUFFIX_REMOVE_MODE, "Portal Hoop(Remove Mode)")
         add(RapItems.HIDDEN_TREASURE, "Hidden Treasure")
+        add(RapItems.HIDDEN_TREASURE, HiddenTreasureItem.SUFFIX_CONSUME, "You're King of robber!!")
 
         add(RapEntityType.ANGRY_GOLEM, "Angry Golem")
     }
