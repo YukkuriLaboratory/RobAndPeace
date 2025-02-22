@@ -1,0 +1,55 @@
+name: Publish on GitHub, CurseForge & Modrinth
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check environment variables
+        run: env
+      - uses: actions/checkout@v4
+      - name: get release tag
+        id: rawtag
+        uses: olegtarasov/get-tag@v2.1.4
+        with:
+          tagRegex: "v(.*)"
+      # like v1.0.0+1.21
+      - uses: winterjung/split@v2
+        id: tag
+        with:
+          msg: ${{ steps.rawtag.outputs.tag }}
+          separator: '+'
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        run: ./gradlew build
+        env:
+          MOD_VERSION: ${{ steps.tag.outputs._0 }}
+
+      - uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          curseforge-id: ${{ secrets.CURSEFORGE_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          modrinth-id: ${{ secrets.MODRINTH_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          name: ${{ steps.rawtag.outputs.tag }}
+          version: ${{ steps.tag.outputs._0 }}
+          version-type: release
+          java: 21
+          loaders: fabric
+          game-versions: ${{ steps.tag.outputs._1 }}
+          files: |
+            build/libs/robandpeace-${{ steps.rawtag.outputs.tag }}.jar
+            build/libs/robandpeace-${{ steps.rawtag.outputs.tag }}-sources.jar
