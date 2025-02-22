@@ -26,6 +26,8 @@
 - [ImmersivePortals](https://modrinth.com/mod/immersiveportals)
 - [Cardinal Components API](https://modrinth.com/mod/cardinal-components-api)
 
+> End-Remasteredと合わせて使用する場合は[こちら](https://github.com/YukkuriLaboratory/Steal-Looting)
+
 ## Build
 
 ```shell
