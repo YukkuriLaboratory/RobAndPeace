@@ -11,7 +11,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment
 @Config(name = "robandpeace")
 class RapServerConfig : ConfigData {
     @JvmField
-    var disableAttackingInCoolTime: Boolean = false
+    var disableAttackingInCoolTime: Boolean = true
 
     @CollapsibleObject
     @JvmField
@@ -42,17 +42,17 @@ class RapServerConfig : ConfigData {
         var onSuccess: Int = 1200
 
         @JvmField
-        var onFailure: Int = 100
+        var onFailure: Int = 40
     }
 
     class StealChances {
         @Tooltip
         @JvmField
-        var friendly: Double = 1.0
+        var friendly: Double = 4.0
 
         @Tooltip
         @JvmField
-        var hostile: Double = 0.5
+        var hostile: Double = 2.0
 
         @Tooltip
         @JvmField
@@ -68,7 +68,7 @@ class RapServerConfig : ConfigData {
         var merchantTradeWeight: Int = 30
 
         @JvmField
-        var criticalBonus: Int = 10
+        var criticalBonus: Int = 3
     }
 
     class AngryGolem {
@@ -76,10 +76,10 @@ class RapServerConfig : ConfigData {
         var liveTime: Int = 1200
 
         @JvmField
-        var maxSpawnCount = 5
+        var maxSpawnCount = 20
 
         @JvmField
-        var spawnRadius = 8
+        var spawnRadius = 20
 
         @JvmField
         var spawnHeight = 10
@@ -87,7 +87,7 @@ class RapServerConfig : ConfigData {
 
     class Items {
         @JvmField
-        var smokeInvisibleDuration: Int = 60
+        var smokeInvisibleDuration: Int = 200
 
         @JvmField
         var fireSmokeEffectDelay: Int = 20
@@ -106,11 +106,11 @@ class RapServerConfig : ConfigData {
 
         @BoundedDiscrete(min = 0, max = 100)
         @JvmField
-        var goldenGlove: Int = 25
+        var goldenGlove: Int = 20
 
         @BoundedDiscrete(min = 0, max = 100)
         @JvmField
-        var diamondGlove: Int = 20
+        var diamondGlove: Int = 25
 
         @BoundedDiscrete(min = 0, max = 100)
         @JvmField
@@ -140,24 +140,11 @@ class RapServerConfig : ConfigData {
             @JvmField
             var backwardsSprint: Boolean = false
 
-            // @JvmField
-            // var defaultGenericMovementSpeed: Float = 0.1f
-            //
-            // @JvmField
-            // var sprintMovementSpeedMultiplier: Float = 0.3f
-
             @JvmField
             var stepHeight: Float = 0.6f
         }
 
         class Jumping {
-            // @JvmField
-            // var jumpStrength: Float = 0.42f
-
-            // I don't know what is this...
-            // @JvmField
-            // var coyoteTime: Int = 0
-
             @JvmField
             var smoothJumps: Boolean = false
 

@@ -6,10 +6,11 @@ plugins {
     alias(libs.plugins.ktlint.gradle)
 }
 
-val mod_version: String by project
+val mcVersion = libs.versions.minecraft.get()
+val mod_version = System.getenv("MOD_VERSION") ?: System.getenv("GITHUB_SHA")?.take(7) ?: "0.0.0"
 val maven_group: String by project
 
-version = mod_version
+version = "$mod_version+$mcVersion"
 group = maven_group
 
 val archives_base_name: String by project
